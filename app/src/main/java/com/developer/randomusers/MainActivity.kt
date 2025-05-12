@@ -11,37 +11,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.developer.randomusers.ui.screens.MainViewModel
 import com.developer.randomusers.ui.theme.RandomUsersTheme
+import org.koin.android.ext.android.inject
+import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
+
+    private val mainViewModel by inject<MainViewModel>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val results = mainViewModel.fetchUsers()
+
         setContent {
             RandomUsersTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+
+
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RandomUsersTheme {
-        Greeting("Android")
     }
 }
