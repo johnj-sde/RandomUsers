@@ -14,8 +14,8 @@ data class Result (
   @SerializedName("registered" ) var registered : Registered? = Registered(),
   @SerializedName("phone"      ) var phone      : String?     = null,
   @SerializedName("cell"       ) var cell       : String?     = null,
-  @SerializedName("id"         ) var id         : Id         = Id(),
-  @SerializedName("picture"    ) var picture    : Picture?    = Picture(),
+  @SerializedName("id"         ) val id         : Id         ,
+  @SerializedName("picture"    ) val picture    : Picture?    = Picture(),
   @SerializedName("nat"        ) var nat        : String?     = null
 
 )
