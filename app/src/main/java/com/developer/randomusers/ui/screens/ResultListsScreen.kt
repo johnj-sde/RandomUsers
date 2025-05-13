@@ -1,25 +1,55 @@
 package com.developer.randomusers.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.developer.randomusers.model.Result
 import com.developer.randomusers.model.ResultsAndInfo
 import com.developer.randomusers.network.RandomUserAPIClient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.coroutines.CoroutineContext
 
 @Composable
-fun MainScreen(
-
+fun ResultListScreen(
+    results: List<Result>
 ) {
-
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
+        items(
+            items = results,
+            key = {it.id}
+        ) {
+            ResultListItem(
+                result = it
+            )
+        }
+    }
 }
+
+
+@Composable
+fun ResultListItem(
+    result: Result,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+
+    }
+}
+
 
 
 
