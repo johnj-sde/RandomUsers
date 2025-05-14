@@ -5,13 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
@@ -23,10 +18,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil3.compose.AsyncImage
 import com.developer.randomusers.R
-import com.developer.randomusers.model.Result
+import com.developer.randomusers.model.User
 import com.developer.randomusers.model.ResultsAndInfo
+import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.network.RandomUserAPIClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,8 +32,8 @@ import retrofit2.Response
 import java.net.URI
 
 @Composable
-fun ResultListScreen(
-    results: List<Result>
+fun UserListScreen(
+    users: List<User>
 ) {
     LazyColumn(
         modifier = Modifier
@@ -46,11 +41,11 @@ fun ResultListScreen(
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         items(
-            items = results,
+            items = users,
             key = {it.id.value}
         ) {
-            ResultListItem(
-                result = it
+            UserListItem(
+                user = it
             )
         }
     }
@@ -58,8 +53,8 @@ fun ResultListScreen(
 
 
 @Composable
-fun ResultListItem(
-    result: Result,
+fun UserListItem(
+    user: User,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -68,8 +63,8 @@ fun ResultListItem(
         Column(
             modifier = Modifier.fillMaxSize().weight(0.25f).background(Color.Red)
         ) {
-            if (result.picture?.medium != null) {
-                val uri = URI(result.picture.medium)
+            if (user.picture?.medium != null) {
+                val uri = URI(user.picture.medium)
               /*  AsyncImage(
                     model = uri,
                     contentDescription = null
@@ -97,31 +92,15 @@ fun ResultListItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            val title = result.name?.title ?: ""
-            val fullName = result.name?.first.let { firstName ->
-                if (firstName==null) {
-                    "Anonymous"
-                } else {
-                    result.name?.last.let { lastName ->
-                        if (lastName==null) {
-                            firstName
-                        } else {
-                            "$firstName $lastName"
-                        }
-                    }
-                }
+            
+            Text(text = user.getFullName())
+
+            if (user.email != null) {
+                Text(user.email)
             }
 
-            val titledName = "$title $fullName"
-
-            Text(text = titledName)
-
-            if (result.email != null) {
-                Text(result.email)
-            }
-
-            if (result.phone != null) {
-                Text(result.phone)
+            if (user.phone != null) {
+                Text(user.phone)
             }
         }
     }
@@ -134,7 +113,7 @@ class MainViewModel(
     val restClient: RandomUserAPIClient
 ): ViewModel() {
 
-    private val _resultsAndInfo = MutableStateFlow<List<Result>>(emptyList())
+    private val _resultsAndInfo = MutableStateFlow<List<User>>(emptyList())
     val results = _resultsAndInfo.asStateFlow()
 
     fun fetchUsers() {
@@ -145,7 +124,7 @@ class MainViewModel(
                 call: Call<ResultsAndInfo?>,
                 response: Response<ResultsAndInfo?>
             ) {
-                val results = response.body()?.results
+                val results = response.body()?.users
                 results?.let {
                     viewModelScope.launch {
                         for (result in it) {
