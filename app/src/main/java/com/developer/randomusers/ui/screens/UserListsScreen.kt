@@ -2,13 +2,13 @@ package com.developer.randomusers.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,7 +33,8 @@ import java.net.URI
 
 @Composable
 fun UserListScreen(
-    users: List<User>
+    users: List<User>,
+    navigateTo: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -41,11 +42,12 @@ fun UserListScreen(
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         items(
-            items = users,
-            key = {it.id.value}
+            count = users.size,
+            key = {users[it].id.value}
         ) {
             UserListItem(
-                user = it
+                user = users[it],
+                modifier = Modifier.clickable(onClick = {navigateTo(it)})
             )
         }
     }
@@ -58,7 +60,7 @@ fun UserListItem(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier.fillMaxSize().background(Color.Green)
+        modifier = modifier.fillMaxSize().background(Color.Green)
     ) {
         Column(
             modifier = Modifier.fillMaxSize().weight(0.25f).background(Color.Red)
@@ -92,7 +94,7 @@ fun UserListItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            
+
             Text(text = user.getFullName())
 
             if (user.email != null) {
@@ -113,8 +115,8 @@ class MainViewModel(
     val restClient: RandomUserAPIClient
 ): ViewModel() {
 
-    private val _resultsAndInfo = MutableStateFlow<List<User>>(emptyList())
-    val results = _resultsAndInfo.asStateFlow()
+    private val _users = MutableStateFlow<List<User>>(emptyList())
+    val users = _users.asStateFlow()
 
     fun fetchUsers() {
 
@@ -124,13 +126,13 @@ class MainViewModel(
                 call: Call<ResultsAndInfo?>,
                 response: Response<ResultsAndInfo?>
             ) {
-                val results = response.body()?.users
-                results?.let {
+                val users = response.body()?.users
+                users?.let {
                     viewModelScope.launch {
                         for (result in it) {
                             println("name is ${result.name?.first?: "no name"}")
                         }
-                        _resultsAndInfo.emit(it)
+                        _users.emit(it)
                     }
 
                 }

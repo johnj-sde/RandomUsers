@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,29 +15,57 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.developer.randomusers.R
 import com.developer.randomusers.model.User
+import com.developer.randomusers.model.displayLocation
+import com.developer.randomusers.model.getFullName
 
 @Composable
 fun UserDetailScreen(
-    user: User
+    users: List<User>,
+    position: Int
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ){
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(R.drawable.anonymous_avatar),
-                contentDescription = null,
-                modifier = Modifier.size(93.dp)
-            )
-        }
-        Spacer(modifier = Modifier.height(50.dp))
+    if (users.isNotEmpty() && position>=0) {
+        val user = users[position]
         Column(
             modifier = Modifier.fillMaxSize()
-        ) {
+        ){
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.anonymous_avatar),
+                    contentDescription = null,
+                    modifier = Modifier.size(93.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(50.dp))
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(text = user.getFullName())
 
+                if (user.email != null) {
+                    Text(user.email)
+                }
+
+                if (user.phone != null) {
+                    Text(user.phone)
+                }
+
+                if (user.gender != null) {
+                    Text(user.gender)
+                }
+
+                if (user.registered != null && user.registered.date !=null) {
+                    Text(user.registered.date)
+                }
+
+                val displayLocation = user.location?.displayLocation()
+                if (displayLocation!=null) {
+                    Text(displayLocation)
+                }
+            }
         }
     }
+
 }

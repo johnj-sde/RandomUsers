@@ -11,7 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.developer.randomusers.ui.screens.MainViewModel
-import com.developer.randomusers.ui.screens.UserListScreen
+import com.developer.randomusers.ui.screens.NavHostContainer
 import com.developer.randomusers.ui.theme.RandomUsersTheme
 import org.koin.android.ext.android.inject
 import kotlin.getValue
@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         mainViewModel.fetchUsers()
         setContent {
             RandomUsersTheme {
-                val results = mainViewModel.results.collectAsStateWithLifecycle()
+                val users = mainViewModel.users.collectAsStateWithLifecycle()
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
@@ -35,9 +35,7 @@ class MainActivity : ComponentActivity() {
                     Column(
                         modifier = Modifier.padding(padding)
                     ) {
-                        UserListScreen(
-                            results.value
-                        )
+                        NavHostContainer(users.value)
                     }
                 }
 
