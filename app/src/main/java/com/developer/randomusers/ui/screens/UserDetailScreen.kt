@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.developer.randomusers.R
 import com.developer.randomusers.model.User
@@ -29,11 +30,12 @@ import com.developer.randomusers.model.getFullName
 
 @Composable
 fun UserDetailScreen(
-    users: List<User>,
+    viewModel: MainViewModel,
     position: Int
 ) {
-    if (users.isNotEmpty() && position>=0) {
-        val user = users[position]
+    val users = viewModel.users.collectAsStateWithLifecycle()
+    if (users.value.isNotEmpty() && position>=0) {
+        val user = users.value[position]
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center

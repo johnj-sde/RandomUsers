@@ -12,7 +12,7 @@ import com.developer.randomusers.model.User
 
 @Composable
 fun NavHostContainer(
-    list: List<User>
+    mainViewModel: MainViewModel
 ) {
     val navController = rememberNavController()
     NavHost(navController, startDestination= Routes.UserListScreen) {
@@ -20,7 +20,7 @@ fun NavHostContainer(
             route = Routes.UserListScreen
         ){
             UserListScreen(
-                users = list,
+                viewModel = mainViewModel,
                 navigateTo = { position ->
                     navController.navigate(Routes.UserDetailScreen + "/$position")
                 },
@@ -35,7 +35,7 @@ fun NavHostContainer(
             )
         ) { backStackEntry ->
             UserDetailScreen(
-                users = list,
+                viewModel = mainViewModel,
                 position = backStackEntry.arguments?.getInt("position") ?: -1
             )
         }

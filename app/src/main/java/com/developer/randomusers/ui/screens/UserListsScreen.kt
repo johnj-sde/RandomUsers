@@ -28,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import coil3.compose.AsyncImage
 import com.developer.randomusers.R
@@ -45,23 +46,24 @@ import java.net.URI
 
 @Composable
 fun UserListScreen(
-    users: List<User>,
+    viewModel: MainViewModel,
     navigateTo: (Int) -> Unit
 ) {
+    val users = viewModel.users.collectAsStateWithLifecycle()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         items(
-            count = users.size,
-            key = {users[it].id.value}
+            count = users.value.size,
+            key = {users.value[it].id.value}
         ) {
             UserListItem(
-                user = users[it],
+                user = users.value[it],
                 modifier = Modifier.clickable(onClick = {navigateTo(it)})
             )
-            if (it<users.size-1) {
+            if (it<users.value.size-1) {
                 Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
             }

@@ -26,7 +26,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RandomUsersTheme {
-                val users = mainViewModel.users.collectAsStateWithLifecycle()
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
@@ -34,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     Column(
                         modifier = Modifier.padding(padding)
                     ) {
-                        NavHostContainer(users.value)
+                        NavHostContainer(mainViewModel)
                     }
                 }
 
