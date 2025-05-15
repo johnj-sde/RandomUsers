@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        mainViewModel.fetchUsers()
         setContent {
             RandomUsersTheme {
                 val users = mainViewModel.users.collectAsStateWithLifecycle()

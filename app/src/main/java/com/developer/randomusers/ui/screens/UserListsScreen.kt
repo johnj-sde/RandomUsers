@@ -132,6 +132,10 @@ class MainViewModel(
     private val _users = MutableStateFlow<List<User>>(emptyList())
     val users = _users.asStateFlow()
 
+    init {
+        fetchUsers()
+    }
+
     fun fetchUsers() {
 
         val call = restClient.fetchUsers(20)
