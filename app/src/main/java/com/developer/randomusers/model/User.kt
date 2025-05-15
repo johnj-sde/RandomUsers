@@ -7,7 +7,7 @@ data class User (
 
   @SerializedName("gender"     ) val gender     : String?     = null,
   @SerializedName("name"       ) val name       : Name?       = null,
-  @SerializedName("location"   ) val location   : Location?   = Location(),
+  @SerializedName("location"   ) val location   : Location?   = null,
   @SerializedName("email"      ) val email      : String?     = null,
   @SerializedName("login"      ) val login      : Login?      = Login(),
   @SerializedName("dob"        ) val dob        : Dob?        = Dob(),

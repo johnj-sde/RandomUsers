@@ -35,7 +35,7 @@ fun UserDetailScreen(
             modifier = Modifier.fillMaxSize()
         ){
             Column (
-                modifier = Modifier.fillMaxWidth().padding(10.dp).background(Color.Red),
+                modifier = Modifier.fillMaxWidth().padding(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
