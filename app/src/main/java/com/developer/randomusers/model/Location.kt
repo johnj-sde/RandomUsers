@@ -9,7 +9,7 @@ data class Location (
   @SerializedName("city"        ) val city        : String?      = null,
   @SerializedName("state"       ) val state       : String?      = null,
   @SerializedName("country"     ) val country     : String?      = null,
-  @SerializedName("postcode"    ) val postcode    : Int?         = null,
+  @SerializedName("postcode"    ) val postcode    : String?         = null,
   @SerializedName("coordinates" ) var coordinates : Coordinates? = Coordinates(),
   @SerializedName("timezone"    ) var timezone    : Timezone?    = Timezone()
 
