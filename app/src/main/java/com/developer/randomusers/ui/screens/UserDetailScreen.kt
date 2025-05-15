@@ -34,9 +34,9 @@ fun UserDetailScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ){
-            Column (
+            Box (
                 modifier = Modifier.fillMaxWidth().padding(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(R.drawable.anonymous_avatar),
