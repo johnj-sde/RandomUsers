@@ -27,7 +27,7 @@ fun NavHostContainer(
             )
         }
         composable(
-            route = Routes.UserDetailScreen + "{/position}",
+            route = Routes.UserDetailScreen + "/{position}",
             arguments = listOf(
                 navArgument(name ="position") {
                     type = NavType.IntType
