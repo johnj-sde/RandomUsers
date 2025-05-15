@@ -4,20 +4,32 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil3.compose.AsyncImage
 import com.developer.randomusers.R
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.ResultsAndInfo
@@ -49,6 +61,10 @@ fun UserListScreen(
                 user = users[it],
                 modifier = Modifier.clickable(onClick = {navigateTo(it)})
             )
+            if (it<users.size-1) {
+                Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+                HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
+            }
         }
     }
 }
@@ -60,29 +76,27 @@ fun UserListItem(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxSize().background(Color.Green)
+        modifier = modifier.height(IntrinsicSize.Max).fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().weight(0.25f).background(Color.Red)
+            modifier = Modifier.fillMaxWidth().weight(0.25f)
         ) {
             if (user.picture?.medium != null) {
-                val uri = URI(user.picture.medium)
-              /*  AsyncImage(
-                    model = uri,
-                    contentDescription = null
-                )*/
-                Image(
-                    painter = painterResource(R.drawable.anonymous_avatar),
+                AsyncImage(
+                    model = user.picture.medium,
                     contentDescription = null,
-                    modifier = Modifier.size(93.dp)
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
                 )
             } else {
                 Image(
                     painter = painterResource(R.drawable.anonymous_avatar),
                     contentDescription = null,
-                    modifier = Modifier.size(93.dp)
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
                 )
             }
+
 
         }
        /* Spacer(
@@ -90,7 +104,7 @@ fun UserListItem(
         )*/
 
         Column(
-            modifier = Modifier.fillMaxSize().weight(0.75f),
+            modifier = Modifier.fillMaxWidth().weight(0.75f),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
@@ -120,7 +134,7 @@ class MainViewModel(
 
     fun fetchUsers() {
 
-        val call = restClient.fetchUsers(10)
+        val call = restClient.fetchUsers(20)
         call.enqueue(object : Callback<ResultsAndInfo> {
             override fun onResponse(
                 call: Call<ResultsAndInfo?>,
