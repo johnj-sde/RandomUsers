@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,8 +44,10 @@ fun UserListScreen(
     viewModel: UserViewModel,
     navigateTo: (Int) -> Unit
 ) {
+    val state = viewModel.state.collectAsStateWithLifecycle()
     val users = viewModel.users.collectAsStateWithLifecycle()
     LazyColumn(
+        state = state.value,
         modifier = Modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp)
