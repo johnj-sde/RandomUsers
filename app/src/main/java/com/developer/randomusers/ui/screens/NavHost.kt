@@ -1,19 +1,17 @@
 package com.developer.randomusers.ui.screens
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.developer.randomusers.model.User
-import com.developer.randomusers.ui.viewmodel.MainViewModel
+import com.developer.randomusers.ui.viewmodel.UserViewModel
 
 
 @Composable
 fun NavHostContainer(
-    mainViewModel: MainViewModel
+    userViewModel: UserViewModel
 ) {
     val navController = rememberNavController()
     NavHost(navController, startDestination= Routes.UserListScreen) {
@@ -21,7 +19,7 @@ fun NavHostContainer(
             route = Routes.UserListScreen
         ){
             UserListScreen(
-                viewModel = mainViewModel,
+                viewModel = userViewModel,
                 navigateTo = { position ->
                     navController.navigate(Routes.UserDetailScreen + "/$position")
                 },
@@ -36,7 +34,7 @@ fun NavHostContainer(
             )
         ) { backStackEntry ->
             UserDetailScreen(
-                viewModel = mainViewModel,
+                viewModel = userViewModel,
                 position = backStackEntry.arguments?.getInt("position") ?: -1
             )
         }

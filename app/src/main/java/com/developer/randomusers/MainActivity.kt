@@ -11,12 +11,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.developer.randomusers.ui.screens.NavHostContainer
 import com.developer.randomusers.ui.theme.RandomUsersTheme
-import com.developer.randomusers.ui.viewmodel.MainViewModel
+import com.developer.randomusers.ui.viewmodel.UserViewModel
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
 
-    private val mainViewModel by inject<MainViewModel>()
+    private val userViewModel by inject<UserViewModel>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     Column(
                         modifier = Modifier.padding(padding)
                     ) {
-                        NavHostContainer(mainViewModel)
+                        NavHostContainer(userViewModel)
                     }
                 }
 
