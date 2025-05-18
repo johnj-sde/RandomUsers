@@ -1,12 +1,10 @@
 package com.developer.randomusers.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
-
-data class Name (
-
-  @SerializedName("title" ) var title : String? = null,
-  @SerializedName("first" ) var first : String? = null,
-  @SerializedName("last"  ) var last  : String? = null
-
+@Serializable
+data class Name(
+    val title: String? = null,
+    val first: String? = null,
+    val last: String? = null
 )

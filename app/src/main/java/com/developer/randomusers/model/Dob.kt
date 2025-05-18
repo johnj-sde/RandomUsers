@@ -1,11 +1,9 @@
 package com.developer.randomusers.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class Dob (
-
-  @SerializedName("date" ) var date : String? = null,
-  @SerializedName("age"  ) var age  : Int?    = null
-
+  val date : String? = null,
+  val age  : Int?    = null
 )
