@@ -9,12 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.developer.randomusers.ui.screens.MainViewModel
 import com.developer.randomusers.ui.screens.NavHostContainer
 import com.developer.randomusers.ui.theme.RandomUsersTheme
+import com.developer.randomusers.ui.viewmodel.MainViewModel
 import org.koin.android.ext.android.inject
-import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
 

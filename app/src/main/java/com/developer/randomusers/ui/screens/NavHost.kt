@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.developer.randomusers.model.User
+import com.developer.randomusers.ui.viewmodel.MainViewModel
 
 
 @Composable

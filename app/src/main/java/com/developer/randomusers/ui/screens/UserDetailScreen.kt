@@ -27,6 +27,7 @@ import com.developer.randomusers.R
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.displayLocation
 import com.developer.randomusers.model.getFullName
+import com.developer.randomusers.ui.viewmodel.MainViewModel
 
 @Composable
 fun UserDetailScreen(

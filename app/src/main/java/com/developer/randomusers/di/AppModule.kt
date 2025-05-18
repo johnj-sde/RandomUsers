@@ -2,7 +2,7 @@ package com.developer.randomusers.di
 
 import com.developer.randomusers.network.API_URL
 import com.developer.randomusers.network.RandomUserAPIClient
-import com.developer.randomusers.ui.screens.MainViewModel
+import com.developer.randomusers.ui.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
