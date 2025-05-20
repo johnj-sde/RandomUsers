@@ -1,11 +1,9 @@
 package com.developer.randomusers.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class Coordinates (
-
-  @SerializedName("latitude"  ) var latitude  : String? = null,
-  @SerializedName("longitude" ) var longitude : String? = null
-
+  val latitude  : String? = null,
+  val longitude : String? = null
 )
