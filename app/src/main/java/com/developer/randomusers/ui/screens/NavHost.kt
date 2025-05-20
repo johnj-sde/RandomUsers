@@ -8,7 +8,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 
-
 @Composable
 fun NavHostContainer(
     userViewModel: UserViewModel

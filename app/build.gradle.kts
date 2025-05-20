@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.developer.randomusers"
-    compileSdk = 35
+    compileSdk = libs.versions.targetSdkVersion.get().toInt()
 
     defaultConfig {
         applicationId = "com.developer.randomusers"
-        minSdk = 24
-        targetSdk = 35
+        minSdk = libs.versions.minSdkVersion.get().toInt()
+        targetSdk = libs.versions.targetSdkVersion.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -27,13 +27,17 @@ android {
             )
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        val javaVersion = libs.versions.javaVersion.get()
+        sourceCompatibility = JavaVersion.toVersion(javaVersion)
+        targetCompatibility = JavaVersion.toVersion(javaVersion)
     }
+
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = libs.versions.javaVersion.get()
     }
+
     buildFeatures {
         compose = true
     }
@@ -58,13 +62,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.koin)
-    implementation(libs.koin.navigation)
     implementation(libs.koin.compose)
-    testImplementation(libs.koin.test)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.moshi)
     implementation(libs.retrofit.converter.gson)
+    implementation(libs.retrofit.serialization.converter)
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.kotlinx.serialization.json)

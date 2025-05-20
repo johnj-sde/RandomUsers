@@ -12,7 +12,7 @@ interface RandomUserAPIClient {
 
 
     @GET("/api")
-    fun fetchUsers(@Query("results") limit: Int): Call<ResultsAndInfo>
+    suspend fun fetchUsers(@Query("results") limit: Int): ResultsAndInfo
 
 
 }
