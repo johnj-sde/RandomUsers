@@ -18,11 +18,15 @@ class UserViewModel(
     private val _users = MutableStateFlow<List<User>>(emptyList())
     val users = _users.asStateFlow()
 
+    init {
+        fetchUsers()
+    }
+
     fun fetchUsers() {
         println("fetching users...")
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
-                runCatching { restClient.fetchUsers(20) }
+                runCatching { restClient.fetchUsers(40) }
             }
             val latestUsersList = if (result.isSuccess) {
                 result.getOrNull()?.users ?: emptyList()
@@ -30,7 +34,7 @@ class UserViewModel(
                 emptyList()
             }
             _users.update { currUsersList ->
-                val mutableListOfCurrUsers = _users.value.toMutableList()
+                val mutableListOfCurrUsers = currUsersList.toMutableList()
                 mutableListOfCurrUsers.addAll(latestUsersList)
                 mutableListOfCurrUsers.toList()
 

@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,7 +41,7 @@ fun UserListScreen(
 ) {
     val lazyListState = rememberLazyListState()
 
-    val isReadyToLaunch1 = remember {
+    val isReadyToLaunch1 by remember {
         derivedStateOf {
             lazyListState.isCloseToEnd(3)
         }
@@ -50,9 +51,11 @@ fun UserListScreen(
         mutableStateOf(lazyListState.isCloseToEnd(3))
     }
 
-    LaunchedEffect(isReadyToLaunch2) {
+    LaunchedEffect(isReadyToLaunch1) {
         println("ready to load2")
-        viewModel.fetchUsers()
+        if (isReadyToLaunch1) {
+            viewModel.fetchUsers()
+        }
     }
 
     val users = viewModel.users.collectAsStateWithLifecycle()
@@ -65,7 +68,10 @@ fun UserListScreen(
         items(
             count = users.value.size,
             key = {users.value[it].id.value}
-        ) {
+        ) { it ->
+            Text(
+                text = "$it"
+            )
             UserListItem(
                 user = users.value[it],
                 modifier = Modifier.clickable(onClick = {navigateTo(it)})
