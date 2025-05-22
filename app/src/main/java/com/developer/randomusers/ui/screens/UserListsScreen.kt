@@ -44,10 +44,9 @@ fun UserListScreen(
     viewModel: UserViewModel,
     navigateTo: (Int) -> Unit
 ) {
-    val state = viewModel.state.collectAsStateWithLifecycle()
     val users = viewModel.users.collectAsStateWithLifecycle()
     LazyColumn(
-        state = state.value,
+        state = viewModel.lazyListState,
         modifier = Modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp)
