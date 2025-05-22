@@ -47,10 +47,6 @@ fun UserListScreen(
         }
     }
 
-    val isReadyToLaunch2 = remember {
-        mutableStateOf(lazyListState.isCloseToEnd(3))
-    }
-
     LaunchedEffect(isReadyToLaunch1) {
         println("ready to load2")
         if (isReadyToLaunch1) {
