@@ -1,6 +1,7 @@
 package com.developer.randomusers.ui.viewmodel
 
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.developer.randomusers.model.User
@@ -8,6 +9,7 @@ import com.developer.randomusers.network.RandomUserAPIClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -23,21 +25,24 @@ class UserViewModel(
 
     val lazyListState = LazyListState()
 
-    private val _firstVisibleListItem = MutableStateFlow<Int>(lazyListState.firstVisibleItemIndex)
-    val firstVisibleListItem = _firstVisibleListItem.asStateFlow()
-
-
     init {
-        fetchUsers()
 
-        _firstVisibleListItem.onEach { state ->
-            println("lazy list state change emission")
-            viewModelScope.launch {
-                if (abs(users.value.size - firstVisibleListItem.value) <= 20) {
-                    fetchUsers()
+        viewModelScope.launch {
+            infiniteScrollFlow()
+        }
+
+    }
+
+    private suspend fun infiniteScrollFlow() {
+        snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0 }
+            .distinctUntilChanged()
+            .collect { lastVisibleItemIndex ->
+                lastVisibleItemIndex.let { index ->
+                    if (users.value.size - index <= 20) {
+                        fetchUsers()
+                    }
                 }
             }
-        }
     }
 
     fun fetchUsers() {
