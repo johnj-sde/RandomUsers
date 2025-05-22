@@ -65,9 +65,6 @@ fun UserListScreen(
             count = users.value.size,
             key = {users.value[it].id.value}
         ) { it ->
-            Text(
-                text = "$it"
-            )
             UserListItem(
                 user = users.value[it],
                 modifier = Modifier.clickable(onClick = {navigateTo(it)})
