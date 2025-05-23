@@ -23,7 +23,6 @@ class UserViewModel(
     }
 
     fun fetchUsers() {
-        println("fetching users...")
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
                 runCatching { restClient.fetchUsers(40) }
