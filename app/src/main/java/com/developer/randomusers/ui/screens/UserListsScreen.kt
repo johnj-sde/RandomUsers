@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -59,15 +60,15 @@ fun UserListScreen(
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        items(
-            count = users.value.size,
-            key = {users.value[it].id.value}
-        ) { it ->
+        itemsIndexed(
+            items = users.value,
+            key = {_, user -> user.id.value}
+        ) { index, user ->
             UserListItem(
-                user = users.value[it],
-                modifier = Modifier.clickable(onClick = {navigateTo(it)})
+                user = user,
+                modifier = Modifier.clickable(onClick = {navigateTo(index)})
             )
-            if (it<users.value.size-1) {
+            if (index<users.value.size-1) {
                 Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
             }
