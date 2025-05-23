@@ -2,7 +2,6 @@ package com.developer.randomusers.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.developer.randomusers.model.ResultsAndInfo
 import com.developer.randomusers.model.User
 import com.developer.randomusers.network.RandomUserAPIClient
 import kotlinx.coroutines.Dispatchers
@@ -11,9 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class UserViewModel(
     val restClient: RandomUserAPIClient
@@ -27,17 +23,21 @@ class UserViewModel(
     }
 
     fun fetchUsers() {
-
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
-                runCatching { restClient.fetchUsers(20) }
+                runCatching { restClient.fetchUsers(40) }
             }
-            val usersList = if (result.isSuccess) {
+            val latestUsersList = if (result.isSuccess) {
                 result.getOrNull()?.users ?: emptyList()
             } else {
                 emptyList()
             }
-            _users.update { usersList }
+            _users.update { currUsersList ->
+                val mutableListOfCurrUsers = currUsersList.toMutableList()
+                mutableListOfCurrUsers.addAll(latestUsersList)
+                mutableListOfCurrUsers.toList()
+
+            }
         }
 
     }

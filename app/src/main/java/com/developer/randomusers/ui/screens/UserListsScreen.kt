@@ -11,9 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,38 +33,42 @@ import com.developer.randomusers.R
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.ui.viewmodel.UserViewModel
-import com.developer.randomusers.network.RandomUserAPIClient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.net.URI
 
 @Composable
 fun UserListScreen(
     viewModel: UserViewModel,
     navigateTo: (Int) -> Unit
 ) {
+    val lazyListState = rememberLazyListState()
+
+    val isReadyToFetch by remember {
+        derivedStateOf {
+            lazyListState.isCloseToEnd(offset = 3)
+        }
+    }
+
+    LaunchedEffect(isReadyToFetch) {
+        if (isReadyToFetch) {
+            viewModel.fetchUsers()
+        }
+    }
+
     val users = viewModel.users.collectAsStateWithLifecycle()
     LazyColumn(
+        state = lazyListState,
         modifier = Modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        items(
-            count = users.value.size,
-            key = {users.value[it].id.value}
-        ) {
+        itemsIndexed(
+            items = users.value,
+            key = {_, user -> user.id.value}
+        ) { index, user ->
             UserListItem(
-                user = users.value[it],
-                modifier = Modifier.clickable(onClick = {navigateTo(it)})
+                user = user,
+                modifier = Modifier.clickable(onClick = {navigateTo(index)})
             )
-            if (it<users.value.size-1) {
+            if (index<users.value.size-1) {
                 Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
             }
@@ -116,4 +127,11 @@ fun UserListItem(
             }
         }
     }
+}
+
+
+private fun LazyListState.isCloseToEnd(offset: Int = 3): Boolean {
+    val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
+    return lastVisibleItem?.index != 0 &&
+            (lastVisibleItem?.index ?: -1) >= layoutInfo.totalItemsCount - offset
 }
