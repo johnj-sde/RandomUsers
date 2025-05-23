@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,15 +40,14 @@ fun UserListScreen(
 ) {
     val lazyListState = rememberLazyListState()
 
-    val isReadyToLaunch1 by remember {
+    val isReadyToFetch by remember {
         derivedStateOf {
-            lazyListState.isCloseToEnd(3)
+            lazyListState.isCloseToEnd(offset = 3)
         }
     }
 
-    LaunchedEffect(isReadyToLaunch1) {
-        println("ready to load2")
-        if (isReadyToLaunch1) {
+    LaunchedEffect(isReadyToFetch) {
+        if (isReadyToFetch) {
             viewModel.fetchUsers()
         }
     }
@@ -131,7 +129,7 @@ fun UserListItem(
 }
 
 
-fun LazyListState.isCloseToEnd(offset: Int = 3): Boolean {
+private fun LazyListState.isCloseToEnd(offset: Int = 3): Boolean {
     val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
     return lastVisibleItem?.index != 0 &&
             (lastVisibleItem?.index ?: -1) >= layoutInfo.totalItemsCount - offset
