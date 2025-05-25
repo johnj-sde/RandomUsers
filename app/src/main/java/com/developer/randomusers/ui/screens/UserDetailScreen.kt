@@ -41,21 +41,21 @@ fun UserDetailScreen(
                 modifier = Modifier.fillMaxWidth().weight(0.5f).padding(10.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                if (user.picture?.large != null) {
+/*                if (user.picture?.large != null) {
                     AsyncImage(
                         model = user.picture.large,
                         contentDescription = null,
                         modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Fit
                     )
-                } else {
+                } else {*/
                     Image(
                         painter = painterResource(R.drawable.anonymous_avatar),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Fit
                     )
-                }
+      //          }
             }
             Spacer(modifier = Modifier.height(10.dp))
             Column(
@@ -63,7 +63,7 @@ fun UserDetailScreen(
                 modifier = Modifier.fillMaxWidth().weight(0.3f).padding(bottom=10.dp)
             ){
                 Text(
-                    text = user.getFullName(),
+                    text = "user.getFullName()",
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
@@ -89,20 +89,21 @@ fun UserDetailScreen(
                     )
                 }
 
-                if (user.registered != null && user.registered.date !=null) {
+/*                if (user.registered != null && user.registered.date !=null) {
                     Text(
                         user.registered.date,
                         textAlign = TextAlign.Center
                     )
-                }
+                }*/
 
+                /*
                 val displayLocation = user.location?.displayLocation()
                 if (displayLocation!=null) {
                     Text(
                         text = displayLocation,
                         textAlign = TextAlign.Center
                     )
-                }
+                }*/
             }
         }
     }

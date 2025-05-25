@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.developer.randomusers.R
+import com.developer.randomusers.database.model.UserEntity
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.ui.viewmodel.UserViewModel
@@ -62,7 +63,7 @@ fun UserListScreen(
     ) {
         itemsIndexed(
             items = users.value,
-            key = {_, user -> user.id.value}
+            key = {_, user -> user.uid}
         ) { index, user ->
             UserListItem(
                 user = user,
@@ -79,7 +80,7 @@ fun UserListScreen(
 
 @Composable
 fun UserListItem(
-    user: User,
+    user: UserEntity,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -88,21 +89,21 @@ fun UserListItem(
         Column(
             modifier = Modifier.fillMaxWidth().weight(0.25f)
         ) {
-            if (user.picture?.medium != null) {
+/*            if (user.picture?.medium != null) {
                 AsyncImage(
                     model = user.picture.medium,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
                 )
-            } else {
+            } else {*/
                 Image(
                     painter = painterResource(R.drawable.anonymous_avatar),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
                 )
-            }
+         //   }
 
 
         }
@@ -116,7 +117,7 @@ fun UserListItem(
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
 
-            Text(text = user.getFullName())
+            Text(text = "user.getFullName()")
 
             if (user.email != null) {
                 Text(user.email)
