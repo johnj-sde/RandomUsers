@@ -13,7 +13,8 @@ import com.developer.randomusers.model.Registered
 
 @Entity
 data class UserEntity(
-    @PrimaryKey val uid: Int,
+    @PrimaryKey(autoGenerate = true) val uid: Int = 0,
+ //   @PrimaryKey val id         : IdEntity,
     @ColumnInfo(name="gender"     ) val gender     : String?     = null,
 //    @ColumnInfo(name="name"       ) val name       : Name?       = null,
 //    @ColumnInfo(name="location"   ) val location   : Location?   = null,
@@ -23,7 +24,6 @@ data class UserEntity(
  //   @ColumnInfo(name="registered" ) val registered : Registered? = Registered(),
     @ColumnInfo(name="phone"      ) val phone      : String?     = null,
     @ColumnInfo(name="cell"       ) val cell       : String?     = null,
- //   @ColumnInfo(name="id"         ) val id         : Id,
   //  @ColumnInfo(name="picture"    ) val picture    : Picture?    = Picture(),
     @ColumnInfo(name="nat"        ) val nat        : String?     = null
 

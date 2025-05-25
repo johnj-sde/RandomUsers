@@ -1,5 +1,6 @@
 package com.developer.randomusers.model
 
+import com.developer.randomusers.database.model.UserEntity
 import com.google.gson.annotations.SerializedName
 
 
@@ -37,4 +38,14 @@ fun User.getFullName(): String {
       }
     } ?: "Anonymous"
   } ?: "Anonymous"
+}
+
+fun User.toUserEntity(): UserEntity {
+  return UserEntity(
+      gender = this.gender,
+      email = this.email,
+      phone = this.phone,
+      cell = this.cell,
+      nat = this.nat,
+  )
 }
