@@ -17,12 +17,6 @@ class UserViewModel(
         emptyList()
     )
 
-    init {
-        viewModelScope.launch {
-            userRepository.loadUsers()
-        }
-    }
-
     fun fetchUsers() {
         viewModelScope.launch {
             userRepository.loadUsers()
