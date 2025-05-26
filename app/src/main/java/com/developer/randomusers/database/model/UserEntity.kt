@@ -1,6 +1,7 @@
 package com.developer.randomusers.database.model
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.developer.randomusers.model.Dob
@@ -10,21 +11,40 @@ import com.developer.randomusers.model.Login
 import com.developer.randomusers.model.Name
 import com.developer.randomusers.model.Picture
 import com.developer.randomusers.model.Registered
+import com.developer.randomusers.model.User
 
 @Entity
 data class UserEntity(
-    @PrimaryKey(autoGenerate = true) val uid: Int = 0,
- //   @PrimaryKey val id         : IdEntity,
+    @PrimaryKey @Embedded val id: Id,
     @ColumnInfo(name="gender"     ) val gender     : String?     = null,
-//    @ColumnInfo(name="name"       ) val name       : Name?       = null,
-//    @ColumnInfo(name="location"   ) val location   : Location?   = null,
+    @Embedded val name       : Name?       = null,
+  //  @Embedded val location   : Location?   = null,
     @ColumnInfo(name="email"      ) val email      : String?     = null,
- //   @ColumnInfo(name="login"      ) val login      : Login?      = Login(),
- //   @ColumnInfo(name="dob"        ) val dob        : Dob?        = Dob(),
- //   @ColumnInfo(name="registered" ) val registered : Registered? = Registered(),
+    @Embedded val login      : Login?      = Login(),
+    @Embedded val dob        : Dob?        = Dob(),
+  //  @Embedded val registered : Registered? = Registered(),
     @ColumnInfo(name="phone"      ) val phone      : String?     = null,
     @ColumnInfo(name="cell"       ) val cell       : String?     = null,
-  //  @ColumnInfo(name="picture"    ) val picture    : Picture?    = Picture(),
+    @Embedded val picture    : Picture?    = Picture(),
     @ColumnInfo(name="nat"        ) val nat        : String?     = null
 
 )
+
+fun UserEntity.getFullName(): String {
+
+    return name?.let { titledName ->
+        titledName.last?.let { lastName ->
+            if (titledName.title==null && titledName.first==null) {
+                "Anonymous"
+            } else {
+                titledName.first?.let { firstName ->
+                    titledName.title?.let { title ->
+                        "$title $firstName $lastName"
+                    } ?: "$firstName $lastName"
+                } ?: titledName.title?.let { title ->
+                    "$title $lastName"
+                } ?: "Anonymous"
+            }
+        } ?: "Anonymous"
+    } ?: "Anonymous"
+}

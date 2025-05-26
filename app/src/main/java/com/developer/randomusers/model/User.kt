@@ -42,10 +42,15 @@ fun User.getFullName(): String {
 
 fun User.toUserEntity(): UserEntity {
   return UserEntity(
+      id = this.id,
       gender = this.gender,
+      name = this.name,
       email = this.email,
+      login = this.login,
+      dob = this.dob,
       phone = this.phone,
       cell = this.cell,
-      nat = this.nat,
+      picture = this.picture,
+      nat = this.nat
   )
 }

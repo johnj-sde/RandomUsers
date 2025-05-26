@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.developer.randomusers.R
+import com.developer.randomusers.database.model.getFullName
 import com.developer.randomusers.model.displayLocation
 import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.ui.viewmodel.UserViewModel
@@ -41,21 +42,21 @@ fun UserDetailScreen(
                 modifier = Modifier.fillMaxWidth().weight(0.5f).padding(10.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-/*                if (user.picture?.large != null) {
+                if (user.picture?.large != null) {
                     AsyncImage(
                         model = user.picture.large,
                         contentDescription = null,
                         modifier = Modifier.fillMaxWidth(),
                         contentScale = ContentScale.Fit
                     )
-                } else {*/
+                } else {
                     Image(
                         painter = painterResource(R.drawable.anonymous_avatar),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Fit
                     )
-      //          }
+                }
             }
             Spacer(modifier = Modifier.height(10.dp))
             Column(
@@ -63,7 +64,7 @@ fun UserDetailScreen(
                 modifier = Modifier.fillMaxWidth().weight(0.3f).padding(bottom=10.dp)
             ){
                 Text(
-                    text = "user.getFullName()",
+                    text = user.getFullName(),
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )

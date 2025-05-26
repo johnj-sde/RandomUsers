@@ -36,9 +36,13 @@ class UserRepository(
             emptyList()
         }
 
-        val latestUserEntities = latestUsersList.map { user ->
-            user.toUserEntity()
-        }
+        val latestUserEntities = latestUsersList
+            .filter { user ->
+                !user.id.name.isEmpty() && user.id.value!=null
+            }
+            .map { user ->
+                user.toUserEntity()
+            }
 
         val dao = database.userDao()
 
