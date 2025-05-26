@@ -13,8 +13,7 @@ class UserRepository(
     val restClient: RandomUserAPIClient,
     val database: AppDatabase
 ) {
-    private val _users = database.userDao().getAll()
-    val users = _users
+    val users = database.userDao().getAll()
 
     private val mutex = Mutex()
 

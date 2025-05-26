@@ -39,7 +39,7 @@ val appModules = module {
     single {
         UserRepository(restClient = get(), database = get())
     }
-    
+
     viewModel<UserViewModel> {
         UserViewModel(get())
     }
