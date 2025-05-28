@@ -17,6 +17,7 @@ retrofitVersion = "2.9.0"
 okhttpVersion = "5.0.0-alpha.3"
 navigationCompose = "2.7.7"
 coil = "3.0.4"
+roomVerison = "2.7.1"
 
 
 [libraries]
@@ -52,6 +53,9 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 
 coil-compose = {group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil"}
 coil-network = {group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil"}
+
+room-runtime = {group = "androidx.room", name = "room-runtime", version.ref="roomVerison"}
+room-ksp = {group = "androidx.room", name = "room-compiler", version.ref="roomVerison"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

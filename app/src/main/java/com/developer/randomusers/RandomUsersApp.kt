@@ -2,6 +2,7 @@ package com.developer.randomusers
 
 import android.app.Application
 import com.developer.randomusers.di.appModules
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 class RandomUsersApp: Application() {
@@ -9,6 +10,7 @@ class RandomUsersApp: Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin{
+            androidContext(this@RandomUsersApp)
             modules(appModules)
         }
     }

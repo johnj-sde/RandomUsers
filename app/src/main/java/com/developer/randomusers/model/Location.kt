@@ -2,7 +2,6 @@ package com.developer.randomusers.model
 
 import com.google.gson.annotations.SerializedName
 
-
 data class Location (
 
   @SerializedName("street"      ) val street      : Street?      = null,
