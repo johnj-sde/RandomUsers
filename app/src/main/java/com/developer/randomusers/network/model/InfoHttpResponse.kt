@@ -1,9 +1,9 @@
-package com.developer.randomusers.model
+package com.developer.randomusers.network.model
 
 import com.google.gson.annotations.SerializedName
 
 
-data class Info (
+data class InfoHttpResponse (
 
   @SerializedName("seed"    ) var seed    : String? = null,
   @SerializedName("results" ) var results : Int?    = null,

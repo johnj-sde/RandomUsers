@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.developer.randomusers.database.model.UserEntity
-import com.developer.randomusers.model.User
 import kotlinx.coroutines.flow.Flow
 
 @Dao

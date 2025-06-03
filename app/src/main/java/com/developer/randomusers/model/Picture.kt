@@ -2,11 +2,8 @@ package com.developer.randomusers.model
 
 import com.google.gson.annotations.SerializedName
 
-
-data class Picture (
-
-  @SerializedName("large"     ) var large     : String? = null,
-  @SerializedName("medium"    ) var medium    : String? = null,
-  @SerializedName("thumbnail" ) var thumbnail : String? = null
-
+data class Picture(
+    var large     : String? = null,
+    var medium    : String? = null,
+    var thumbnail : String? = null
 )

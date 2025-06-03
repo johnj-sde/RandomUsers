@@ -1,9 +1,9 @@
-package com.developer.randomusers.model
+package com.developer.randomusers.network.model
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Coordinates (
+data class CoordinatesHttpResponse (
   val latitude  : String? = null,
   val longitude : String? = null
 )

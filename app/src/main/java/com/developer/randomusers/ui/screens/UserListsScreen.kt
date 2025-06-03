@@ -30,8 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.developer.randomusers.R
-import com.developer.randomusers.database.model.UserEntity
-import com.developer.randomusers.database.model.getFullName
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.ui.viewmodel.UserViewModel
@@ -81,7 +79,7 @@ fun UserListScreen(
 
 @Composable
 fun UserListItem(
-    user: UserEntity,
+    user: User,
     modifier: Modifier = Modifier
 ) {
     Row(

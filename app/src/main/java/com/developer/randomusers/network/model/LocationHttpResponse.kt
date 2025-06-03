@@ -1,24 +1,24 @@
-package com.developer.randomusers.model
+package com.developer.randomusers.network.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Location (
+data class LocationHttpResponse (
 
-  @SerializedName("street"      ) val street      : Street?      = null,
+  @SerializedName("street"      ) val streetHttpResponse      : StreetHttpResponse?      = null,
   @SerializedName("city"        ) val city        : String?      = null,
   @SerializedName("state"       ) val state       : String?      = null,
   @SerializedName("country"     ) val country     : String?      = null,
   @SerializedName("postcode"    ) val postcode    : String?         = null,
-  @SerializedName("coordinates" ) var coordinates : Coordinates? = Coordinates(),
-  @SerializedName("timezone"    ) var timezone    : Timezone?    = Timezone()
+  @SerializedName("coordinates" ) var coordinatesHttpResponse : CoordinatesHttpResponse? = CoordinatesHttpResponse(),
+  @SerializedName("timezone"    ) var timezoneHttpResponse    : TimezoneHttpResponse?    = TimezoneHttpResponse()
 
 )
 
-fun Location.displayLocation(): String? {
+fun LocationHttpResponse.displayLocation(): String? {
   return this.country?.let { country ->
     this.state?.let {  state ->
       this.city?.let { city ->
-        this.street?.let { street ->
+        this.streetHttpResponse?.let { street ->
           if (street.name!= null && street.number!=null) {
             this.postcode?.let { postcode ->
               "${street.number} ${street.name}\n$city, $state $postcode\n$country"
