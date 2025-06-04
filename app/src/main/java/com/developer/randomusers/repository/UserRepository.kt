@@ -1,9 +1,15 @@
 package com.developer.randomusers.repository
 
 import com.developer.randomusers.database.AppDatabase
-import com.developer.randomusers.model.toUserEntity
+import com.developer.randomusers.model.Picture
+import com.developer.randomusers.model.User
+import com.developer.randomusers.network.model.toUserEntity
 import com.developer.randomusers.network.RandomUserAPIClient
+import com.developer.randomusers.network.model.toId
+import com.developer.randomusers.network.model.toName
+import com.developer.randomusers.network.model.toPicture
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -13,7 +19,19 @@ class UserRepository(
     val restClient: RandomUserAPIClient,
     val database: AppDatabase
 ) {
-    val users = database.userDao().getAll()
+    val users = database.userDao().getAll().map {
+        list ->
+        list.map { userEntity ->
+            User(
+                id = userEntity.id.toId(),
+                phone = userEntity.phone,
+                email = userEntity.email,
+                picture = userEntity.pictureHttpResponse?.toPicture(),
+                name = userEntity.nameHttpResponse?.toName(),
+                gender = userEntity.gender
+            )
+        }
+    }
 
     private val mutex = Mutex()
 
@@ -30,7 +48,7 @@ class UserRepository(
         }
 
         val latestUsersList = if (result.isSuccess) {
-            result.getOrNull()?.users ?: emptyList()
+            result.getOrNull()?.userHttpResponses ?: emptyList()
         } else {
             emptyList()
         }

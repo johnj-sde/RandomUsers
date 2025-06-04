@@ -1,9 +1,9 @@
-package com.developer.randomusers.model
+package com.developer.randomusers.network.model
 
 import com.google.gson.annotations.SerializedName
 
 
-data class Registered (
+data class RegisteredHttpResponse (
 
   @SerializedName("date" ) val date : String? = null,
   @SerializedName("age"  ) var age  : Int?    = null

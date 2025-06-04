@@ -1,7 +1,6 @@
 package com.developer.randomusers.network
 
-import com.developer.randomusers.model.ResultsAndInfo
-import retrofit2.Call
+import com.developer.randomusers.network.model.ResultsAndInfoHttpResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -12,7 +11,7 @@ interface RandomUserAPIClient {
 
 
     @GET("/api")
-    suspend fun fetchUsers(@Query("results") limit: Int): ResultsAndInfo
+    suspend fun fetchUsers(@Query("results") limit: Int): ResultsAndInfoHttpResponse
 
 
 }

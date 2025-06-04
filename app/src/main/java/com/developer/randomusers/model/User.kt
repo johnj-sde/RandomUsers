@@ -1,64 +1,29 @@
 package com.developer.randomusers.model
 
-import com.developer.randomusers.database.model.UserEntity
-import com.google.gson.annotations.SerializedName
-
-/*
-TODO: rename this to UserResponse
- and move the model package with all the network response data classes
-  into the network package.
-  Create a new model package with User data class which will hold the objects send to the view
-
-
-*
- */
-data class User (
-
-    @SerializedName("gender"     ) val gender     : String?     = null,
-    @SerializedName("name"       ) val name       : Name?       = null,
-    @SerializedName("location"   ) val location   : Location?   = null,
-    @SerializedName("email"      ) val email      : String?     = null,
-    @SerializedName("login"      ) val login      : Login?      = Login(),
-    @SerializedName("dob"        ) val dob        : DateOfBirth?        = DateOfBirth(),
-    @SerializedName("registered" ) val registered : Registered? = Registered(),
-    @SerializedName("phone"      ) val phone      : String?     = null,
-    @SerializedName("cell"       ) val cell       : String?     = null,
-    @SerializedName("id"         ) val id         : Id,
-    @SerializedName("picture"    ) val picture    : Picture?    = Picture(),
-    @SerializedName("nat"        ) val nat        : String?     = null
-
+data class User(
+    val id: Id,
+    val phone: String? = null,
+    val email: String? = null,
+    val picture: Picture? = null,
+    val name: Name? = null,
+    val gender: String? = null
 )
 
 fun User.getFullName(): String {
 
-  return name?.let { titledName ->
-    titledName.last?.let { lastName ->
-      if (titledName.title==null && titledName.first==null) {
-        "Anonymous"
-      } else {
-        titledName.first?.let { firstName ->
-          titledName.title?.let { title ->
-            "$title $firstName $lastName"
-          } ?: "$firstName $lastName"
-        } ?: titledName.title?.let { title ->
-          "$title $lastName"
+    return name?.let { titledName ->
+        titledName.last?.let { lastName ->
+            if (titledName.title==null && titledName.first==null) {
+                "Anonymous"
+            } else {
+                titledName.first?.let { firstName ->
+                    titledName.title?.let { title ->
+                        "$title $firstName $lastName"
+                    } ?: "$firstName $lastName"
+                } ?: titledName.title?.let { title ->
+                    "$title $lastName"
+                } ?: "Anonymous"
+            }
         } ?: "Anonymous"
-      }
     } ?: "Anonymous"
-  } ?: "Anonymous"
-}
-
-fun User.toUserEntity(): UserEntity {
-  return UserEntity(
-      id = this.id,
-      gender = this.gender,
-      name = this.name,
-      email = this.email,
-      login = this.login,
-      dateOfBirth = this.dob,
-      phone = this.phone,
-      cell = this.cell,
-      picture = this.picture,
-      nationality = this.nat
-  )
 }

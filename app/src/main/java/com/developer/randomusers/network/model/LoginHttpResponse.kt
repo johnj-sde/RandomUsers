@@ -1,9 +1,9 @@
-package com.developer.randomusers.model
+package com.developer.randomusers.network.model
 
 import com.google.gson.annotations.SerializedName
 
 
-data class Login (
+data class LoginHttpResponse (
 
   @SerializedName("uuid"     ) var uuid     : String? = null,
   @SerializedName("username" ) var username : String? = null,

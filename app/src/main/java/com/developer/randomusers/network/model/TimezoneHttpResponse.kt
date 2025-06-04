@@ -1,9 +1,9 @@
-package com.developer.randomusers.model
+package com.developer.randomusers.network.model
 
 import com.google.gson.annotations.SerializedName
 
 
-data class Timezone (
+data class TimezoneHttpResponse (
 
   @SerializedName("offset"      ) var offset      : String? = null,
   @SerializedName("description" ) var description : String? = null

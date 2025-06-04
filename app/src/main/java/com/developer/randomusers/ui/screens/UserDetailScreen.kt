@@ -21,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.developer.randomusers.R
-import com.developer.randomusers.database.model.getFullName
-import com.developer.randomusers.model.displayLocation
 import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 
