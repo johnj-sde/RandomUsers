@@ -3,15 +3,7 @@ package com.developer.randomusers.network.model
 import com.developer.randomusers.database.model.UserEntity
 import com.google.gson.annotations.SerializedName
 
-/*
-TODO: rename this to UserResponse
- and move the model package with all the network response data classes
-  into the network package.
-  Create a new model package with User data class which will hold the objects send to the view
 
-
-*
- */
 data class UserHttpResponse (
 
     @SerializedName("gender"     ) val gender     : String?     = null,

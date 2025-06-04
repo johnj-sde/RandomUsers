@@ -1,8 +1,5 @@
 package com.developer.randomusers.model
 
-import androidx.room.ColumnInfo
-import com.developer.randomusers.network.model.UserHttpResponse
-
 data class User(
     val id: Id,
     val phone: String? = null,
