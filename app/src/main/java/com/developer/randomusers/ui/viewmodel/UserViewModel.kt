@@ -3,9 +3,11 @@ package com.developer.randomusers.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.developer.randomusers.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UserViewModel(
     val userRepository: UserRepository
@@ -19,7 +21,9 @@ class UserViewModel(
 
     fun fetchUsers() {
         viewModelScope.launch {
-            userRepository.loadUsers()
+            withContext(Dispatchers.IO) {
+                userRepository.loadUsers()
+            }
         }
 
     }
