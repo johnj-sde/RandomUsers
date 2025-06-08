@@ -33,19 +33,12 @@ class UserRepository(
         }
     }
 
-    private val mutex = Mutex()
-
-    suspend fun loadUsers() = mutex.withLock {
-        withContext(Dispatchers.IO){
-            fetchUsers()
-        }
-
+    suspend fun loadUsers() {
+        fetchUsers()
     }
 
     private suspend fun fetchUsers() {
-        val result = withContext(Dispatchers.IO) {
-            runCatching { restClient.fetchUsers(40) }
-        }
+        val result = runCatching { restClient.fetchUsers(40) }
 
         val latestUsersList = if (result.isSuccess) {
             result.getOrNull()?.userHttpResponses ?: emptyList()
@@ -63,11 +56,6 @@ class UserRepository(
 
         val dao = database.userDao()
 
-        withContext(Dispatchers.IO) {
-            latestUserEntities.forEach {
-                println(it)
-            }
-            dao.insertAll(latestUserEntities)
-        }
+        dao.insertAll(latestUserEntities)
     }
 }
