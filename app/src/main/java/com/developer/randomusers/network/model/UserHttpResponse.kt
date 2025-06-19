@@ -23,7 +23,7 @@ data class UserHttpResponse (
 
 fun UserHttpResponse.toUserEntity(): UserEntity {
   return UserEntity(
-      id = this.id,
+      id = this.id.toIdEntity(),
       gender = this.gender,
       nameHttpResponse = this.nameHttpResponse,
       email = this.email,

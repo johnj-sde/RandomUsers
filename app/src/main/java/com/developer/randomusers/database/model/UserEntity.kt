@@ -10,9 +10,11 @@ import com.developer.randomusers.network.model.LoginHttpResponse
 import com.developer.randomusers.network.model.NameHttpResponse
 import com.developer.randomusers.network.model.PictureHttpResponse
 
-@Entity
+@Entity(
+    primaryKeys = ["identity_name", "identity_value"]
+)
 data class UserEntity(
-    @PrimaryKey @Embedded val id: IdHttpResponse,
+    @Embedded val id: IdEntity,
     @ColumnInfo(name = "gender") val gender: String? = null,
     @Embedded val nameHttpResponse: NameHttpResponse? = null,
     //  @Embedded val location   : Location?   = null,
