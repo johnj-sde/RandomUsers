@@ -1,18 +1,13 @@
 package com.developer.randomusers.repository
 
 import com.developer.randomusers.database.AppDatabase
-import com.developer.randomusers.model.Picture
+import com.developer.randomusers.database.model.toId
 import com.developer.randomusers.model.User
-import com.developer.randomusers.network.model.toUserEntity
 import com.developer.randomusers.network.RandomUserAPIClient
-import com.developer.randomusers.network.model.toId
 import com.developer.randomusers.network.model.toName
 import com.developer.randomusers.network.model.toPicture
-import kotlinx.coroutines.Dispatchers
+import com.developer.randomusers.network.model.toUserEntity
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 
 class UserRepository(
