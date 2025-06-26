@@ -1,8 +1,16 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.developer.randomusers.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -10,10 +18,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissState
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeToDismiss
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +50,10 @@ import com.developer.randomusers.R
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.ui.viewmodel.UserViewModel
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 
 @Composable
 fun UserListScreen(
@@ -64,14 +85,45 @@ fun UserListScreen(
             items = users.value,
             key = {_, user ->"${user.id.name}_${user.id.value}"}
         ) { index, user ->
-            UserListItem(
-                user = user,
-                modifier = Modifier.clickable(onClick = {navigateTo(index)})
-            )
-            if (index<users.value.size-1) {
+
+            SwipeToDeleteContainer(
+                item = user,
+                onDelete = {}
+            ) { user ->
+                UserItemWithDivider(
+                    user = user,
+                    modifier = Modifier.clickable(onClick = {navigateTo(index)}),
+                    addDivider = index<users.value.size-1
+                )
+                /*UserListItem(
+                    user = user,
+                    modifier = Modifier.clickable(onClick = {navigateTo(index)})
+                )*/
+            }
+           /* if (index<users.value.size-1) {
                 Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
                 HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
-            }
+            }*/
+        }
+    }
+}
+
+@Composable
+fun UserItemWithDivider(
+    user: User,
+    modifier: Modifier,
+    addDivider: Boolean
+) {
+    Column(
+        modifier = Modifier
+    ) {
+        UserListItem(
+            user = user,
+            modifier = modifier
+        )
+        if (addDivider) {
+            Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
+            HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
         }
     }
 }
@@ -80,7 +132,7 @@ fun UserListScreen(
 @Composable
 fun UserListItem(
     user: User,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.height(IntrinsicSize.Max).fillMaxWidth()
@@ -129,6 +181,75 @@ fun UserListItem(
     }
 }
 
+
+@Composable
+fun <T> SwipeToDeleteContainer(
+    item: T,
+    onDelete: (T) -> Unit,
+    animationDuration: Int = 500,
+    content: @Composable (T) -> Unit
+) {
+    var isRemoved by remember {
+        mutableStateOf(false)
+    }
+    val state = rememberDismissState(
+        confirmStateChange = { value ->
+            if (value == DismissValue.DismissedToStart) {
+                isRemoved = true
+                true
+            } else {
+                false
+            }
+        }
+    )
+
+    LaunchedEffect(key1 = isRemoved) {
+        if(isRemoved) {
+            delay(animationDuration.toLong())
+            onDelete(item)
+        }
+    }
+
+    AnimatedVisibility(
+        visible = !isRemoved,
+        exit = shrinkVertically(
+            animationSpec = tween(durationMillis = animationDuration),
+            shrinkTowards = Alignment.Top
+        ) + fadeOut()
+    ) {
+        SwipeToDismiss(
+            state = state,
+            background = {
+                DeleteBackground(swipeDismissState = state)
+            },
+            dismissContent = { content(item) },
+            directions = setOf(DismissDirection.EndToStart)
+        )
+    }
+}
+
+@Composable
+fun DeleteBackground(
+    swipeDismissState: DismissState
+) {
+    val color = if (swipeDismissState.dismissDirection == DismissDirection.EndToStart) {
+        Color.Red
+    } else Color.Transparent
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color)
+            .padding(16.dp),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Icon(
+            imageVector = Icons.Default.Delete,
+            contentDescription = null,
+            tint = Color.White
+        )
+    }
+}
 
 private fun LazyListState.isCloseToEnd(offset: Int = 3): Boolean {
     val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()

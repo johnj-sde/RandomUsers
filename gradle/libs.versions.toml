@@ -19,6 +19,8 @@ navigationCompose = "2.7.7"
 coil = "3.0.4"
 roomVerison = "2.7.1"
 
+material3Version = "1.1.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,8 +36,6 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-
 
 koin = {group = "io.insert-koin", name="koin-android", version.ref = "koinVersion"}
 koin-compose = {group = "io.insert-koin", name="koin-androidx-compose", version.ref = "koinVersion"}
@@ -56,6 +56,11 @@ coil-network = {group = "io.coil-kt.coil3", name = "coil-network-okhttp", versio
 
 room-runtime = {group = "androidx.room", name = "room-runtime", version.ref="roomVerison"}
 room-ksp = {group = "androidx.room", name = "room-compiler", version.ref="roomVerison"}
+
+#androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+material3 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
+material = { module = "androidx.compose.material:material", version.ref = "material3Version" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
