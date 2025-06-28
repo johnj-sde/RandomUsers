@@ -88,22 +88,17 @@ fun UserListScreen(
 
             SwipeToDeleteContainer(
                 item = user,
-                onDelete = {}
+                onDelete = { user ->
+                    viewModel.deleteUser(user)
+
+                }
             ) { user ->
                 UserItemWithDivider(
                     user = user,
                     modifier = Modifier.clickable(onClick = {navigateTo(index)}),
                     addDivider = index<users.value.size-1
                 )
-                /*UserListItem(
-                    user = user,
-                    modifier = Modifier.clickable(onClick = {navigateTo(index)})
-                )*/
             }
-           /* if (index<users.value.size-1) {
-                Spacer(modifier = Modifier.fillMaxWidth().height(5.dp))
-                HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 1.dp, color = Color.Black)
-            }*/
         }
     }
 }

@@ -1,9 +1,11 @@
 package com.developer.randomusers.database.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.IGNORE
 import androidx.room.Query
+import com.developer.randomusers.database.model.IdEntity
 import com.developer.randomusers.database.model.UserEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -15,5 +17,8 @@ interface UserDao {
 
     @Insert(onConflict = IGNORE)
     fun insertAll(users: List<UserEntity>)
+
+    @Query("DELETE FROM userentity WHERE identity_name = :name AND identity_value = :value")
+    fun deleteUserById(name: String, value: String)
 
 }

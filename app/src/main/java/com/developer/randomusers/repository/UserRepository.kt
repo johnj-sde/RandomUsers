@@ -53,4 +53,9 @@ class UserRepository(
 
         dao.insertAll(latestUserEntities)
     }
+
+    fun deleteUser(user: User) {
+        val dao = database.userDao()
+        dao.deleteUserById(user.id.name, user.id.value)
+    }
 }
