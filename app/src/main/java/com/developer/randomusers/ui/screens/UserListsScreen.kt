@@ -110,13 +110,11 @@ fun UserListRow(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Max)
-            .background(Color.Red)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(0.2f)
-                .background(Color.Green)
                 .align(Alignment.CenterEnd)
                 .onSizeChanged{
                     iconContainerSize = it
@@ -163,8 +161,8 @@ fun UserListItem(
                     }
                 }
             )
-            .background(Color.Blue)
             .clickable(onClick = {onClickListItem()})
+            .background(Color.White)
             .height(IntrinsicSize.Max),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
