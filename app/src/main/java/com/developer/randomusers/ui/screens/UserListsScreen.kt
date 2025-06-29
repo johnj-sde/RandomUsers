@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -102,13 +105,13 @@ fun UserListRow(
             .height(IntrinsicSize.Max)
             .background(Color.Red)
     ) {
-        Row(
-            modifier = Modifier.fillMaxHeight().background(Color.Green).align(Alignment.CenterEnd),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier.fillMaxHeight().fillMaxWidth(0.2f).padding(5.dp).background(Color.Green).align(Alignment.CenterEnd),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,
+                modifier = Modifier.fillMaxHeight(),
                 contentDescription = null,
                 tint = Color.White
             )
