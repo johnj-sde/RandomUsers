@@ -194,9 +194,6 @@ fun UserListItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-
-          //  DraggableText()
-
             Text(text = user.getFullName())
 
             if (user.email != null) {
