@@ -117,7 +117,6 @@ fun UserListRow(
             modifier = Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(0.2f)
-                .padding(5.dp)
                 .background(Color.Green)
                 .align(Alignment.CenterEnd)
                 .onSizeChanged{
@@ -127,9 +126,9 @@ fun UserListRow(
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                modifier = Modifier.fillMaxHeight(),
+                modifier = Modifier.fillMaxSize(0.5f),
                 contentDescription = null,
-                tint = Color.White
+                tint = Color.Black
             )
         }
         UserListItem(
