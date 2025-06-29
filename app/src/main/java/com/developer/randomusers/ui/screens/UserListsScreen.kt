@@ -6,11 +6,14 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
@@ -92,30 +95,17 @@ fun UserListRow(
     user: User
 ) {
 
-    val configuration = LocalConfiguration.current
-    val screenWidthDp = configuration.screenWidthDp.dp
-    val rowWidth = screenWidthDp * 1.5f // Calculate 1.5x screen width
-
-
     var offsetX by remember { mutableStateOf(0f) }
-    Row(
+    Box(
         modifier = Modifier
-            .offset { IntOffset(offsetX.roundToInt(), 0) }
-            .draggable(
-                orientation = Orientation.Horizontal,
-                state = rememberDraggableState { delta ->
-                    offsetX += delta
-                    println("offset $offsetX")
-                }
-            )
+            .fillMaxWidth()
+            .height(IntrinsicSize.Max)
             .background(Color.Red)
-            .width(rowWidth)
-
     ) {
-        UserListItem(user, Modifier.weight(0.666f))
         Row(
-            modifier = Modifier.background(Color.Green).weight(0.333f),
-            horizontalArrangement = Arrangement.Center
+            modifier = Modifier.fillMaxHeight().background(Color.Green).align(Alignment.CenterEnd),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,
@@ -123,6 +113,18 @@ fun UserListRow(
                 tint = Color.White
             )
         }
+        UserListItem(
+            user,
+            Modifier
+                .offset { IntOffset(offsetX.roundToInt(), 0) }
+                .draggable(
+                    orientation = Orientation.Horizontal,
+                    state = rememberDraggableState { delta ->
+                        offsetX += delta
+                        println("offset $offsetX")
+                    }
+                )
+        )
     }
 }
 
@@ -132,7 +134,7 @@ fun UserListItem(
     modifier: Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .background(Color.Blue)
             .height(IntrinsicSize.Max),
         horizontalArrangement = Arrangement.SpaceBetween
