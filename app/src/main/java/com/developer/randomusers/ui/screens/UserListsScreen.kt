@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,10 +41,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -98,7 +101,12 @@ fun UserListRow(
     user: User
 ) {
 
-    var offsetX by remember { mutableStateOf(0f) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var isExpanded by remember { mutableStateOf(false) }
+
+    var containerSize by remember { mutableStateOf(IntSize.Zero) }
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -106,7 +114,15 @@ fun UserListRow(
             .background(Color.Red)
     ) {
         Box(
-            modifier = Modifier.fillMaxHeight().fillMaxWidth(0.2f).padding(5.dp).background(Color.Green).align(Alignment.CenterEnd),
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(0.2f)
+                .padding(5.dp)
+                .background(Color.Green)
+                .align(Alignment.CenterEnd)
+                .onSizeChanged{
+                    containerSize = it
+                },
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -123,8 +139,17 @@ fun UserListRow(
                 .draggable(
                     orientation = Orientation.Horizontal,
                     state = rememberDraggableState { delta ->
-                        offsetX += delta
+                        println("delta $delta")
+
+                        if (isExpanded && delta > 0) {
+                            offsetX = 0f
+                            isExpanded = false
+                        } else if (!isExpanded && delta < 0) {
+                            offsetX -= containerSize.width.toFloat()
+                            isExpanded = true
+                        }
                         println("offset $offsetX")
+                       // offsetX += delta
                     }
                 )
         )
