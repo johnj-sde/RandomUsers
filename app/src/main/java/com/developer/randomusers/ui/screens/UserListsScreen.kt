@@ -2,6 +2,7 @@ package com.developer.randomusers.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -11,15 +12,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -42,7 +39,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
@@ -86,7 +82,13 @@ fun UserListScreen(
             key = {_, user ->"${user.id.name}_${user.id.value}"}
         ) { index, user ->
             UserListRow(
-                user = user
+                user = user,
+                onClickDeleteIcon = {
+
+                },
+                onClickListItem = {
+                    navigateTo(index)
+                }
             )
             if (index<users.value.size-1) {
                 Spacer(modifier = Modifier.height(5.dp))
@@ -98,14 +100,11 @@ fun UserListScreen(
 
 @Composable
 fun UserListRow(
-    user: User
+    user: User,
+    onClickDeleteIcon: () -> Unit,
+    onClickListItem: () -> Unit,
 ) {
-
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var isExpanded by remember { mutableStateOf(false) }
-
-    var containerSize by remember { mutableStateOf(IntSize.Zero) }
-
+    var iconContainerSize by remember { mutableStateOf(IntSize.Zero) }
 
     Box(
         modifier = Modifier
@@ -120,37 +119,21 @@ fun UserListRow(
                 .background(Color.Green)
                 .align(Alignment.CenterEnd)
                 .onSizeChanged{
-                    containerSize = it
+                    iconContainerSize = it
                 },
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                modifier = Modifier.fillMaxSize(0.5f),
+                modifier = Modifier.fillMaxSize(0.5f).clickable(onClick = {onClickDeleteIcon()}),
                 contentDescription = null,
-                tint = Color.Black
+                tint = Color.Red
             )
         }
         UserListItem(
             user,
-            Modifier
-                .offset { IntOffset(offsetX.roundToInt(), 0) }
-                .draggable(
-                    orientation = Orientation.Horizontal,
-                    state = rememberDraggableState { delta ->
-                        println("delta $delta")
-
-                        if (isExpanded && delta > 0) {
-                            offsetX = 0f
-                            isExpanded = false
-                        } else if (!isExpanded && delta < 0) {
-                            offsetX -= containerSize.width.toFloat()
-                            isExpanded = true
-                        }
-                        println("offset $offsetX")
-                       // offsetX += delta
-                    }
-                )
+            iconContainerSize,
+            onClickListItem
         )
     }
 }
@@ -158,11 +141,30 @@ fun UserListRow(
 @Composable
 fun UserListItem(
     user: User,
-    modifier: Modifier
+    deleteIconContainerSize: IntSize,
+    onClickListItem: () -> Unit
 ) {
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var isExpanded by remember { mutableStateOf(false) }
+
     Row(
-        modifier = modifier
+        modifier = Modifier
+            .offset { IntOffset(offsetX.roundToInt(), 0) }
+            .draggable(
+                orientation = Orientation.Horizontal,
+                state = rememberDraggableState { delta ->
+
+                    if (isExpanded && delta > 0) {
+                        offsetX = 0f
+                        isExpanded = false
+                    } else if (!isExpanded && delta < 0) {
+                        offsetX -= deleteIconContainerSize.width.toFloat()
+                        isExpanded = true
+                    }
+                }
+            )
             .background(Color.Blue)
+            .clickable(onClick = {onClickListItem()})
             .height(IntrinsicSize.Max),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
