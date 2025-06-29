@@ -84,7 +84,7 @@ fun UserListScreen(
             UserListRow(
                 user = user,
                 onClickDeleteIcon = {
-
+                    viewModel.deleteUser(user)
                 },
                 onClickListItem = {
                     navigateTo(index)

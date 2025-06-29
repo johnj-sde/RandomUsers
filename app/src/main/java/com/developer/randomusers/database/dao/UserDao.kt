@@ -16,4 +16,7 @@ interface UserDao {
     @Insert(onConflict = IGNORE)
     fun insertAll(users: List<UserEntity>)
 
+    @Query("DELETE FROM userentity WHERE identity_name =:name AND identity_value =:value")
+    fun deleteUserById(name: String, value: String)
+
 }
