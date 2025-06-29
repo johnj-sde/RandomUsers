@@ -40,11 +40,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.developer.randomusers.R
@@ -217,23 +215,4 @@ private fun LazyListState.isCloseToEnd(offset: Int = 3): Boolean {
     val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
     return lastVisibleItem?.index != 0 &&
             (lastVisibleItem?.index ?: -1) >= layoutInfo.totalItemsCount - offset
-}
-
-@Composable
-private fun DraggableText() {
-    var offsetX by remember { mutableStateOf(0f) }
-    Text(
-        modifier = Modifier
-            .offset { IntOffset(offsetX.roundToInt(), 0) }
-            .draggable(
-                orientation = Orientation.Horizontal,
-                state = rememberDraggableState { delta ->
-                    offsetX += delta
-                    println("offset $offsetX")
-                }
-            ),
-        text = "Drag me!",
-        fontSize = 25.sp,
-        fontWeight = FontWeight.Bold
-    )
 }
