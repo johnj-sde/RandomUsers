@@ -70,13 +70,13 @@ fun UserListScreen(
         }
     }
 
-    val users = viewModel.users.collectAsStateWithLifecycle()
+    val users by viewModel.users.collectAsStateWithLifecycle()
     LazyColumn(
         state = lazyListState,
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         itemsIndexed(
-            items = users.value,
+            items = users,
             key = {_, user ->"${user.id.name}_${user.id.value}"}
         ) { index, user ->
             UserListRow(
@@ -88,7 +88,7 @@ fun UserListScreen(
                     navigateTo(index)
                 }
             )
-            if (index<users.value.size-1) {
+            if (index < users.lastIndex) {
                 Spacer(modifier = Modifier.height(5.dp))
                 HorizontalDivider(modifier = Modifier, thickness = 1.dp, color = Color.Black)
             }
