@@ -2,6 +2,7 @@ package com.developer.randomusers.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.developer.randomusers.model.User
 import com.developer.randomusers.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,7 +26,14 @@ class UserViewModel(
                 userRepository.loadUsers()
             }
         }
+    }
 
+    fun deleteUser(user: User) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                userRepository.deleteUser(user)
+            }
+        }
     }
 
 }
