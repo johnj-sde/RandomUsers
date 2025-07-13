@@ -1,5 +1,7 @@
 package com.developer.randomusers.ui.screens
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -141,21 +143,27 @@ fun UserListItem(
     onClickListItem: () -> Unit
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
-    var isExpanded by remember { mutableStateOf(false) }
+
+    val animatedOffset by animateFloatAsState(
+        targetValue = offsetX,
+        animationSpec = tween(
+            durationMillis = 200
+        ),
+        label = "offset animation"
+    )
+
+    val offsetLimit = -1*deleteIconContainerSize.width.toFloat()
 
     Row(
         modifier = Modifier
-            .offset { IntOffset(offsetX.roundToInt(), 0) }
+            .offset { IntOffset(animatedOffset.roundToInt(), 0) }
             .draggable(
                 orientation = Orientation.Horizontal,
                 state = rememberDraggableState { delta ->
-
-                    if (isExpanded && delta > 0) {
+                    if (offsetX == 0f && delta < 0) {
+                        offsetX = offsetLimit
+                    } else if (offsetX == offsetLimit && delta > 0) {
                         offsetX = 0f
-                        isExpanded = false
-                    } else if (!isExpanded && delta < 0) {
-                        offsetX -= deleteIconContainerSize.width.toFloat()
-                        isExpanded = true
                     }
                 }
             )
