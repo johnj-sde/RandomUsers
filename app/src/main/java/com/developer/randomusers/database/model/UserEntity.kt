@@ -25,6 +25,6 @@ data class UserEntity(
     @ColumnInfo(name = "phone") val phone: String? = null,
     @ColumnInfo(name = "cell") val cell: String? = null,
     @Embedded val pictureHttpResponse: PictureHttpResponse? = PictureHttpResponse(),
-    @ColumnInfo(name = "nationality") val nationality: String? = null
-
+    @ColumnInfo(name = "nationality") val nationality: String? = null,
+    val wasDeleted: Boolean = false
 )

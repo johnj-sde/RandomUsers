@@ -16,7 +16,11 @@ class UserRepository(
 ) {
     val users = database.userDao().getAll().map {
         list ->
-        list.map { userEntity ->
+        list
+            .filter { userEntity ->
+                !userEntity.wasDeleted
+            }
+            .map { userEntity ->
             User(
                 id = userEntity.id.toId(),
                 phone = userEntity.phone,
@@ -56,6 +60,6 @@ class UserRepository(
 
     fun deleteUser(user: User) {
         val dao = database.userDao()
-        dao.deleteUserById(user.id.name, user.id.value)
+        dao.markUserWithIdAsDeleted(user.id.name, user.id.value)
     }
 }
