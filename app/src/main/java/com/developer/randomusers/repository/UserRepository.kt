@@ -1,6 +1,8 @@
 package com.developer.randomusers.repository
 
 import com.developer.randomusers.database.AppDatabase
+import com.developer.randomusers.database.model.DeletedIdEntity
+import com.developer.randomusers.database.model.IdEntity
 import com.developer.randomusers.database.model.toId
 import com.developer.randomusers.model.User
 import com.developer.randomusers.network.RandomUserAPIClient
@@ -35,6 +37,8 @@ class UserRepository(
     private suspend fun fetchUsers() {
         val result = runCatching { restClient.fetchUsers(40) }
 
+        val dao = database.userDao()
+
         val latestUsersList = if (result.isSuccess) {
             result.getOrNull()?.userHttpResponses ?: emptyList()
         } else {
@@ -43,19 +47,20 @@ class UserRepository(
 
         val latestUserEntities = latestUsersList
             .filter { user ->
-                !user.id.name.isEmpty() && user.id.value!=null
+                !user.id.name.isEmpty()
+                        && user.id.value!=null
+                        && dao.findDeletedId(user.id.name, user.id.value).isEmpty()
             }
             .map { user ->
                 user.toUserEntity()
             }
-
-        val dao = database.userDao()
-
+        
         dao.insertAll(latestUserEntities)
     }
 
     fun deleteUser(user: User) {
         val dao = database.userDao()
         dao.deleteUserById(user.id.name, user.id.value)
+        dao.insertDeletedId(DeletedIdEntity(id = IdEntity(name = user.id.name, value = user.id.value)))
     }
 }
