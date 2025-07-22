@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -50,6 +52,7 @@ import coil3.compose.AsyncImage
 import com.developer.randomusers.R
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.getFullName
+import com.developer.randomusers.model.matchesName
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 import kotlin.math.roundToInt
 
@@ -57,6 +60,40 @@ import kotlin.math.roundToInt
 fun UserListScreen(
     viewModel: UserViewModel,
     navigateTo: (Int) -> Unit
+) {
+
+    var searchText by remember {
+        mutableStateOf("")
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+
+        TextField(
+            modifier = Modifier.fillMaxWidth().padding(start = 5.dp, end = 5.dp, bottom = 5.dp),
+            value = searchText,
+            onValueChange = {
+                input ->
+                searchText = input
+            }
+        )
+
+        UserListComposable(
+            viewModel = viewModel,
+            navigateTo = navigateTo,
+            searchText = searchText
+        )
+
+    }
+
+}
+
+@Composable
+fun UserListComposable(
+    viewModel: UserViewModel,
+    navigateTo: (Int) -> Unit,
+    searchText: String
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -72,13 +109,17 @@ fun UserListScreen(
         }
     }
 
-    val users by viewModel.users.collectAsStateWithLifecycle()
+    val users by viewModel.users
+        .collectAsStateWithLifecycle()
     LazyColumn(
         state = lazyListState,
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         itemsIndexed(
-            items = users,
+            items = users
+                .filter { user ->
+                    user.matchesName(searchText)
+                },
             key = {_, user ->"${user.id.name}_${user.id.value}"}
         ) { index, user ->
             UserListRow(
