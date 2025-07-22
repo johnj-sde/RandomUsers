@@ -60,7 +60,6 @@ class UserRepository(
 
     fun deleteUser(user: User) {
         val dao = database.userDao()
-        dao.deleteUserById(user.id.name, user.id.value)
-        dao.insertDeletedId(DeletedIdEntity(id = IdEntity(name = user.id.name, value = user.id.value)))
+        dao.deleteAndMark(user)
     }
 }
