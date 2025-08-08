@@ -29,7 +29,7 @@ fun User.getFullName(): String {
 }
 
 fun User.matchesName(searchText: String): Boolean{
-    return this.name?.first?.lowercase()?.contains(searchText.lowercase()) == true
+    return this.name?.first?.contains(searchText, ignoreCase = true) == true
             ||
-            this.name?.last?.lowercase()?.contains(searchText.lowercase()) == true
+            this.name?.last?.contains(searchText, ignoreCase = true) == true
 }

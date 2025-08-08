@@ -62,9 +62,10 @@ fun UserListScreen(
     navigateTo: (Int) -> Unit
 ) {
 
-    var searchText by remember {
-        mutableStateOf("")
-    }
+    val users by viewModel.users
+        .collectAsStateWithLifecycle()
+
+    val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -75,13 +76,15 @@ fun UserListScreen(
             value = searchText,
             onValueChange = {
                 input ->
-                searchText = input
+                viewModel.updateSearchText(userInput = input)
             }
         )
 
         UserListComposable(
-            viewModel = viewModel,
+            users = users,
             navigateTo = navigateTo,
+            fetchUsers = viewModel::fetchUsers,
+            deleteUser = viewModel::deleteUser,
             searchText = searchText
         )
 
@@ -91,8 +94,10 @@ fun UserListScreen(
 
 @Composable
 fun UserListComposable(
-    viewModel: UserViewModel,
+    users: List<User>,
     navigateTo: (Int) -> Unit,
+    fetchUsers: () -> Unit,
+    deleteUser: (User) -> Unit,
     searchText: String
 ) {
     val lazyListState = rememberLazyListState()
@@ -105,12 +110,10 @@ fun UserListComposable(
 
     LaunchedEffect(isReadyToFetch) {
         if (isReadyToFetch) {
-            viewModel.fetchUsers()
+            fetchUsers()
         }
     }
 
-    val users by viewModel.users
-        .collectAsStateWithLifecycle()
     LazyColumn(
         state = lazyListState,
         verticalArrangement = Arrangement.spacedBy(5.dp)
@@ -125,7 +128,7 @@ fun UserListComposable(
             UserListRow(
                 user = user,
                 onClickDeleteIcon = {
-                    viewModel.deleteUser(user)
+                    deleteUser(user)
                 },
                 onClickListItem = {
                     navigateTo(index)
