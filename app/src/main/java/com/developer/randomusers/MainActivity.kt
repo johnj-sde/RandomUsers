@@ -16,9 +16,6 @@ import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
 
-    private val userViewModel by inject<UserViewModel>()
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     Column(
                         modifier = Modifier.padding(padding)
                     ) {
-                        NavHostContainer(userViewModel)
+                        NavHostContainer()
                     }
                 }
 
