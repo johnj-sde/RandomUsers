@@ -5,14 +5,22 @@ import androidx.lifecycle.viewModelScope
 import com.developer.randomusers.model.User
 import com.developer.randomusers.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class UserViewModel(
     val userRepository: UserRepository
 ): ViewModel() {
+
+    val userInputTextForSearch: StateFlow<String>
+        get() = _userInputTextForSearch.asStateFlow()
+    private val _userInputTextForSearch = MutableStateFlow<String>("")
 
     val users = userRepository.users.stateIn(
         viewModelScope,
@@ -34,6 +42,11 @@ class UserViewModel(
                 userRepository.deleteUser(user)
             }
         }
+    }
+
+    fun updateSearchText(userInput: String){
+        _userInputTextForSearch.update { userInput }
+
     }
 
 }

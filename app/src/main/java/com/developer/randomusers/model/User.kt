@@ -27,3 +27,9 @@ fun User.getFullName(): String {
         } ?: "Anonymous"
     } ?: "Anonymous"
 }
+
+fun User.matchesName(searchText: String): Boolean{
+    return this.name?.first?.contains(searchText, ignoreCase = true) == true
+            ||
+            this.name?.last?.contains(searchText, ignoreCase = true) == true
+}

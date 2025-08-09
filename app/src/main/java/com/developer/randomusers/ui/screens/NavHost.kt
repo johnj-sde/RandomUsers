@@ -7,10 +7,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.developer.randomusers.ui.viewmodel.UserViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun NavHostContainer(
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel = koinViewModel()
 ) {
     val navController = rememberNavController()
     NavHost(navController, startDestination= Routes.UserListScreen) {
