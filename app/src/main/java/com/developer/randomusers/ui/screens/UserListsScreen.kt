@@ -67,8 +67,7 @@ fun UserListScreen(
 
     val debouncedSearchText by viewModel.debouncedUserInputTextForSearch.collectAsStateWithLifecycle()
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
-
-
+    
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
