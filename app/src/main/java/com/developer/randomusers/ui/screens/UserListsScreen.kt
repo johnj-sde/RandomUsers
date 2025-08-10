@@ -65,7 +65,9 @@ fun UserListScreen(
     val users by viewModel.users
         .collectAsStateWithLifecycle()
 
+    val debouncedSearchText by viewModel.debouncedUserInputTextForSearch.collectAsStateWithLifecycle()
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
+
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -85,7 +87,7 @@ fun UserListScreen(
             navigateTo = navigateTo,
             fetchUsers = viewModel::fetchUsers,
             deleteUser = viewModel::deleteUser,
-            searchText = searchText
+            searchText = debouncedSearchText
         )
 
     }
