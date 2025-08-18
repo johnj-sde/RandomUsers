@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.developer.randomusers.model.User
 import com.developer.randomusers.repository.UserRepository
+import com.developer.randomusers.repository.UserRepositoryInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class UserViewModel(
-    val userRepository: UserRepository
+    val userRepository: UserRepositoryInterface
 ): ViewModel() {
 
     val userInputTextForSearch: StateFlow<String>
@@ -33,7 +34,7 @@ class UserViewModel(
             initialValue = ""
         )
 
-    val users = userRepository.users.stateIn(
+    val users = userRepository.getUsers().stateIn(
         viewModelScope,
         SharingStarted.Lazily,
         emptyList()

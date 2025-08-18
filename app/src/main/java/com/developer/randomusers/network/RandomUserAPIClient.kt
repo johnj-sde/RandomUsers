@@ -7,11 +7,11 @@ import retrofit2.http.Query
 const val API_URL = "https://randomuser.me/api/"
 
 
-interface RandomUserAPIClient {
+interface RandomUserAPIClient: RandomUserAPIClientInterface {
 
 
     @GET("/api")
-    suspend fun fetchUsers(@Query("results") limit: Int): ResultsAndInfoHttpResponse
+    override suspend fun fetchUsers(@Query("results") limit: Int): ResultsAndInfoHttpResponse
 
 
 }

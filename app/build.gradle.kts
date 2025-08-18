@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.testImplementation
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -43,6 +45,7 @@ android {
     buildFeatures {
         compose = true
     }
+
 }
 
 dependencies {
@@ -79,4 +82,7 @@ dependencies {
 
     implementation(libs.room.runtime)
     ksp(libs.room.ksp)
+
+    testImplementation(libs.kotlinx.coroutines.test)
+
 }

@@ -4,11 +4,14 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.developer.randomusers.model.User
 import com.developer.randomusers.network.model.DateOfBirthHttpResponse
 import com.developer.randomusers.network.model.IdHttpResponse
 import com.developer.randomusers.network.model.LoginHttpResponse
 import com.developer.randomusers.network.model.NameHttpResponse
 import com.developer.randomusers.network.model.PictureHttpResponse
+import com.developer.randomusers.network.model.toName
+import com.developer.randomusers.network.model.toPicture
 
 @Entity(
     primaryKeys = ["identity_name", "identity_value"]
@@ -28,3 +31,14 @@ data class UserEntity(
     @ColumnInfo(name = "nationality") val nationality: String? = null,
     val wasDeleted: Boolean = false
 )
+
+fun UserEntity.toUser(): User {
+    return User(
+        id = this.id.toId(),
+        phone = this.phone,
+        email = this.email,
+        picture = this.pictureHttpResponse?.toPicture(),
+        name = this.nameHttpResponse?.toName(),
+        gender = this.gender
+    )
+}
