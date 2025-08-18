@@ -43,9 +43,7 @@ class FetchUsersTest {
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository)
 
-        val job =
-
-        assertEquals(nonEmptyListOfUser, viewModel.users.)
+        assertEquals(nonEmptyListOfUser, viewModel.users)
 
     }
 }

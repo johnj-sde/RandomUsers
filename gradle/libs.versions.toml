@@ -18,7 +18,7 @@ okhttpVersion = "5.0.0-alpha.3"
 navigationCompose = "2.7.7"
 coil = "3.0.4"
 roomVerison = "2.7.1"
-kotlinxCoroutinesTestVersion = "1.8.1"
+kotlinxCoroutinesTestVersion = "1.10.2"
 junitJupiterVersion = "5.11.0"
 
 [libraries]
