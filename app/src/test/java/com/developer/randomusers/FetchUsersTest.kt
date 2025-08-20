@@ -15,10 +15,10 @@ import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.junit.Test
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import kotlin.test.assertEquals
-import kotlinx.coroutines.test.
+import org.junit.jupiter.api.Test
+
 
 class FetchUsersTest {
 
