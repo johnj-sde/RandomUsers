@@ -13,12 +13,12 @@ import com.developer.randomusers.network.model.UserHttpResponse
 import com.developer.randomusers.network.model.toUserEntity
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.ui.viewmodel.UserViewModel
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.assertEquals
-import kotlin.test.assertEquals
-import kotlinx.coroutines.test.
+
 
 class FetchUsersTest {
 
