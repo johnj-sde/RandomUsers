@@ -13,12 +13,13 @@ import com.developer.randomusers.network.model.UserHttpResponse
 import com.developer.randomusers.network.model.toUserEntity
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.ui.viewmodel.UserViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -30,37 +31,52 @@ class FetchUsersTest {
     private val emptyListOfUser = emptyList<User>()
     private val nonEmptyListOfUser = listOf(fakeUserHttpResponse.toUserEntity().toUser())
 
+    val testDispatcher = Dispatchers.Unconfined //StandardTestDispatcher()
+    val testScope = CoroutineScope(testDispatcher)
+
 
     @Test
     fun initialUsersStateIsDefault() {
         val fakeRESTClient = FakeEmptyRESTClient()
         val fakeAppDatabase = FakeAppDatabase()
         val userRepository = UserRepository(fakeRESTClient, fakeAppDatabase)
-        val viewModel = UserViewModel(userRepository)
+        val viewModel = UserViewModel(userRepository, testDispatcher)
 
         assertEquals(emptyListOfUser, viewModel.users.value)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun fetchUsersWhenNetworkReturnsDataAndDatabaseIsEmpty() = runTest {
         val fakeNonEmptyRESTClient = FakeNonEmptyRESTClient()
         val fakeAppDatabase = FakeAppDatabase()
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
-        val viewModel = UserViewModel(userRepository)
-        println("in ${FetchUsersTest::class.simpleName}: pre test")
-
-        val actual = mutableListOf<List<User>>()
-
+        val viewModel = UserViewModel(userRepository, testDispatcher)
+        println("in ${FetchUsersTest::class.simpleName}: test mocks instantiated")
         viewModel.fetchUsers()
 
 
+        val actual = mutableListOf<List<User>>()
 
-        viewModel.users.collectLatest { list ->
-            println("in ${FetchUsersTest::class.simpleName}: list coming in $list")
-            actual.add(list)
+
+        val job = launch(Dispatchers.Unconfined) {
+            println("in ${FetchUsersTest::class.simpleName}: launched coroutine")
+
+            viewModel.users.collect { list ->
+                println("in ${FetchUsersTest::class.simpleName}: list coming in $list")
+                actual.add(list)
+
+                if (list.isNotEmpty()) {
+                    assertEquals(fakeUserHttpResponse.toUserEntity().toUser(), viewModel.users.value[0])
+                }
+            }
+
         }
+        advanceUntilIdle()
+        advanceUntilIdle()
 
-        assertEquals(nonEmptyListOfUser, actual[0].toList())
+        job.cancel()
+        assertEquals(1, viewModel.users.value.size)
 
     }
 }
@@ -87,15 +103,22 @@ class FakeAppDatabase: AppDatabaseInterface {
 class FakeUserDao: UserDao {
 
     private var fakeUserListInDatabase: MutableList<UserEntity> = mutableListOf()
+    private val _allUsersFlow: MutableStateFlow<List<UserEntity>> = MutableStateFlow(fakeUserListInDatabase)
 
     override fun getAll(): Flow<List<UserEntity>> {
         println("in ${FakeUserDao::class.simpleName}: getAll users in FakeDao $fakeUserListInDatabase")
-        return flow {fakeUserListInDatabase.toList()}
+      //  return flow {fakeUserListInDatabase.toList()}
+        return _allUsersFlow
     }
 
     override fun insertAll(users: List<UserEntity>) {
         println("in ${FakeUserDao::class.simpleName}: inserting users in FakeDao $users")
-        fakeUserListInDatabase.addAll(users)
+       // fakeUserListInDatabase.addAll(users)
+        val latestList = mutableListOf<UserEntity>()
+        latestList.addAll(fakeUserListInDatabase)
+        latestList.addAll(users)
+        fakeUserListInDatabase = latestList
+        _allUsersFlow.value = latestList
     }
 
     override fun markUserWithIdAsDeleted(name: String, value: String) {

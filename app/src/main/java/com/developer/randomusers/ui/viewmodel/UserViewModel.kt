@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.developer.randomusers.model.User
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.repository.UserRepositoryInterface
+import kotlinx.coroutines.AbstractCoroutine
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +21,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class UserViewModel(
-    val userRepository: UserRepositoryInterface
+    val userRepository: UserRepositoryInterface,
+    val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ): ViewModel() {
 
     val userInputTextForSearch: StateFlow<String>
@@ -42,7 +46,7 @@ class UserViewModel(
 
     fun fetchUsers() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher) {
                 userRepository.loadUsers()
             }
         }
@@ -50,7 +54,7 @@ class UserViewModel(
 
     fun deleteUser(user: User) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(dispatcher) {
                 userRepository.deleteUser(user)
             }
         }
