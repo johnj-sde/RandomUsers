@@ -13,13 +13,18 @@ import com.developer.randomusers.network.model.UserHttpResponse
 import com.developer.randomusers.network.model.toUserEntity
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.ui.viewmodel.UserViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
-
+@ExtendWith(CoroutineTestExtension::class)
 class FetchUsersTest {
 
     private val emptyListOfUser = emptyList<User>()
@@ -42,8 +47,20 @@ class FetchUsersTest {
         val fakeAppDatabase = FakeAppDatabase()
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository)
+        println("in ${FetchUsersTest::class.simpleName}: pre test")
 
-        assertEquals(nonEmptyListOfUser, viewModel.users)
+        val actual = mutableListOf<List<User>>()
+
+        viewModel.fetchUsers()
+
+
+
+        viewModel.users.collectLatest { list ->
+            println("in ${FetchUsersTest::class.simpleName}: list coming in $list")
+            actual.add(list)
+        }
+
+        assertEquals(nonEmptyListOfUser, actual[0].toList())
 
     }
 }
@@ -72,10 +89,12 @@ class FakeUserDao: UserDao {
     private var fakeUserListInDatabase: MutableList<UserEntity> = mutableListOf()
 
     override fun getAll(): Flow<List<UserEntity>> {
+        println("in ${FakeUserDao::class.simpleName}: getAll users in FakeDao $fakeUserListInDatabase")
         return flow {fakeUserListInDatabase.toList()}
     }
 
     override fun insertAll(users: List<UserEntity>) {
+        println("in ${FakeUserDao::class.simpleName}: inserting users in FakeDao $users")
         fakeUserListInDatabase.addAll(users)
     }
 

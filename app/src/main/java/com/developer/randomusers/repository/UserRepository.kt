@@ -37,6 +37,7 @@ class UserRepository(
 
     private suspend fun fetchUsers() {
         val result = runCatching { restClient.fetchUsers(40) }
+        println("in ${UserRepository::class.simpleName}: in fetchUsers result is...\n $result")
 
         val latestUsersList = if (result.isSuccess) {
             result.getOrNull()?.userHttpResponses ?: emptyList()
@@ -54,6 +55,7 @@ class UserRepository(
 
         val dao = database.userDao()
 
+        println("in ${UserRepository::class.simpleName}: in fetchUsers latestUserEntities is...\n $latestUserEntities")
         dao.insertAll(latestUserEntities)
     }
 
