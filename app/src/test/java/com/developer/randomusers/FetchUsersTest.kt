@@ -110,16 +110,16 @@ class FakeUserDao: UserDao {
         println("\nin ${FakeUserDao::class.simpleName}: inserting users in FakeDao $users \n")
 
         /* APPROACH 1*/
-//        val list1 = mutableListOf<UserEntity>()
-//        list1.addAll(fakeUserListInDatabase)
-//        list1.addAll(users)
-//        fakeUserListInDatabase = list1
+        val list1 = mutableListOf<UserEntity>()
+        list1.addAll(fakeUserListInDatabase)
+        list1.addAll(users)
+        fakeUserListInDatabase = list1
 
         /* APPROACH 2*/
-        fakeUserListInDatabase.addAll(users)
-        val list2 = mutableListOf<UserEntity>()
-        list2.addAll(fakeUserListInDatabase)
-        fakeUserListInDatabase = list2
+//        fakeUserListInDatabase.addAll(users)
+//        val list2 = mutableListOf<UserEntity>()
+//        list2.addAll(fakeUserListInDatabase)
+//        fakeUserListInDatabase = list2
 
 
         /* APPROACH 3*/
@@ -127,7 +127,7 @@ class FakeUserDao: UserDao {
 //        val list3 = fakeUserListInDatabase.toList()
 
 
-        _allUsersFlow.value = list2 // replace with correct list corresponding to each approach
+        _allUsersFlow.value = list1 // replace with correct list corresponding to each approach
         println("_allUsersFlow value : ${_allUsersFlow.value}")
         println("")
     }
