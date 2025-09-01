@@ -108,17 +108,12 @@ class FakeUserDao: UserDao {
 
     override fun insertAll(users: List<UserEntity>) {
         println("\nin ${FakeUserDao::class.simpleName}: inserting users in FakeDao $users \n")
-       /* val latestList = mutableListOf<UserEntity>()
+        // fakeUserListInDatabase.addAll(users)
+        val latestList = mutableListOf<UserEntity>()
         latestList.addAll(fakeUserListInDatabase)
         latestList.addAll(users)
-        fakeUserListInDatabase = latestList*/
-        fakeUserListInDatabase.addAll(users)
-        val list2 = mutableListOf<UserEntity>()
-        list2.addAll(fakeUserListInDatabase)
-
-        val list3 = fakeUserListInDatabase.toList()
-
-        _allUsersFlow.value = list2
+        fakeUserListInDatabase = latestList
+        _allUsersFlow.value = latestList
     }
 
     override fun markUserWithIdAsDeleted(name: String, value: String) {
