@@ -127,6 +127,7 @@ class FakeUserDao: UserDao {
 
         _allUsersFlow.value = list2
         println("_allUsersFlow value : ${_allUsersFlow.value}")
+        println("")
     }
 
     override fun markUserWithIdAsDeleted(name: String, value: String) {
