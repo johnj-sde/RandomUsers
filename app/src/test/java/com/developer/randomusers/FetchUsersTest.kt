@@ -16,11 +16,10 @@ import com.developer.randomusers.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -30,11 +29,8 @@ import org.junit.jupiter.api.extension.ExtendWith
 class FetchUsersTest {
 
     private val emptyListOfUser = emptyList<User>()
-    private val nonEmptyListOfUser = listOf(fakeUserHttpResponse.toUserEntity().toUser())
 
     val testDispatcher = Dispatchers.Unconfined //StandardTestDispatcher()
-    val testScope = CoroutineScope(testDispatcher)
-
 
     @Test
     fun initialUsersStateIsDefault() {
@@ -97,37 +93,20 @@ class FakeAppDatabase(val userDao: FakeUserDao): AppDatabaseInterface {
 
 class FakeUserDao: UserDao {
 
-    private var fakeUserListInDatabase: MutableList<UserEntity> = mutableListOf()
-    private val _allUsersFlow: MutableStateFlow<List<UserEntity>> = MutableStateFlow(fakeUserListInDatabase)
+    private val _allUsersFlow: MutableStateFlow<List<UserEntity>> = MutableStateFlow(emptyList())
 
     override fun getAll(): Flow<List<UserEntity>> {
-        println("\nin ${FakeUserDao::class.simpleName}: getAll users in FakeDao $fakeUserListInDatabase \n")
-      //  return flow {fakeUserListInDatabase.toList()}
+        println("\nin ${FakeUserDao::class.simpleName}: getAll users in FakeDao ${_allUsersFlow.value} \n")
         return _allUsersFlow
     }
 
     override fun insertAll(users: List<UserEntity>) {
         println("\nin ${FakeUserDao::class.simpleName}: inserting users in FakeDao $users \n")
 
-        /* APPROACH 1*/
-        val list1 = mutableListOf<UserEntity>()
-        list1.addAll(fakeUserListInDatabase)
-        list1.addAll(users)
-        fakeUserListInDatabase = list1
+        val current = _allUsersFlow.value
+        val newList = current + users
+        _allUsersFlow.update { newList }
 
-        /* APPROACH 2*/
-//        fakeUserListInDatabase.addAll(users)
-//        val list2 = mutableListOf<UserEntity>()
-//        list2.addAll(fakeUserListInDatabase)
-//        fakeUserListInDatabase = list2
-
-
-        /* APPROACH 3*/
-//        fakeUserListInDatabase.addAll(users)
-//        val list3 = fakeUserListInDatabase.toList()
-
-
-        _allUsersFlow.value = list1 // replace with correct list corresponding to each approach
         println("_allUsersFlow value : ${_allUsersFlow.value}")
         println("")
     }
