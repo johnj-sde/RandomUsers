@@ -85,7 +85,7 @@ class FetchUsersTest {
     @Test
     fun deleteUserWhenDatabaseHasData() = runTest {
         val fakeNonEmptyRESTClient = FakeNonEmptyRESTClient()
-        val fakeAppDatabase = FakeAppDatabase(FakeUserDao(fakeNonEmptyUserEntityList))
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao(listOf(fakeUserEntity)))
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
 
@@ -175,8 +175,6 @@ val fakeUserHttpResponse = UserHttpResponse(
 )
 
 val fakeUserEntity = fakeUserHttpResponse.toUserEntity()
-
-val fakeNonEmptyUserEntityList = listOf(fakeUserEntity)
 
 val fakeUser = fakeUserHttpResponse.toUserEntity().toUser()
 
