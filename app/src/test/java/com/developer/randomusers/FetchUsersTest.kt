@@ -92,7 +92,7 @@ class FetchUsersTest {
         observeFlow(viewModel.users)
 
         assertEquals(1, viewModel.users.value.size)
-        viewModel.deleteUser(fakeUser)
+        viewModel.deleteUser(fakeUserEntity.toUser())
         assertEquals(0, viewModel.users.value.size)
     }
 }
