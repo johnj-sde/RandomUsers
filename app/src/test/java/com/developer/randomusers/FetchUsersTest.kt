@@ -66,9 +66,34 @@ class FetchUsersTest {
         viewModel.fetchUsers()
 
         assertEquals(1, viewModel.users.value.size)
-        assertEquals(fakeUserHttpResponse.toUserEntity().toUser(), viewModel.users.value[0])
+        assertEquals(fakeUser, viewModel.users.value[0])
 
+    }
 
+    @Test
+    fun deleteUserWhenDatabaseIsEmpty() {
+        val fakeRESTClient = FakeEmptyRESTClient()
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
+        val userRepository = UserRepository(fakeRESTClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, testDispatcher)
+
+        assertEquals(0, viewModel.users.value.size)
+        viewModel.deleteUser(fakeUser)
+        assertEquals(0, viewModel.users.value.size)
+    }
+
+    @Test
+    fun deleteUserWhenDatabaseHasData() = runTest {
+        val fakeNonEmptyRESTClient = FakeNonEmptyRESTClient()
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao(fakeNonEmptyUserEntityList))
+        val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, testDispatcher)
+
+        observeFlow(viewModel.users)
+
+        assertEquals(1, viewModel.users.value.size)
+        viewModel.deleteUser(fakeUser)
+        assertEquals(0, viewModel.users.value.size)
     }
 }
 
@@ -91,9 +116,11 @@ class FakeAppDatabase(val userDao: FakeUserDao): AppDatabaseInterface {
 
 }
 
-class FakeUserDao: UserDao {
+class FakeUserDao(
+    storedUsers: List<UserEntity> = emptyList()
+): UserDao {
 
-    private val _allUsersFlow: MutableStateFlow<List<UserEntity>> = MutableStateFlow(emptyList())
+    private val _allUsersFlow: MutableStateFlow<List<UserEntity>> = MutableStateFlow(storedUsers)
 
     override fun getAll(): Flow<List<UserEntity>> {
         println("\nin ${FakeUserDao::class.simpleName}: getAll users in FakeDao ${_allUsersFlow.value} \n")
@@ -112,7 +139,12 @@ class FakeUserDao: UserDao {
     }
 
     override fun markUserWithIdAsDeleted(name: String, value: String) {
-        TODO("Not yet implemented")
+        val current = _allUsersFlow.value
+        val newList = current.filter {
+            userEntity ->
+            userEntity.id.name!=name || userEntity.id.value!=value
+        }
+        _allUsersFlow.update { newList }
     }
 }
 
@@ -141,6 +173,12 @@ val fakeUserHttpResponse = UserHttpResponse(
     pictureHttpResponse = null,
     nat = null
 )
+
+val fakeUserEntity = fakeUserHttpResponse.toUserEntity()
+
+val fakeNonEmptyUserEntityList = listOf(fakeUserEntity)
+
+val fakeUser = fakeUserHttpResponse.toUserEntity().toUser()
 
 val fakeNonEmptyNetworkResults = ResultsAndInfoHttpResponse(
     userHttpResponses = arrayListOf(fakeUserHttpResponse)
