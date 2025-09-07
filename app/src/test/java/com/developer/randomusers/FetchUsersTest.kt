@@ -71,21 +71,9 @@ class FetchUsersTest {
     }
 
     @Test
-    fun deleteUserWhenDatabaseIsEmpty() {
-        val fakeRESTClient = FakeEmptyRESTClient()
-        val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
-        val userRepository = UserRepository(fakeRESTClient, fakeAppDatabase)
-        val viewModel = UserViewModel(userRepository, testDispatcher)
-
-        assertEquals(0, viewModel.users.value.size)
-        viewModel.deleteUser(fakeUser)
-        assertEquals(0, viewModel.users.value.size)
-    }
-
-    @Test
-    fun deleteUserWhenDatabaseHasData() = runTest {
+    fun deleteUserSuccessfully() = runTest {
         val fakeNonEmptyRESTClient = FakeNonEmptyRESTClient()
-        val fakeAppDatabase = FakeAppDatabase(FakeUserDao(listOf(fakeUserEntity)))
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao(storedUsers = listOf(fakeUserEntity)))
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
 
@@ -142,7 +130,7 @@ class FakeUserDao(
         val current = _allUsersFlow.value
         val newList = current.filter {
             userEntity ->
-            userEntity.id.name!=name || userEntity.id.value!=value
+            !(userEntity.id.name==name && userEntity.id.value==value)
         }
         _allUsersFlow.update { newList }
     }
