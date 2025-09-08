@@ -16,6 +16,7 @@ import com.developer.randomusers.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -82,6 +83,21 @@ class FetchUsersTest {
         assertEquals(1, viewModel.users.value.size)
         viewModel.deleteUser(fakeUserEntity.toUser())
         assertEquals(0, viewModel.users.value.size)
+    }
+
+    @Test
+    fun updateSearchTextSuccessfully() = runTest {
+        val fakeNonEmptyRESTClient = FakeNonEmptyRESTClient()
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
+        val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, testDispatcher)
+
+        observeFlow(viewModel.userInputTextForSearch)
+        observeFlow(viewModel.debouncedUserInputTextForSearch)
+
+        val expected = "test"
+        viewModel.updateSearchText(expected)
+        assertEquals(expected, viewModel.userInputTextForSearch.value)
     }
 }
 
