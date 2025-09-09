@@ -1,29 +1,14 @@
 package com.developer.randomusers
 
-import com.developer.randomusers.database.AppDatabaseInterface
-import com.developer.randomusers.database.dao.UserDao
-import com.developer.randomusers.database.model.UserEntity
 import com.developer.randomusers.database.model.toUser
 import com.developer.randomusers.model.User
-import com.developer.randomusers.network.RandomUserAPIClientInterface
-import com.developer.randomusers.network.model.IdHttpResponse
-import com.developer.randomusers.network.model.NameHttpResponse
-import com.developer.randomusers.network.model.ResultsAndInfoHttpResponse
-import com.developer.randomusers.network.model.UserHttpResponse
-import com.developer.randomusers.network.model.toUserEntity
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.ui.viewmodel.UserViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(CoroutineTestExtension::class)
