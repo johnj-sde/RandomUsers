@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(CoroutineTestExtension::class)
@@ -59,6 +60,20 @@ class UserViewModelTest {
     }
 
     @Test
+    fun fetchUsersWhenNetworksReturnsError() = runTest {
+        val errorRESTClient = ErrorRESTClient()
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
+        val userRepository = UserRepository(restClient = errorRESTClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, testDispatcher)
+
+        val actual = observeFlow(viewModel.users, testDispatcher) {
+            viewModel.fetchUsers()
+        }
+
+        assertEquals(0, actual.size)
+    }
+
+    @Test
     fun deleteUserSuccessfully() = runTest {
         val fakeNonEmptyRESTClient = FakeNonEmptyRESTClient()
         val fakeAppDatabase = FakeAppDatabase(FakeUserDao(storedUsers = listOf(fakeUserEntity)))
@@ -88,7 +103,8 @@ class UserViewModelTest {
             viewModel.updateSearchText(expected)
 
         }
-        
+
         assertEquals(expected, actual.first())
     }
+
 }

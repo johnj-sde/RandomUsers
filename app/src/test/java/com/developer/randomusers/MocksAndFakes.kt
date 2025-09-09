@@ -26,6 +26,13 @@ class FakeNonEmptyRESTClient: RandomUserAPIClientInterface {
     }
 }
 
+class ErrorRESTClient: RandomUserAPIClientInterface{
+    override suspend fun fetchUsers(limit: Int): ResultsAndInfoHttpResponse {
+        throw Exception("testing error case")
+    }
+
+}
+
 class FakeAppDatabase(val userDao: FakeUserDao): AppDatabaseInterface {
     override fun userDao(): UserDao {
         return userDao
