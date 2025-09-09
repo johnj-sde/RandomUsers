@@ -50,15 +50,12 @@ class UserViewModelTest {
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
 
-        //viewModel.fetchUsers()
+        val actual = observeFlow(viewModel.users, testDispatcher) {
+            viewModel.fetchUsers()
+        }
 
-        observeFlow(viewModel.users, testDispatcher)
-
-        viewModel.fetchUsers()
-
-        assertEquals(1, viewModel.users.value.size)
-        assertEquals(fakeUser, viewModel.users.value[0])
-
+        assertEquals(1, actual[0].size)
+        assertEquals(fakeUser, actual[0].first())
     }
 
     @Test
@@ -68,11 +65,15 @@ class UserViewModelTest {
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
 
-        observeFlow(viewModel.users, testDispatcher)
+        val actual = observeFlow(viewModel.users, testDispatcher) {
+            viewModel.deleteUser(fakeUserEntity.toUser())
+        }
+        val expected = listOf(
+            listOf(fakeUser),
+            emptyList()
+        )
 
-        assertEquals(1, viewModel.users.value.size)
-        viewModel.deleteUser(fakeUserEntity.toUser())
-        assertEquals(0, viewModel.users.value.size)
+        assertEquals(actual, expected)
     }
 
     @Test
@@ -82,10 +83,12 @@ class UserViewModelTest {
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
 
-        observeFlow(viewModel.userInputTextForSearch, testDispatcher)
-
         val expected = "test"
-        viewModel.updateSearchText(expected)
-        assertEquals(expected, viewModel.userInputTextForSearch.value)
+        val actual = observeFlow(viewModel.userInputTextForSearch, testDispatcher) {
+            viewModel.updateSearchText(expected)
+
+        }
+        
+        assertEquals(expected, actual.first())
     }
 }
