@@ -1,0 +1,114 @@
+package com.developer.randomusers
+
+import com.developer.randomusers.database.model.toUser
+import com.developer.randomusers.model.User
+import com.developer.randomusers.network.model.ResultsAndInfoHttpResponse
+import com.developer.randomusers.repository.UserRepository
+import com.developer.randomusers.ui.viewmodel.UserViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+
+@ExtendWith(CoroutineTestExtension::class)
+class UserViewModelTest {
+
+    private val emptyListOfUser = emptyList<User>()
+
+    val testDispatcher = Dispatchers.Unconfined //StandardTestDispatcher()
+
+    @Test
+    fun initialUsersStateIsDefault() {
+        val fakeRESTClient = fakeEmptyRESTClient
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
+        val userRepository = UserRepository(fakeRESTClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, testDispatcher)
+
+        assertEquals(emptyListOfUser, viewModel.users.value)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun fetchUsersWhenNetworkReturnsDataAndDatabaseIsEmpty() = runTest {
+        val fakeNonEmptyRESTClient = fakeNonEmptyResponseRESTClient
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
+        val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, testDispatcher)
+
+        val actual = observeFlow(viewModel.users, testDispatcher) {
+            viewModel.fetchUsers()
+        }
+
+        assertEquals(1, actual[0].size)
+        assertEquals(fakeUser, actual[0].first())
+    }
+
+    @Test
+    fun fetchUsersWhenNetworksReturnsError() = runTest {
+        val errorRESTClient = ErrorRESTClient()
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
+        val userRepository = UserRepository(restClient = errorRESTClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, testDispatcher)
+
+        val actual = observeFlow(viewModel.users, testDispatcher) {
+            viewModel.fetchUsers()
+        }
+
+        assertEquals(0, actual.size)
+    }
+
+    @Test
+    fun fetchUsersWhenNetworkReturnsUserWithIdWithEmptyName() = runTest {
+        val restClient = FakeNonErrorRESTClient(
+            networkResults = ResultsAndInfoHttpResponse(
+                userHttpResponses = arrayListOf(fakeUserHttpResponseWithIdWithEmptyName)
+            )
+        )
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
+        val userRepository = UserRepository(restClient = restClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, testDispatcher)
+
+        val actual = observeFlow(viewModel.users, testDispatcher) {
+            viewModel.fetchUsers()
+        }
+
+        assertEquals(0, actual.size)
+
+    }
+
+    @Test
+    fun deleteUserSuccessfully() = runTest {
+        val fakeNonEmptyRESTClient = fakeNonEmptyResponseRESTClient
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao(storedUsers = listOf(fakeUserEntity)))
+        val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, testDispatcher)
+
+        val actual = observeFlow(viewModel.users, testDispatcher) {
+            viewModel.deleteUser(fakeUserEntity.toUser())
+        }
+        val expected = listOf(
+            listOf(fakeUser),
+            emptyList()
+        )
+
+        assertEquals(actual, expected)
+    }
+
+    @Test
+    fun updateSearchTextSuccessfully() = runTest {
+        val fakeNonEmptyRESTClient = fakeEmptyRESTClient
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
+        val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, testDispatcher)
+
+        val expected = "test"
+        val actual = observeFlow(viewModel.userInputTextForSearch, testDispatcher) {
+            viewModel.updateSearchText(expected)
+        }
+
+        assertEquals(expected, actual.first())
+    }
+
+}

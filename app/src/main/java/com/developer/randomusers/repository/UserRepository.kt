@@ -47,7 +47,7 @@ class UserRepository(
 
         val latestUserEntities = latestUsersList
             .filter { user ->
-                !user.id.name.isEmpty() && user.id.value!=null
+                !user.id.name.isEmpty()
             }
             .map { user ->
                 user.toUserEntity()
