@@ -62,7 +62,7 @@ fun UserListScreen(
     navigateTo: (Int) -> Unit
 ) {
 
-    val users by viewModel.users
+    val usersState by viewModel.usersState
         .collectAsStateWithLifecycle()
 
     val debouncedSearchText by viewModel.debouncedUserInputTextForSearch.collectAsStateWithLifecycle()
@@ -82,7 +82,7 @@ fun UserListScreen(
         )
 
         UserListComposable(
-            users = users,
+            users = usersState.users,
             navigateTo = navigateTo,
             fetchUsers = viewModel::fetchUsers,
             deleteUser = viewModel::deleteUser,

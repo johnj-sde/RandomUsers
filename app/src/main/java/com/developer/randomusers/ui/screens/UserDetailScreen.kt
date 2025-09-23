@@ -29,9 +29,9 @@ fun UserDetailScreen(
     viewModel: UserViewModel,
     position: Int
 ) {
-    val users = viewModel.users.collectAsStateWithLifecycle()
-    if (users.value.isNotEmpty() && position>=0) {
-        val user = users.value[position]
+    val users = viewModel.usersState.collectAsStateWithLifecycle()
+    if (users.value.users.isNotEmpty() && position>=0) {
+        val user = users.value.users[position]
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center

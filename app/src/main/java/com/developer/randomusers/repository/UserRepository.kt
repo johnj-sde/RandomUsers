@@ -5,8 +5,10 @@ import com.developer.randomusers.database.AppDatabaseInterface
 import com.developer.randomusers.database.model.toId
 import com.developer.randomusers.database.model.toUser
 import com.developer.randomusers.model.User
+import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.network.RandomUserAPIClient
 import com.developer.randomusers.network.RandomUserAPIClientInterface
+import com.developer.randomusers.network.model.UserHttpResponse
 import com.developer.randomusers.network.model.toName
 import com.developer.randomusers.network.model.toPicture
 import com.developer.randomusers.network.model.toUserEntity
@@ -37,12 +39,15 @@ class UserRepository(
 
     private suspend fun fetchUsers() {
         val result = runCatching { restClient.fetchUsers(40) }
-  //      println("in ${UserRepository::class.simpleName}: in fetchUsers result is...\n $result")
-
-        val latestUsersList = if (result.isSuccess) {
-            result.getOrNull()?.userHttpResponses ?: emptyList()
+        println("in ${UserRepository::class.simpleName}: in fetchUsers result is...\n $result")
+        val latestUsersList = mutableListOf<UserHttpResponse>()
+        if (result.isSuccess) {
+            latestUsersList.addAll(result.getOrNull()?.userHttpResponses ?: emptyList())
         } else {
-            emptyList()
+            println("throwing exception")
+            result.exceptionOrNull()?.let {
+                throw it
+            }
         }
 
         val latestUserEntities = latestUsersList

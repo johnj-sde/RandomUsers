@@ -3,22 +3,23 @@ package com.developer.randomusers.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.developer.randomusers.model.User
-import com.developer.randomusers.repository.UserRepository
+import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.repository.UserRepositoryInterface
-import kotlinx.coroutines.AbstractCoroutine
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 
 class UserViewModel(
     val userRepository: UserRepositoryInterface,
@@ -38,11 +39,22 @@ class UserViewModel(
             initialValue = ""
         )
 
-    val users = userRepository.getUsers().stateIn(
-        viewModelScope,
-        SharingStarted.Lazily,
-        emptyList()
-    )
+    val usersState = userRepository.getUsers()
+        .map{
+            println("state $it")
+            UsersState(it)
+        }
+        .catch { exception ->
+            println("caught exception in viewmodel")
+            when (exception) {
+                is IOException -> UsersState(isOfflineError = true)
+                else -> UsersState(isBackendError = true)
+            }
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            UsersState()
+        )
 
     fun fetchUsers() {
         viewModelScope.launch {

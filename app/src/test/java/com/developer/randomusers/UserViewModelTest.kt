@@ -6,7 +6,6 @@ import com.developer.randomusers.network.model.ResultsAndInfoHttpResponse
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -17,7 +16,7 @@ class UserViewModelTest {
 
     private val emptyListOfUser = emptyList<User>()
 
-    val testDispatcher = Dispatchers.Unconfined //StandardTestDispatcher()
+    private val testDispatcher = Dispatchers.Unconfined
 
     @Test
     fun initialUsersStateIsDefault() {
@@ -26,10 +25,9 @@ class UserViewModelTest {
         val userRepository = UserRepository(fakeRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
 
-        assertEquals(emptyListOfUser, viewModel.users.value)
+        assertEquals(emptyListOfUser, viewModel.usersState.value)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun fetchUsersWhenNetworkReturnsDataAndDatabaseIsEmpty() = runTest {
         val fakeNonEmptyRESTClient = fakeNonEmptyResponseRESTClient
@@ -37,12 +35,12 @@ class UserViewModelTest {
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
 
-        val actual = observeFlow(viewModel.users, testDispatcher) {
+        val actual = observeFlow(viewModel.usersState, testDispatcher) {
             viewModel.fetchUsers()
         }
 
-        assertEquals(1, actual[0].size)
-        assertEquals(fakeUser, actual[0].first())
+        assertEquals(1, actual[0].users)
+        assertEquals(fakeUser, actual[0].users.first())
     }
 
     @Test
@@ -52,11 +50,11 @@ class UserViewModelTest {
         val userRepository = UserRepository(restClient = errorRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
 
-        val actual = observeFlow(viewModel.users, testDispatcher) {
+        val actual = observeFlow(viewModel.usersState, testDispatcher) {
             viewModel.fetchUsers()
         }
 
-        assertEquals(0, actual.size)
+        assertEquals(true, actual.first().isBackendError)
     }
 
     @Test
@@ -70,7 +68,7 @@ class UserViewModelTest {
         val userRepository = UserRepository(restClient = restClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
 
-        val actual = observeFlow(viewModel.users, testDispatcher) {
+        val actual = observeFlow(viewModel.usersState, testDispatcher) {
             viewModel.fetchUsers()
         }
 
@@ -85,7 +83,7 @@ class UserViewModelTest {
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
 
-        val actual = observeFlow(viewModel.users, testDispatcher) {
+        val actualStates = observeFlow(viewModel.usersState, testDispatcher) {
             viewModel.deleteUser(fakeUserEntity.toUser())
         }
         val expected = listOf(
@@ -93,7 +91,9 @@ class UserViewModelTest {
             emptyList()
         )
 
-        assertEquals(actual, expected)
+        val actualUsers = actualStates.map { it.users }
+
+        assertEquals(actualUsers, expected)
     }
 
     @Test
