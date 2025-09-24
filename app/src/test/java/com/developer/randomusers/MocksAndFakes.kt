@@ -4,6 +4,7 @@ import com.developer.randomusers.database.AppDatabaseInterface
 import com.developer.randomusers.database.dao.UserDao
 import com.developer.randomusers.database.model.UserEntity
 import com.developer.randomusers.database.model.toUser
+import com.developer.randomusers.model.User
 import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.network.model.IdHttpResponse
 import com.developer.randomusers.network.model.NameHttpResponse
@@ -13,6 +14,11 @@ import com.developer.randomusers.network.model.toUserEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import okhttp3.ResponseBody.Companion.toResponseBody
+import okio.IOException
+import retrofit2.HttpException
+import retrofit2.Response
+import kotlin.math.exp
 
 
 val fakeNameHttpResponse = NameHttpResponse(
@@ -68,6 +74,38 @@ val fakeUser = fakeUserHttpResponse.toUserEntity().toUser()
 val fakeNonEmptyNetworkResults = ResultsAndInfoHttpResponse(
     userHttpResponses = arrayListOf(fakeUserHttpResponse)
 )
+
+class InMemoryRESTClient(
+    private val expectedResults: List<User> = emptyList()
+) : RandomUserAPIClientInterface {
+
+    private var isUnavailable = false
+    private var isOffline = false
+
+    override suspend fun fetchUsers(limit: Int): ResultsAndInfoHttpResponse {
+        if (isUnavailable) throw HttpException(Response.error<String>(401, "".toResponseBody()))
+        if (isOffline) throw IOException()
+        return ResultsAndInfoHttpResponse(
+            userHttpResponses = expectedResults.map {
+                UserHttpResponse(
+                    id = IdHttpResponse(
+                        name = it.id.name,
+                        value = it.id.value
+                    )
+                )
+            }
+        )
+    }
+
+    fun setUnavailable(){
+        isUnavailable = true
+    }
+
+    fun setOffline() {
+        isOffline = true
+    }
+
+}
 
 class FakeNonErrorRESTClient(
     val networkResults: ResultsAndInfoHttpResponse
