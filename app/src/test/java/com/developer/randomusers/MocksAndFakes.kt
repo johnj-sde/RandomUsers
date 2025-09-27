@@ -4,6 +4,7 @@ import com.developer.randomusers.database.AppDatabaseInterface
 import com.developer.randomusers.database.dao.UserDao
 import com.developer.randomusers.database.model.UserEntity
 import com.developer.randomusers.database.model.toUser
+import com.developer.randomusers.model.Id
 import com.developer.randomusers.model.User
 import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.network.model.IdHttpResponse
@@ -18,7 +19,6 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.IOException
 import retrofit2.HttpException
 import retrofit2.Response
-import kotlin.math.exp
 
 
 val fakeNameHttpResponse = NameHttpResponse(
@@ -76,7 +76,7 @@ val fakeNonEmptyNetworkResults = ResultsAndInfoHttpResponse(
 )
 
 class InMemoryRESTClient(
-    private val expectedResults: List<User> = emptyList()
+    private val expectedResults: List<UserHttpResponse> = emptyList()
 ) : RandomUserAPIClientInterface {
 
     private var isUnavailable = false
@@ -86,14 +86,7 @@ class InMemoryRESTClient(
         if (isUnavailable) throw HttpException(Response.error<String>(401, "".toResponseBody()))
         if (isOffline) throw IOException()
         return ResultsAndInfoHttpResponse(
-            userHttpResponses = expectedResults.map {
-                UserHttpResponse(
-                    id = IdHttpResponse(
-                        name = it.id.name,
-                        value = it.id.value
-                    )
-                )
-            }
+            userHttpResponses = expectedResults
         )
     }
 
@@ -107,27 +100,10 @@ class InMemoryRESTClient(
 
 }
 
-class FakeNonErrorRESTClient(
-    val networkResults: ResultsAndInfoHttpResponse
-): RandomUserAPIClientInterface {
-    override suspend fun fetchUsers(limit: Int): ResultsAndInfoHttpResponse {
-        return networkResults
-    }
-}
-
-val fakeEmptyRESTClient = FakeNonErrorRESTClient(
-    networkResults = ResultsAndInfoHttpResponse(userHttpResponses = arrayListOf())
+val fakeNonEmptyResponseRESTClient = InMemoryRESTClient(
+    expectedResults =
+        fakeNonEmptyNetworkResults.userHttpResponses
 )
-
-val fakeNonEmptyResponseRESTClient = FakeNonErrorRESTClient(
-    networkResults = fakeNonEmptyNetworkResults
-)
-
-class ErrorRESTClient: RandomUserAPIClientInterface{
-    override suspend fun fetchUsers(limit: Int): ResultsAndInfoHttpResponse {
-        throw Exception("testing error case")
-    }
-}
 
 class FakeAppDatabase(val userDao: FakeUserDao): AppDatabaseInterface {
     override fun userDao(): UserDao {

@@ -13,12 +13,14 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.io.IOException
 
 class UserViewModel(
@@ -39,18 +41,16 @@ class UserViewModel(
             initialValue = ""
         )
 
-    val usersState = userRepository.getUsers()
-        .map{
-            println("state $it")
-            UsersState(it)
-        }
-        .catch { exception ->
-            println("caught exception in viewmodel")
-            when (exception) {
+    private val _errorState = MutableStateFlow<Throwable?>(null)
+
+    val usersState = combine(_errorState, userRepository.getUsers()) { error, users ->
+            when (error) {
                 is IOException -> UsersState(isOfflineError = true)
-                else -> UsersState(isBackendError = true)
+                is HttpException -> UsersState(isBackendError = true)
+                else -> UsersState(users)
             }
-        }.stateIn(
+        }
+        .stateIn(
             viewModelScope,
             SharingStarted.Lazily,
             UsersState()
@@ -59,7 +59,11 @@ class UserViewModel(
     fun fetchUsers() {
         viewModelScope.launch {
             withContext(dispatcher) {
-                userRepository.loadUsers()
+                try {
+                    userRepository.loadUsers()
+                } catch(e: Exception) {
+                    _errorState.update { e }
+                }
             }
         }
     }

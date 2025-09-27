@@ -33,12 +33,10 @@ class UserRepository(
 
     private suspend fun fetchUsers() {
         val result = runCatching { restClient.fetchUsers(40) }
-        println("in ${UserRepository::class.simpleName}: in fetchUsers result is...\n $result")
         val latestUsersList = mutableListOf<UserHttpResponse>()
         if (result.isSuccess) {
             latestUsersList.addAll(result.getOrNull()?.userHttpResponses ?: emptyList())
         } else {
-            println("throwing exception")
             result.exceptionOrNull()?.let {
                 throw it
             }

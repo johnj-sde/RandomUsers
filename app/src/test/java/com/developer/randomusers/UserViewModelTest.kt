@@ -1,8 +1,12 @@
 package com.developer.randomusers
 
+import android.R
 import com.developer.randomusers.database.model.toUser
+import com.developer.randomusers.model.Id
 import com.developer.randomusers.model.User
+import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.network.model.ResultsAndInfoHttpResponse
+import com.developer.randomusers.network.model.toUserEntity
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,12 +24,12 @@ class UserViewModelTest {
 
     @Test
     fun initialUsersStateIsDefault() {
-        val fakeRESTClient = fakeEmptyRESTClient
+        val fakeRESTClient = InMemoryRESTClient()
         val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
         val userRepository = UserRepository(fakeRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
 
-        assertEquals(emptyListOfUser, viewModel.usersState.value)
+        assertEquals(UsersState(), viewModel.usersState.value)
     }
 
     @Test
@@ -39,13 +43,13 @@ class UserViewModelTest {
             viewModel.fetchUsers()
         }
 
-        assertEquals(1, actual[0].users)
+        assertEquals(1, actual[0].users.size)
         assertEquals(fakeUser, actual[0].users.first())
     }
 
     @Test
     fun fetchUsersWhenNetworksReturnsError() = runTest {
-        val errorRESTClient = ErrorRESTClient()
+        val errorRESTClient = InMemoryRESTClient().apply { setUnavailable() }
         val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
         val userRepository = UserRepository(restClient = errorRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
@@ -59,10 +63,8 @@ class UserViewModelTest {
 
     @Test
     fun fetchUsersWhenNetworkReturnsUserWithIdWithEmptyName() = runTest {
-        val restClient = FakeNonErrorRESTClient(
-            networkResults = ResultsAndInfoHttpResponse(
-                userHttpResponses = arrayListOf(fakeUserHttpResponseWithIdWithEmptyName)
-            )
+        val restClient = InMemoryRESTClient(
+            expectedResults =  arrayListOf(fakeUserHttpResponseWithIdWithEmptyName)
         )
         val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
         val userRepository = UserRepository(restClient = restClient, fakeAppDatabase)
@@ -98,7 +100,7 @@ class UserViewModelTest {
 
     @Test
     fun updateSearchTextSuccessfully() = runTest {
-        val fakeNonEmptyRESTClient = fakeEmptyRESTClient
+        val fakeNonEmptyRESTClient = InMemoryRESTClient()
         val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
         val viewModel = UserViewModel(userRepository, testDispatcher)
