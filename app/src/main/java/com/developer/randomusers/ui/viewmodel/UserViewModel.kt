@@ -3,22 +3,25 @@ package com.developer.randomusers.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.developer.randomusers.model.User
-import com.developer.randomusers.repository.UserRepository
+import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.repository.UserRepositoryInterface
-import kotlinx.coroutines.AbstractCoroutine
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
+import java.io.IOException
 
 class UserViewModel(
     val userRepository: UserRepositoryInterface,
@@ -38,16 +41,29 @@ class UserViewModel(
             initialValue = ""
         )
 
-    val users = userRepository.getUsers().stateIn(
-        viewModelScope,
-        SharingStarted.Lazily,
-        emptyList()
-    )
+    private val _errorState = MutableStateFlow<Throwable?>(null)
+
+    val usersState = combine(_errorState, userRepository.getUsers()) { error, users ->
+            when (error) {
+                is IOException -> UsersState(isOfflineError = true)
+                is HttpException -> UsersState(isBackendError = true)
+                else -> UsersState(users)
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Lazily,
+            UsersState()
+        )
 
     fun fetchUsers() {
         viewModelScope.launch {
             withContext(dispatcher) {
-                userRepository.loadUsers()
+                try {
+                    userRepository.loadUsers()
+                } catch(e: Exception) {
+                    _errorState.update { e }
+                }
             }
         }
     }
