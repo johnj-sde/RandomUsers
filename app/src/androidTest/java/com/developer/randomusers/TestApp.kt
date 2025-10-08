@@ -1,0 +1,18 @@
+package com.developer.randomusers
+
+import android.app.Application
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+
+class TestApp : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        startKoin { modules(testAppModule) }
+    }
+
+    override fun onTerminate() {
+        stopKoin()
+        super.onTerminate()
+    }
+}
