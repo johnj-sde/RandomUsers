@@ -36,7 +36,7 @@ class UserListsScreenTest {
     val rule = createAndroidComposeRule<MainActivity>()
 
     @Test
-    fun should_display_loaded_songs() {
+    fun should_display_loaded_users() {
         launchUserLists(rule) { } verify {
             userFullNameAndTitleIsDisplayed(fakeUser)
             userEmailIsDisplayed(fakeUser)
