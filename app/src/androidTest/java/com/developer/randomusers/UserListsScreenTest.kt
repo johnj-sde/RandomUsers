@@ -3,6 +3,9 @@ package com.developer.randomusers
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.developer.randomusers.database.AppDatabaseInterface
+import com.developer.randomusers.model.Id
+import com.developer.randomusers.model.Name
+import com.developer.randomusers.model.User
 import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.repository.UserRepositoryInterface
@@ -41,6 +44,41 @@ class UserListsScreenTest {
             userFullNameAndTitleIsDisplayed(fakeUser)
             userEmailIsDisplayed(fakeUser)
         }
+    }
+
+    @Test
+    fun should_search_and_match_user() {
+        val queryMatchingFirstUser = fakeUser.name?.first
+        queryMatchingFirstUser?.let { name ->
+            launchUserLists(rule) {
+                typeSearchQuery(name)
+            } verify {
+                userFullNameAndTitleIsDisplayed(fakeUser)
+                userEmailIsDisplayed(fakeUser)
+            }
+        }
+    }
+
+    @Test
+    fun should_search_and_fail_to_match_user() {
+        val unusedUser = User(
+            id = Id(
+                name = "unusedUser_id1_name",
+                value = "unusedUser_id1_value"
+            ),
+            name = Name(
+                first = "Unused",
+                last = "Username"
+            )
+        )
+        val unusedName = "Unused Name"
+        launchUserLists(rule) {
+            typeSearchQuery(unusedName)
+        } verify {
+            userFullNameAndTitleIsNotDisplayed(unusedUser)
+            userEmailIsNotDisplayed(unusedUser)
+        }
+
     }
 
 }

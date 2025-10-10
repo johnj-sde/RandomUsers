@@ -43,7 +43,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -67,18 +70,24 @@ fun UserListScreen(
 
     val debouncedSearchText by viewModel.debouncedUserInputTextForSearch.collectAsStateWithLifecycle()
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
-    
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
 
         TextField(
-            modifier = Modifier.fillMaxWidth().padding(start = 5.dp, end = 5.dp, bottom = 5.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 5.dp, end = 5.dp, bottom = 5.dp)
+                .testTag("searchText"),
             value = searchText,
+            placeholder = {
+                Text(text = stringResource(R.string.search))
+            },
             onValueChange = {
-                input ->
+                    input ->
                 viewModel.updateSearchText(userInput = input)
-            }
+            },
         )
 
         UserListComposable(
@@ -238,9 +247,9 @@ fun UserListItem(
 
 
         }
-       /* Spacer(
-            modifier = Modifier.fillMaxHeight().width(5.dp)
-        )*/
+        /* Spacer(
+             modifier = Modifier.fillMaxHeight().width(5.dp)
+         )*/
 
         Column(
             modifier = Modifier.weight(0.75f),
