@@ -7,7 +7,6 @@ import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.requestFocus
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -17,25 +16,22 @@ import com.developer.randomusers.model.getFullName
 
 private typealias MainActivityRule = AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>
 
-@DslMarker
-annotation class UserListsScreenRobot
 
 fun launchUserLists(
     rule: MainActivityRule,
-    block: UserListsRobot.() -> Unit
-): UserListsRobot {
-    return UserListsRobot(rule).apply(block)
+    block: RandomUsersRobot.() -> Unit
+): RandomUsersRobot {
+    return RandomUsersRobot(rule).apply(block)
 }
 
-@UserListsScreenRobot
-class UserListsRobot(
+class RandomUsersRobot(
     private val rule: MainActivityRule
 ) {
 
     infix fun verify(
-        function: UserListsVerificationRobot.() -> Unit
-    ): UserListsVerificationRobot {
-        return UserListsVerificationRobot(rule).apply(function)
+        function: RandomUsersVerificationRobot.() -> Unit
+    ): RandomUsersVerificationRobot {
+        return RandomUsersVerificationRobot(rule).apply(function)
     }
 
     @OptIn(ExperimentalTestApi::class)
@@ -47,8 +43,7 @@ class UserListsRobot(
     }
 }
 
-@UserListsScreenRobot
-class UserListsVerificationRobot(
+class RandomUsersVerificationRobot(
     private val rule: MainActivityRule
 ) {
 

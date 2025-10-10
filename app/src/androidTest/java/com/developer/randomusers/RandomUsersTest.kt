@@ -16,7 +16,7 @@ import org.koin.dsl.module
 
 
 @RunWith(AndroidJUnit4::class)
-class UserListsScreenTest {
+class RandomUsersTest {
 
     private val userListsModule = module {
         single<RandomUserAPIClientInterface> {
@@ -77,6 +77,8 @@ class UserListsScreenTest {
         } verify {
             userFullNameAndTitleIsNotDisplayed(unusedUser)
             userEmailIsNotDisplayed(unusedUser)
+            userFullNameAndTitleIsNotDisplayed(fakeUser)
+            userFullNameAndTitleIsNotDisplayed(fakeUser)
         }
 
     }
