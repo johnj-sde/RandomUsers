@@ -40,12 +40,9 @@ class UserListsRobot(
 
     @OptIn(ExperimentalTestApi::class)
     fun typeSearchQuery(query: String) {
-        val searchPlaceHolderText = rule.activity.getString(R.string.search)
-        rule.waitUntilExactlyOneExists(hasText(searchPlaceHolderText))
         rule.onNodeWithTag("searchText")
             .requestFocus()
             .performTextInput(query)
-       // rule.onNodeWithTag("searchText").performImeAction()
 
     }
 }
