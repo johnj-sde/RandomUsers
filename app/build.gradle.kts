@@ -67,9 +67,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
@@ -90,13 +88,5 @@ dependencies {
     implementation(libs.room.runtime)
     ksp(libs.room.ksp)
 
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.junit.jupiter.api)
-
     testRuntimeOnly(libs.junit.jupiter.engine)
-  //  testImplementation(kotlin("test"))
-
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-
-
 }
