@@ -32,9 +32,6 @@ class RandomUsersTest {
             UserRepository(restClient = get(), database = get())
         }
 
-//        single<UserViewModel> {
-//            UserViewModel(userRepository = get())
-//        }
     }
 
     @get:Rule(order = 1)
