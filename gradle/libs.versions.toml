@@ -20,13 +20,10 @@ coil = "3.0.4"
 roomVerison = "2.7.1"
 kotlinxCoroutinesTestVersion = "1.10.2"
 junitJupiterVersion = "5.11.0"
-uiTestJunit4 = "1.9.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 #junit = { group = "junit", name = "junit", version.ref = "junit" }
-#androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -61,7 +58,10 @@ room-ksp = {group = "androidx.room", name = "room-compiler", version.ref="roomVe
 kotlinx-coroutines-test = {group = "org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version.ref="kotlinxCoroutinesTestVersion"}
 junit-jupiter-api = {group = "org.junit.jupiter", name="junit-jupiter-api", version.ref="junitJupiterVersion"}
 junit-jupiter-engine = {module = "org.junit.jupiter:junit-jupiter-engine", version.ref="junitJupiterVersion"}
-androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "uiTestJunit4" }
+
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
 
 [plugins]

@@ -55,6 +55,13 @@ android {
         }
     }
 
+    packaging {
+        resources {
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE-notice.md"
+        }
+    }
+
 }
 
 dependencies {
@@ -89,5 +96,6 @@ dependencies {
     ksp(libs.room.ksp)
 
     testImplementation(projects.testutils)
+    androidTestImplementation(projects.testutils)
     testRuntimeOnly(libs.junit.jupiter.engine)
 }
