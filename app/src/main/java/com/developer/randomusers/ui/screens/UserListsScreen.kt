@@ -68,7 +68,7 @@ fun UserListScreen(
     val usersState by viewModel.usersState
         .collectAsStateWithLifecycle()
 
-    val debouncedSearchText by viewModel.debouncedUserInputTextForSearch.collectAsStateWithLifecycle()
+   // val debouncedSearchText by viewModel.debouncedUserInputTextForSearch.collectAsStateWithLifecycle()
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
 
     Column(
@@ -95,7 +95,7 @@ fun UserListScreen(
             navigateTo = navigateTo,
             fetchUsers = viewModel::fetchUsers,
             deleteUser = viewModel::deleteUser,
-            searchText = debouncedSearchText
+            searchText = searchText
         )
 
     }
