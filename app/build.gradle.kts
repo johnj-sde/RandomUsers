@@ -88,5 +88,6 @@ dependencies {
     implementation(libs.room.runtime)
     ksp(libs.room.ksp)
 
+    testImplementation(projects.testutils)
     testRuntimeOnly(libs.junit.jupiter.engine)
 }

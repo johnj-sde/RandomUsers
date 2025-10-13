@@ -36,13 +36,14 @@ android {
 dependencies {
 
     implementation(projects.app)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.retrofit)
 
     api(libs.kotlinx.coroutines.test)
     api(libs.junit.jupiter.api)
 
     api(libs.junit.jupiter.engine)
     api(libs.androidx.compose.ui.test.junit4)
-
 
     api(platform(libs.androidx.compose.bom))
 

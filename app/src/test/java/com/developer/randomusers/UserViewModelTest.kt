@@ -1,12 +1,8 @@
 package com.developer.randomusers
 
-import android.R
 import com.developer.randomusers.database.model.toUser
-import com.developer.randomusers.model.Id
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
-import com.developer.randomusers.network.model.ResultsAndInfoHttpResponse
-import com.developer.randomusers.network.model.toUserEntity
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.Dispatchers
