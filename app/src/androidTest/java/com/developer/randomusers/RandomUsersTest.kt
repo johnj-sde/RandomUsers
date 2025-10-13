@@ -9,6 +9,7 @@ import com.developer.randomusers.model.User
 import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.repository.UserRepositoryInterface
+import com.developer.randomusers.ui.viewmodel.UserViewModel
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,6 +30,10 @@ class RandomUsersTest {
 
         single<UserRepositoryInterface> {
             UserRepository(restClient = get(), database = get())
+        }
+
+        single<UserViewModel> {
+            UserViewModel(userRepository = get())
         }
     }
 
