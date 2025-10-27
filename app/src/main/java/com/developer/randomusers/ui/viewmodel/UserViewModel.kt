@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -76,7 +75,7 @@ class UserViewModel(
         }
         job = viewModelScope.launch {
             delay(700L)
-            userRepository.updateUserSearch(userInput)
+            userRepository.filterUsersByUserSearchTextAfterDebounce(userInput)
         }
 
     }
