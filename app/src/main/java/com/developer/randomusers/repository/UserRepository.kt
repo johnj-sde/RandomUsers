@@ -3,18 +3,25 @@ package com.developer.randomusers.repository
 import com.developer.randomusers.database.AppDatabaseInterface
 import com.developer.randomusers.database.model.toUser
 import com.developer.randomusers.model.User
+import com.developer.randomusers.model.matchesName
 import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.network.model.UserHttpResponse
 import com.developer.randomusers.network.model.toUserEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 
 
 class UserRepository(
     val restClient: RandomUserAPIClientInterface,
     val database: AppDatabaseInterface
 ): UserRepositoryInterface {
-    private val users = database.userDao().getAll().map {
+
+    private val _userSearchFilter = MutableStateFlow("")
+
+    private val _allUsers = database.userDao().getAll().map {
         list ->
         list
             .filter { userEntity ->
@@ -23,8 +30,16 @@ class UserRepository(
             .map { userEntity -> userEntity.toUser() }
     }
 
+    private val _users = combine(_userSearchFilter, _allUsers) { filter, allUsers ->
+        allUsers.filter { user -> user.matchesName(filter) }
+    }
+
+    override fun updateUserSearch(filter: String) {
+        _userSearchFilter.update { filter }
+    }
+
     override fun getUsers(): Flow<List<User>> {
-        return users
+        return _users
     }
 
     override suspend fun loadUsers() {

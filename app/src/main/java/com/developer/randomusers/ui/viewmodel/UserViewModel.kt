@@ -7,11 +7,14 @@ import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.repository.UserRepositoryInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,16 +29,7 @@ class UserViewModel(
 
     val userInputTextForSearch: StateFlow<String>
         get() = _userInputTextForSearch.asStateFlow()
-    private val _userInputTextForSearch = MutableStateFlow<String>("")
-
-//    @OptIn(FlowPreview::class)
-//    val debouncedUserInputTextForSearch: StateFlow<String> = userInputTextForSearch
-//        .debounce(300L)
-//        .stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
-//            initialValue = ""
-//        )
+    private val _userInputTextForSearch = MutableStateFlow("")
 
     private val _errorState = MutableStateFlow<Throwable?>(null)
 
@@ -72,8 +66,18 @@ class UserViewModel(
         }
     }
 
+    private var job: Job? = null
+
     fun updateSearchText(userInput: String){
         _userInputTextForSearch.update { userInput }
+        if (job?.isActive == true) {
+            job?.cancel()
+            job = null
+        }
+        job = viewModelScope.launch {
+            delay(700L)
+            userRepository.updateUserSearch(userInput)
+        }
 
     }
 
