@@ -1,6 +1,7 @@
 package com.developer.randomusers
 
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -12,8 +13,6 @@ import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.repository.UserRepositoryInterface
-import com.developer.randomusers.ui.viewmodel.UserViewModel
-import okhttp3.internal.wait
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -97,6 +96,27 @@ class RandomUsersTest {
             rule.waitUntilExactlyOneExists(hasText(fakeUser.getFullName()))
             userGenderIsDisplayed(fakeUser)
             userFullNameAndTitleIsDisplayed(fakeUser)
+        }
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun should_swipe_left_to_show_delete_icon() {
+        launchUserLists(rule) {
+            swipeLeftOnUser(fakeUser)
+        } verify {
+            rule.waitUntilExactlyOneExists(hasTestTag("deleteIcon"))
+            deleteIconIsDisplayed()
+        }
+    }
+
+    @Test
+    fun should_swipe_right_and_fail_to_show_delete_icon() {
+        launchUserLists(rule) {
+            swipeRightOnUser(fakeUser)
+        } verify {
+            //rule.waitUntilExactlyOneExists(hasTestTag("deleteIcon"))
+            deleteIconIsNotDisplayed()
         }
     }
 

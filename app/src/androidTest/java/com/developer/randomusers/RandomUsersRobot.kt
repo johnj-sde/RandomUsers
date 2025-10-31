@@ -2,6 +2,8 @@ package com.developer.randomusers
 
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertAll
+import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.assertWidthIsEqualTo
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithText
@@ -9,7 +11,11 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.requestFocus
+import androidx.compose.ui.test.swipeLeft
+import androidx.compose.ui.test.swipeRight
+import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.getFullName
@@ -46,6 +52,19 @@ class RandomUsersRobot(
     fun tapOnUser(user: User) {
         rule.onNodeWithText(user.getFullName()).performClick()
     }
+
+    fun swipeLeftOnUser(user: User) {
+        rule.onNodeWithText(user.getFullName()).performTouchInput {
+            swipeLeft()
+        }
+    }
+
+    fun swipeRightOnUser(user: User) {
+        rule.onNodeWithText(user.getFullName()).performTouchInput {
+            swipeRight()
+        }
+    }
+
 }
 
 class RandomUsersVerificationRobot(
@@ -78,5 +97,12 @@ class RandomUsersVerificationRobot(
         }
     }
 
+    fun deleteIconIsDisplayed() {
+        rule.onNodeWithTag("deleteIcon").assertExists()
+    }
+
+    fun deleteIconIsNotDisplayed() {
+        rule.onNodeWithTag("deleteIconContainer").assertWidthIsEqualTo(0.dp)
+    }
 
 }
