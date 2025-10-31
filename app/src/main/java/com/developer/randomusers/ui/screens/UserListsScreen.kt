@@ -68,7 +68,6 @@ fun UserListScreen(
     val usersState by viewModel.usersState
         .collectAsStateWithLifecycle()
 
-   // val debouncedSearchText by viewModel.debouncedUserInputTextForSearch.collectAsStateWithLifecycle()
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
 
     Column(
@@ -94,8 +93,7 @@ fun UserListScreen(
             users = usersState.users,
             navigateTo = navigateTo,
             fetchUsers = viewModel::fetchUsers,
-            deleteUser = viewModel::deleteUser,
-            searchText = searchText
+            deleteUser = viewModel::deleteUser
         )
 
     }
@@ -107,8 +105,7 @@ fun UserListComposable(
     users: List<User>,
     navigateTo: (Int) -> Unit,
     fetchUsers: () -> Unit,
-    deleteUser: (User) -> Unit,
-    searchText: String
+    deleteUser: (User) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -129,10 +126,7 @@ fun UserListComposable(
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         itemsIndexed(
-            items = users
-                .filter { user ->
-                    user.matchesName(searchText)
-                },
+            items = users,
             key = {_, user ->"${user.id.name}_${user.id.value}"}
         ) { index, user ->
             UserListRow(

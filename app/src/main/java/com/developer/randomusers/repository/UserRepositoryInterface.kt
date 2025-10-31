@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepositoryInterface {
 
+    fun filterUsersByUserSearchTextAfterDebounce(userSearch: String)
+
     fun getUsers(): Flow<List<User>>
 
     suspend fun loadUsers()
