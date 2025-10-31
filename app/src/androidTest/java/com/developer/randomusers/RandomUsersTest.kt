@@ -1,15 +1,19 @@
 package com.developer.randomusers
 
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.developer.randomusers.database.AppDatabaseInterface
 import com.developer.randomusers.model.Id
 import com.developer.randomusers.model.Name
 import com.developer.randomusers.model.User
+import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.repository.UserRepositoryInterface
 import com.developer.randomusers.ui.viewmodel.UserViewModel
+import okhttp3.internal.wait
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -82,7 +86,18 @@ class RandomUsersTest {
             userFullNameAndTitleIsNotDisplayed(fakeUser)
             userFullNameAndTitleIsNotDisplayed(fakeUser)
         }
+    }
 
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun should_open_user_details_screen() {
+        launchUserLists(rule) {
+            tapOnUser(fakeUser)
+        } verify {
+            rule.waitUntilExactlyOneExists(hasText(fakeUser.getFullName()))
+            userGenderIsDisplayed(fakeUser)
+            userFullNameAndTitleIsDisplayed(fakeUser)
+        }
     }
 
 }

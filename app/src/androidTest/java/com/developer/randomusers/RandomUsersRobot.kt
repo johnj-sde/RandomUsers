@@ -7,6 +7,7 @@ import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.requestFocus
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -41,6 +42,10 @@ class RandomUsersRobot(
             .performTextInput(query)
 
     }
+
+    fun tapOnUser(user: User) {
+        rule.onNodeWithText(user.getFullName()).performClick()
+    }
 }
 
 class RandomUsersVerificationRobot(
@@ -59,12 +64,18 @@ class RandomUsersVerificationRobot(
 
     fun userEmailIsNotDisplayed(user: User) {
         user.email?.let { email ->
-            rule.onNodeWithText(user.email).assertDoesNotExist()
+            rule.onNodeWithText(email).assertDoesNotExist()
         }
     }
 
     fun userFullNameAndTitleIsNotDisplayed(user: User) {
         rule.onNodeWithText(user.getFullName()).assertDoesNotExist()
+    }
+
+    fun userGenderIsDisplayed(user: User) {
+        user.gender?.let { gender ->
+            rule.onNodeWithText(gender).assertExists()
+        }
     }
 
 
