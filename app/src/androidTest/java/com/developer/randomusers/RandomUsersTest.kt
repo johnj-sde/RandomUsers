@@ -110,15 +110,18 @@ class RandomUsersTest {
         }
     }
 
+    @OptIn(ExperimentalTestApi::class)
     @Test
-    fun should_swipe_right_and_fail_to_show_delete_icon() {
+    fun should_delete_user_on_tap_delete_icon(){
         launchUserLists(rule) {
-            swipeRightOnUser(fakeUser)
+            swipeLeftOnUser(fakeUser)
+            rule.waitUntilExactlyOneExists(hasTestTag("deleteIcon"))
+            tapDeleteIcon()
         } verify {
-            //rule.waitUntilExactlyOneExists(hasTestTag("deleteIcon"))
-            deleteIconIsNotDisplayed()
+            userFullNameAndTitleIsNotDisplayed(fakeUser)
         }
     }
+
 
 }
 
