@@ -69,10 +69,7 @@ class UserViewModel(
 
     fun updateSearchText(userInput: String){
         _userInputTextForSearch.update { userInput }
-        if (job?.isActive == true) {
-            job?.cancel()
-            job = null
-        }
+        job?.cancel()
         job = viewModelScope.launch {
             delay(700L)
             userRepository.filterUsersByUserSearchTextAfterDebounce(userInput)
