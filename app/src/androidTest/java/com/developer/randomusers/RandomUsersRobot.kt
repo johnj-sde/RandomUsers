@@ -2,6 +2,7 @@ package com.developer.randomusers
 
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertAll
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithText
@@ -27,6 +28,7 @@ fun launchUserLists(
     return RandomUsersRobot(rule).apply(block)
 }
 
+@OptIn(ExperimentalTestApi::class)
 class RandomUsersRobot(
     private val rule: MainActivityRule
 ) {
@@ -42,17 +44,21 @@ class RandomUsersRobot(
         rule.onNodeWithTag("searchText")
             .requestFocus()
             .performTextInput(query)
+        rule.waitUntilDoesNotExist(hasText(query, substring = true))
+       // rule.waitUntil(10_000L) { true}
 
     }
 
     fun tapOnUser(user: User) {
         rule.onNodeWithText(user.getFullName()).performClick()
+        rule.waitUntilExactlyOneExists(hasText(fakeUser.getFullName()))
     }
 
     fun swipeLeftOnUser(user: User) {
         rule.onNodeWithText(user.getFullName()).performTouchInput {
             swipeLeft()
         }
+        rule.waitUntilExactlyOneExists(hasTestTag("deleteIcon"))
     }
 
     fun tapDeleteIcon(){

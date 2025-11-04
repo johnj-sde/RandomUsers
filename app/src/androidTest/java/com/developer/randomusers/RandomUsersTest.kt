@@ -93,7 +93,6 @@ class RandomUsersTest {
         launchUserLists(rule) {
             tapOnUser(fakeUser)
         } verify {
-            rule.waitUntilExactlyOneExists(hasText(fakeUser.getFullName()))
             userGenderIsDisplayed(fakeUser)
             userFullNameAndTitleIsDisplayed(fakeUser)
         }
@@ -105,7 +104,6 @@ class RandomUsersTest {
         launchUserLists(rule) {
             swipeLeftOnUser(fakeUser)
         } verify {
-            rule.waitUntilExactlyOneExists(hasTestTag("deleteIcon"))
             deleteIconIsDisplayed()
         }
     }
@@ -115,7 +113,6 @@ class RandomUsersTest {
     fun should_delete_user_on_tap_delete_icon(){
         launchUserLists(rule) {
             swipeLeftOnUser(fakeUser)
-            rule.waitUntilExactlyOneExists(hasTestTag("deleteIcon"))
             tapDeleteIcon()
         } verify {
             userFullNameAndTitleIsNotDisplayed(fakeUser)
