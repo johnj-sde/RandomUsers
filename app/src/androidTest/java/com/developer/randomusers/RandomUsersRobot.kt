@@ -7,8 +7,11 @@ import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.requestFocus
+import androidx.compose.ui.test.swipeLeft
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.getFullName
@@ -41,6 +44,21 @@ class RandomUsersRobot(
             .performTextInput(query)
 
     }
+
+    fun tapOnUser(user: User) {
+        rule.onNodeWithText(user.getFullName()).performClick()
+    }
+
+    fun swipeLeftOnUser(user: User) {
+        rule.onNodeWithText(user.getFullName()).performTouchInput {
+            swipeLeft()
+        }
+    }
+
+    fun tapDeleteIcon(){
+        rule.onNodeWithTag("deleteIcon").performClick()
+    }
+
 }
 
 class RandomUsersVerificationRobot(
@@ -59,7 +77,7 @@ class RandomUsersVerificationRobot(
 
     fun userEmailIsNotDisplayed(user: User) {
         user.email?.let { email ->
-            rule.onNodeWithText(user.email).assertDoesNotExist()
+            rule.onNodeWithText(email).assertDoesNotExist()
         }
     }
 
@@ -67,5 +85,14 @@ class RandomUsersVerificationRobot(
         rule.onNodeWithText(user.getFullName()).assertDoesNotExist()
     }
 
+    fun userGenderIsDisplayed(user: User) {
+        user.gender?.let { gender ->
+            rule.onNodeWithText(gender).assertExists()
+        }
+    }
+
+    fun deleteIconIsDisplayed() {
+        rule.onNodeWithTag("deleteIcon").assertExists()
+    }
 
 }

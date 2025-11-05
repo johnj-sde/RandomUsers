@@ -1,15 +1,18 @@
 package com.developer.randomusers
 
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.developer.randomusers.database.AppDatabaseInterface
 import com.developer.randomusers.model.Id
 import com.developer.randomusers.model.Name
 import com.developer.randomusers.model.User
+import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.repository.UserRepositoryInterface
-import com.developer.randomusers.ui.viewmodel.UserViewModel
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -82,8 +85,43 @@ class RandomUsersTest {
             userFullNameAndTitleIsNotDisplayed(fakeUser)
             userFullNameAndTitleIsNotDisplayed(fakeUser)
         }
-
     }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun should_open_user_details_screen() {
+        launchUserLists(rule) {
+            tapOnUser(fakeUser)
+        } verify {
+            rule.waitUntilExactlyOneExists(hasText(fakeUser.getFullName()))
+            userGenderIsDisplayed(fakeUser)
+            userFullNameAndTitleIsDisplayed(fakeUser)
+        }
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun should_swipe_left_to_show_delete_icon() {
+        launchUserLists(rule) {
+            swipeLeftOnUser(fakeUser)
+        } verify {
+            rule.waitUntilExactlyOneExists(hasTestTag("deleteIcon"))
+            deleteIconIsDisplayed()
+        }
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun should_delete_user_on_tap_delete_icon(){
+        launchUserLists(rule) {
+            swipeLeftOnUser(fakeUser)
+            rule.waitUntilExactlyOneExists(hasTestTag("deleteIcon"))
+            tapDeleteIcon()
+        } verify {
+            userFullNameAndTitleIsNotDisplayed(fakeUser)
+        }
+    }
+
 
 }
 

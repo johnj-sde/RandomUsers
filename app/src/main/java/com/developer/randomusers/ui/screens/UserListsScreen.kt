@@ -171,7 +171,7 @@ fun UserListRow(
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                modifier = Modifier.fillMaxSize(0.5f).clickable(onClick = {onClickDeleteIcon()}),
+                modifier = Modifier.fillMaxSize(0.5f).clickable(onClick = {onClickDeleteIcon()}).testTag("deleteIcon"),
                 contentDescription = null,
                 tint = Color.Red
             )
