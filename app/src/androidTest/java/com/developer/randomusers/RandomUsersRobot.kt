@@ -50,20 +50,16 @@ class RandomUsersRobot(
             .requestFocus()
             .performTextInput(query)
 
-        //OPTION 1:
-//        rule.waitUntil(5_000L) {
-//            if (isSearchForMatch) {
-//                rule.onNodeWithText(query, substring = true, ignoreCase = true).isDisplayed()
-//            } else {
-//                rule.onNodeWithText(query, substring = true, ignoreCase = true).isNotDisplayed()
-//            }
+//        OPTION 1:
+//        if (isSearchForMatch) {
+//            rule.waitUntilExactlyOneExists(hasText(query, substring = true, ignoreCase = true), timeoutMillis = 5_000L)
+//        } else {
+//            rule.waitUntilDoesNotExist(hasText(query, substring = true, ignoreCase = true), timeoutMillis = 5_000L)
 //        }
 
         //OPTION 2:
         if (!isSearchForMatch) {
-            rule.waitUntil(5_000L) {
-                rule.onNodeWithText(query, substring = true, ignoreCase = true).isNotDisplayed()
-            }
+            rule.waitUntilDoesNotExist(hasText(query, substring = true, ignoreCase = true), timeoutMillis = 5_000L)
         }
 
     }
