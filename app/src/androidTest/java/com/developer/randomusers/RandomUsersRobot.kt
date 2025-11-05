@@ -2,10 +2,15 @@ package com.developer.randomusers
 
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertAll
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onChildren
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -40,12 +45,26 @@ class RandomUsersRobot(
     }
 
     @OptIn(ExperimentalTestApi::class)
-    fun typeSearchQuery(query: String) {
+    fun typeSearchQuery(query: String, isSearchForMatch: Boolean) {
         rule.onNodeWithTag("searchText")
             .requestFocus()
             .performTextInput(query)
-        rule.waitUntilDoesNotExist(hasText(query, substring = true), timeoutMillis = 10_000L)
-       // rule.waitUntil(10_000L) { true}
+
+        //OPTION 1:
+//        rule.waitUntil(5_000L) {
+//            if (isSearchForMatch) {
+//                rule.onNodeWithText(query, substring = true, ignoreCase = true).isDisplayed()
+//            } else {
+//                rule.onNodeWithText(query, substring = true, ignoreCase = true).isNotDisplayed()
+//            }
+//        }
+
+        //OPTION 2:
+        if (!isSearchForMatch) {
+            rule.waitUntil(5_000L) {
+                rule.onNodeWithText(query, substring = true, ignoreCase = true).isNotDisplayed()
+            }
+        }
 
     }
 

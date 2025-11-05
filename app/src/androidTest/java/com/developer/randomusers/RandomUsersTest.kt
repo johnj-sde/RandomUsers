@@ -56,7 +56,7 @@ class RandomUsersTest {
         val queryMatchingFirstUser = fakeUser.name?.first
         queryMatchingFirstUser?.let { name ->
             launchUserLists(rule) {
-                typeSearchQuery(name)
+                typeSearchQuery(name, true)
             } verify {
                 userFullNameAndTitleIsDisplayed(fakeUser)
                 userEmailIsDisplayed(fakeUser)
@@ -78,7 +78,7 @@ class RandomUsersTest {
         )
         val unusedName = "Unused Name"
         launchUserLists(rule) {
-            typeSearchQuery(unusedName)
+            typeSearchQuery(unusedName, false)
         } verify {
             userFullNameAndTitleIsNotDisplayed(unusedUser)
             userEmailIsNotDisplayed(unusedUser)
