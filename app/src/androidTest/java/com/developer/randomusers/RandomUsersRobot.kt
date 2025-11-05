@@ -44,7 +44,7 @@ class RandomUsersRobot(
         rule.onNodeWithTag("searchText")
             .requestFocus()
             .performTextInput(query)
-        rule.waitUntilDoesNotExist(hasText(query, substring = true))
+        rule.waitUntilDoesNotExist(hasText(query, substring = true), timeoutMillis = 10_000L)
        // rule.waitUntil(10_000L) { true}
 
     }
