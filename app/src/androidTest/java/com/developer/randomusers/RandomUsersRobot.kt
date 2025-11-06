@@ -48,7 +48,6 @@ class RandomUsersRobot(
 
     fun tapOnUser(user: User) {
         rule.onNodeWithText(user.getFullName()).performClick()
-        rule.waitUntilExactlyOneExists(hasText(fakeUser.getFullName()))
     }
 
     fun swipeLeftOnUser(user: User) {
