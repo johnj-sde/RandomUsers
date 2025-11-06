@@ -2,15 +2,10 @@ package com.developer.randomusers
 
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertAll
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.isDisplayed
-import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onChildren
-import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -45,23 +40,10 @@ class RandomUsersRobot(
     }
 
     @OptIn(ExperimentalTestApi::class)
-    fun typeSearchQuery(query: String, isSearchForMatch: Boolean) {
+    fun typeSearchQuery(query: String) {
         rule.onNodeWithTag("searchText")
             .requestFocus()
             .performTextInput(query)
-
-//        OPTION 1:
-//        if (isSearchForMatch) {
-//            rule.waitUntilExactlyOneExists(hasText(query, substring = true, ignoreCase = true), timeoutMillis = 5_000L)
-//        } else {
-//            rule.waitUntilDoesNotExist(hasText(query, substring = true, ignoreCase = true), timeoutMillis = 5_000L)
-//        }
-
-        //OPTION 2:
-        if (!isSearchForMatch) {
-            rule.waitUntilDoesNotExist(hasText(query, substring = true, ignoreCase = true), timeoutMillis = 5_000L)
-        }
-
     }
 
     fun tapOnUser(user: User) {
@@ -82,32 +64,38 @@ class RandomUsersRobot(
 
 }
 
+@OptIn(ExperimentalTestApi::class)
 class RandomUsersVerificationRobot(
     private val rule: MainActivityRule
 ) {
 
     fun userEmailIsDisplayed(user: User) {
         user.email?.let { email ->
+            rule.waitUntilAtLeastOneExists(hasText(email, ignoreCase = true, substring = true))
             rule.onAllNodesWithText(email).assertAll(hasText(email))
         }
     }
 
     fun userFullNameAndTitleIsDisplayed(user: User) {
+        rule.waitUntilAtLeastOneExists(hasText(user.getFullName(), ignoreCase = true, substring = true))
         rule.onAllNodesWithText(user.getFullName()).assertAll(hasText(user.getFullName()))
     }
 
     fun userEmailIsNotDisplayed(user: User) {
         user.email?.let { email ->
+            rule.waitUntilDoesNotExist(hasText(email, ignoreCase = true, substring = true))
             rule.onNodeWithText(email).assertDoesNotExist()
         }
     }
 
     fun userFullNameAndTitleIsNotDisplayed(user: User) {
+        rule.waitUntilDoesNotExist(hasText(user.getFullName(), ignoreCase = true, substring = true))
         rule.onNodeWithText(user.getFullName()).assertDoesNotExist()
     }
 
     fun userGenderIsDisplayed(user: User) {
         user.gender?.let { gender ->
+            rule.waitUntilAtLeastOneExists(hasText(gender, ignoreCase = true, substring = true))
             rule.onNodeWithText(gender).assertExists()
         }
     }

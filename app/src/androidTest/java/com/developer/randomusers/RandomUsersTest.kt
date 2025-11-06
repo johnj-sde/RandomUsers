@@ -1,15 +1,12 @@
 package com.developer.randomusers
 
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.developer.randomusers.database.AppDatabaseInterface
 import com.developer.randomusers.model.Id
 import com.developer.randomusers.model.Name
 import com.developer.randomusers.model.User
-import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.repository.UserRepositoryInterface
@@ -56,7 +53,7 @@ class RandomUsersTest {
         val queryMatchingFirstUser = fakeUser.name?.first
         queryMatchingFirstUser?.let { name ->
             launchUserLists(rule) {
-                typeSearchQuery(name, true)
+                typeSearchQuery(name)
             } verify {
                 userFullNameAndTitleIsDisplayed(fakeUser)
                 userEmailIsDisplayed(fakeUser)
@@ -78,12 +75,12 @@ class RandomUsersTest {
         )
         val unusedName = "Unused Name"
         launchUserLists(rule) {
-            typeSearchQuery(unusedName, false)
+            typeSearchQuery(unusedName)
         } verify {
             userFullNameAndTitleIsNotDisplayed(unusedUser)
             userEmailIsNotDisplayed(unusedUser)
             userFullNameAndTitleIsNotDisplayed(fakeUser)
-            userFullNameAndTitleIsNotDisplayed(fakeUser)
+            userEmailIsNotDisplayed(fakeUser)
         }
     }
 
