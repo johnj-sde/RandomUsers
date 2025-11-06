@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
@@ -14,6 +15,7 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.requestFocus
 import androidx.compose.ui.test.swipeLeft
+import androidx.compose.ui.test.swipeRight
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.getFullName
@@ -56,6 +58,13 @@ class RandomUsersRobot(
             swipeLeft()
         }
         rule.waitUntilExactlyOneExists(hasTestTag("deleteIcon"))
+    }
+
+    fun swipeRightOnUser(user: User) {
+        rule.onNodeWithText(user.getFullName()).performTouchInput {
+            swipeRight()
+        }
+        rule.waitUntilDoesNotExist(hasTestTag("deleteIcon"))
     }
 
     fun tapDeleteIcon(){
@@ -102,6 +111,10 @@ class RandomUsersVerificationRobot(
 
     fun deleteIconIsDisplayed() {
         rule.onNodeWithTag("deleteIcon").isDisplayed()
+    }
+
+    fun deleteIconIsNotDisplayed() {
+        rule.onNodeWithTag("deleteIcon").isNotDisplayed()
     }
 
 }

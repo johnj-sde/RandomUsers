@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -153,6 +154,7 @@ fun UserListRow(
     onClickListItem: () -> Unit,
 ) {
     var iconContainerSize by remember { mutableStateOf(IntSize.Zero) }
+    val deleteIconVisibleState = remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -169,17 +171,20 @@ fun UserListRow(
                 },
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                modifier = Modifier.fillMaxSize(0.5f).clickable(onClick = {onClickDeleteIcon()}).testTag("deleteIcon"),
-                contentDescription = null,
-                tint = Color.Red
-            )
+            if (deleteIconVisibleState.value) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    modifier = Modifier.fillMaxSize(0.5f).clickable(onClick = {onClickDeleteIcon()}).testTag("deleteIcon"),
+                    contentDescription = null,
+                    tint = Color.Red
+                )
+            }
         }
         UserListItem(
             user,
             iconContainerSize,
-            onClickListItem
+            onClickListItem,
+            deleteIconVisibleState
         )
     }
 }
@@ -188,7 +193,8 @@ fun UserListRow(
 fun UserListItem(
     user: User,
     deleteIconContainerSize: IntSize,
-    onClickListItem: () -> Unit
+    onClickListItem: () -> Unit,
+    deleteIconVisibleState: MutableState<Boolean>
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
 
@@ -210,8 +216,10 @@ fun UserListItem(
                 state = rememberDraggableState { delta ->
                     if (offsetX == 0f && delta < 0) {
                         offsetX = offsetLimit
+                        deleteIconVisibleState.value = true
                     } else if (offsetX == offsetLimit && delta > 0) {
                         offsetX = 0f
+                        deleteIconVisibleState.value = false
                     }
                 }
             )
