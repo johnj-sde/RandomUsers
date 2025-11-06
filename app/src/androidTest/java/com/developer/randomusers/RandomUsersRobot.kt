@@ -4,6 +4,7 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
@@ -100,7 +101,7 @@ class RandomUsersVerificationRobot(
     }
 
     fun deleteIconIsDisplayed() {
-        rule.onNodeWithTag("deleteIcon").assertExists()
+        rule.onNodeWithTag("deleteIcon").isDisplayed()
     }
 
 }
