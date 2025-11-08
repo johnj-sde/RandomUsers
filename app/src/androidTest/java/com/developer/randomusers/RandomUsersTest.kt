@@ -105,6 +105,25 @@ class RandomUsersTest {
         }
     }
 
+    @Test
+    fun should_swipe_right_on_collapsed_item_have_no_effect() {
+        launchUserLists(rule) {
+            swipeRightOnUser(fakeUser)
+        } verify {
+            deleteIconIsNotDisplayed()
+        }
+    }
+
+    @Test
+    fun should_swipe_right_on_expanded_item_hide_delete_icon() {
+        launchUserLists(rule) {
+            swipeLeftOnUser(fakeUser)
+            swipeRightOnUser(fakeUser)
+        } verify {
+            deleteIconIsNotDisplayed()
+        }
+    }
+
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun should_delete_user_on_tap_delete_icon(){
