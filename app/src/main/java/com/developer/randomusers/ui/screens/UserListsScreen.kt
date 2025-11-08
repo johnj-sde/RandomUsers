@@ -184,7 +184,9 @@ fun UserListRow(
             user,
             iconContainerSize,
             onClickListItem,
-            deleteIconVisibleState
+            onDeleteIconVisibilityChanged = { isVisible ->
+                deleteIconVisibleState.value = isVisible
+            }
         )
     }
 }
@@ -194,7 +196,7 @@ fun UserListItem(
     user: User,
     deleteIconContainerSize: IntSize,
     onClickListItem: () -> Unit,
-    deleteIconVisibleState: MutableState<Boolean>
+    onDeleteIconVisibilityChanged: (Boolean) -> Unit
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
 
@@ -216,10 +218,10 @@ fun UserListItem(
                 state = rememberDraggableState { delta ->
                     if (offsetX == 0f && delta < 0) {
                         offsetX = offsetLimit
-                        deleteIconVisibleState.value = true
+                        onDeleteIconVisibilityChanged(true)
                     } else if (offsetX == offsetLimit && delta > 0) {
                         offsetX = 0f
-                        deleteIconVisibleState.value = false
+                        onDeleteIconVisibilityChanged(false)
                     }
                 }
             )
