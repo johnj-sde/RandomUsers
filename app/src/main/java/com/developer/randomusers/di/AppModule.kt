@@ -26,7 +26,6 @@ val appModules = module {
         Retrofit.Builder()
             .baseUrl(API_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            // .addConverterFactory(MoshiConverterFactory.create())
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
             .create(RandomUserAPIClient::class.java)
