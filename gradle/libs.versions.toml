@@ -12,7 +12,7 @@ composeBom = "2024.09.00"
 
 koinVersion = "3.5.3"
 retrofitVersion = "2.9.0"
-navigationCompose = "2.7.7"
+navigationCompose = "2.8.0"
 coil = "3.0.4"
 roomVerison = "2.7.1"
 kotlinxCoroutinesTestVersion = "1.10.2"
