@@ -78,19 +78,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.koin)
-    implementation(libs.koin.compose)
+    implementation(libs.bundles.koin)
 
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.moshi)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.retrofit.serialization.converter)
+    implementation(libs.bundles.retrofit)
+
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.coil.compose)
-    implementation(libs.coil.network)
+    implementation(libs.bundles.coil)
 
     implementation(libs.room.runtime)
     ksp(libs.room.ksp)
