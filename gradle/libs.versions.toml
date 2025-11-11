@@ -17,6 +17,7 @@ coil = "3.0.4"
 roomVerison = "2.7.1"
 kotlinxCoroutinesTestVersion = "1.10.2"
 junitJupiterVersion = "5.11.0"
+kspPluginVersion = "2.0.21-1.0.27"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -69,4 +70,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = {id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 android-library = { id = "com.android.library", version.ref = "agp" }
+ksp = {id = "com.google.devtools.ksp", version.ref = "kspPluginVersion"}
 
