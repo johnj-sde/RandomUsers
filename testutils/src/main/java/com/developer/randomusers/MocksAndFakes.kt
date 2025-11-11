@@ -1,22 +1,11 @@
 package com.developer.randomusers
 
-import com.developer.randomusers.database.AppDatabaseInterface
-import com.developer.randomusers.database.dao.UserDao
-import com.developer.randomusers.database.model.UserEntity
 import com.developer.randomusers.database.model.toUser
-import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.network.model.IdHttpResponse
 import com.developer.randomusers.network.model.NameHttpResponse
 import com.developer.randomusers.network.model.ResultsAndInfoHttpResponse
 import com.developer.randomusers.network.model.UserHttpResponse
 import com.developer.randomusers.network.model.toUserEntity
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-import okhttp3.ResponseBody.Companion.toResponseBody
-import okio.IOException
-import retrofit2.HttpException
-import retrofit2.Response
 
 
 val fakeNameHttpResponse = NameHttpResponse(
@@ -73,70 +62,7 @@ val fakeNonEmptyNetworkResults = ResultsAndInfoHttpResponse(
     userHttpResponses = arrayListOf(fakeUserHttpResponse)
 )
 
-class InMemoryRESTClient(
-    private val expectedResults: List<UserHttpResponse> = emptyList()
-) : RandomUserAPIClientInterface {
-
-    private var isUnavailable = false
-    private var isOffline = false
-
-    override suspend fun fetchUsers(limit: Int): ResultsAndInfoHttpResponse {
-        if (isUnavailable) throw HttpException(Response.error<String>(401, "".toResponseBody()))
-        if (isOffline) throw IOException()
-        return ResultsAndInfoHttpResponse(
-            userHttpResponses = expectedResults
-        )
-    }
-
-    fun setUnavailable(){
-        isUnavailable = true
-    }
-
-    fun setOffline() {
-        isOffline = true
-    }
-
-}
-
 val fakeNonEmptyResponseRESTClient = InMemoryRESTClient(
     expectedResults =
         fakeNonEmptyNetworkResults.userHttpResponses
 )
-
-class FakeAppDatabase(val userDao: FakeUserDao): AppDatabaseInterface {
-    override fun userDao(): UserDao {
-        return userDao
-    }
-}
-
-class FakeUserDao(
-    storedUsers: List<UserEntity> = emptyList()
-): UserDao {
-
-    private val _allUsersFlow: MutableStateFlow<List<UserEntity>> = MutableStateFlow(storedUsers)
-
-    override fun getAll(): Flow<List<UserEntity>> {
-        println("\nin ${FakeUserDao::class.simpleName}: getAll users in FakeDao ${_allUsersFlow.value} \n")
-        return _allUsersFlow
-    }
-
-    override fun insertAll(users: List<UserEntity>) {
-        println("\nin ${FakeUserDao::class.simpleName}: inserting users in FakeDao $users \n")
-
-        val current = _allUsersFlow.value
-        val newList = current + users
-        _allUsersFlow.update { newList }
-
-        println("_allUsersFlow value : ${_allUsersFlow.value}")
-        println("")
-    }
-
-    override fun markUserWithIdAsDeleted(name: String, value: String) {
-        val current = _allUsersFlow.value
-        val newList = current.filter {
-                userEntity ->
-            !(userEntity.id.name==name && userEntity.id.value==value)
-        }
-        _allUsersFlow.update { newList }
-    }
-}
