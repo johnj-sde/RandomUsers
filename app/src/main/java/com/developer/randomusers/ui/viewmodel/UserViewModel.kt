@@ -49,7 +49,7 @@ class UserViewModel(
         viewModelScope.launch {
             withContext(dispatcher) {
                 try {
-                    userRepository.loadUsers()
+                    userRepository.fetchNewUsers()
                 } catch(e: Exception) {
                     _errorState.update { e }
                 }
@@ -72,7 +72,7 @@ class UserViewModel(
         job?.cancel()
         job = viewModelScope.launch {
             delay(700L)
-            userRepository.filterUsersByUserSearchTextAfterDebounce(userInput)
+            userRepository.filterUsersByUserSearchText(userInput)
         }
 
     }

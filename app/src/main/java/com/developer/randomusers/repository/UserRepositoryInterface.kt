@@ -5,11 +5,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepositoryInterface {
 
-    fun filterUsersByUserSearchTextAfterDebounce(userSearch: String)
+    fun filterUsersByUserSearchText(userSearch: String)
 
     fun getUsers(): Flow<List<User>>
 
-    suspend fun loadUsers()
+    suspend fun fetchNewUsers()
 
     fun deleteUser(user: User)
 }

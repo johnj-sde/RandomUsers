@@ -19,7 +19,7 @@ class UserRepository(
     val database: AppDatabaseInterface
 ): UserRepositoryInterface {
 
-    private val _debouncedUserSearchFilter = MutableStateFlow("")
+    private val _userSearchTextFilter = MutableStateFlow("")
 
     private val _allUsers = database.userDao().getAll().map {
         list ->
@@ -30,23 +30,23 @@ class UserRepository(
             .map { userEntity -> userEntity.toUser() }
     }
 
-    private val _users = combine(_debouncedUserSearchFilter, _allUsers) { filter, allUsers ->
+    private val _users = combine(_userSearchTextFilter, _allUsers) { filter, allUsers ->
         allUsers.filter { user -> user.matchesName(filter) }
     }
 
-    override fun filterUsersByUserSearchTextAfterDebounce(userSearch: String) {
-        _debouncedUserSearchFilter.update { userSearch }
+    override fun filterUsersByUserSearchText(userSearch: String) {
+        _userSearchTextFilter.update { userSearch }
     }
 
     override fun getUsers(): Flow<List<User>> {
         return _users
     }
 
-    override suspend fun loadUsers() {
-        fetchUsers()
+    override suspend fun fetchNewUsers() {
+        fetchUsersFromNetwork()
     }
 
-    private suspend fun fetchUsers() {
+    private suspend fun fetchUsersFromNetwork() {
         val result = runCatching { restClient.fetchUsers(40) }
         val latestUsersList = mutableListOf<UserHttpResponse>()
         if (result.isSuccess) {
