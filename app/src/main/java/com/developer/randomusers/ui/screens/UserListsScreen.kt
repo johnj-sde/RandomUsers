@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -28,11 +29,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -47,7 +48,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -56,14 +56,28 @@ import coil3.compose.AsyncImage
 import com.developer.randomusers.R
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.getFullName
-import com.developer.randomusers.model.matchesName
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 import kotlin.math.roundToInt
 
 @Composable
-fun UserListScreen(
+fun UserListScreenScaffold(
     viewModel: UserViewModel,
     navigateTo: (Int) -> Unit
+){
+    Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
+        UserListScreen(
+            viewModel = viewModel,
+            navigateTo = navigateTo,
+            paddingValues = paddingValues
+        )
+    }
+}
+
+@Composable
+fun UserListScreen(
+    viewModel: UserViewModel,
+    navigateTo: (Int) -> Unit,
+    paddingValues: PaddingValues
 ) {
 
     val usersState by viewModel.usersState
@@ -72,7 +86,7 @@ fun UserListScreen(
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(paddingValues)
     ) {
 
         TextField(
@@ -248,12 +262,7 @@ fun UserListItem(
                     contentScale = ContentScale.Fit
                 )
             }
-
-
         }
-        /* Spacer(
-             modifier = Modifier.fillMaxHeight().width(5.dp)
-         )*/
 
         Column(
             modifier = Modifier.weight(0.75f),

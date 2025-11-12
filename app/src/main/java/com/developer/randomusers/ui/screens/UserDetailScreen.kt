@@ -4,11 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,15 +27,26 @@ import com.developer.randomusers.model.getFullName
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 
 @Composable
-fun UserDetailScreen(
+fun UserDetailScreenScaffold(
     viewModel: UserViewModel,
     position: Int
+){
+    Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
+        UserDetailScreen(viewModel, position, paddingValues)
+    }
+}
+
+@Composable
+fun UserDetailScreen(
+    viewModel: UserViewModel,
+    position: Int,
+    paddingValues: PaddingValues
 ) {
     val state = viewModel.usersState.collectAsStateWithLifecycle()
     if (state.value.users.isNotEmpty() && position>=0) {
         val user = state.value.users[position]
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(paddingValues),
             verticalArrangement = Arrangement.Center
         ){
             Box (
@@ -87,22 +100,6 @@ fun UserDetailScreen(
                         textAlign = TextAlign.Center
                     )
                 }
-
-/*                if (user.registered != null && user.registered.date !=null) {
-                    Text(
-                        user.registered.date,
-                        textAlign = TextAlign.Center
-                    )
-                }*/
-
-                /*
-                val displayLocation = user.location?.displayLocation()
-                if (displayLocation!=null) {
-                    Text(
-                        text = displayLocation,
-                        textAlign = TextAlign.Center
-                    )
-                }*/
             }
         }
     }

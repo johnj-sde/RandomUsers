@@ -18,7 +18,7 @@ fun NavHostContainer(
     val navController = rememberNavController()
     NavHost(navController, startDestination= UserListScreen) {
         composable<UserListScreen>{
-            UserListScreen(
+            UserListScreenScaffold(
                 viewModel = userViewModel,
                 navigateTo = { position ->
                     navController.navigate(UserDetailScreen(position = position))
@@ -27,7 +27,7 @@ fun NavHostContainer(
         }
         composable<UserDetailScreen> { backStackEntry ->
             val userDetailScreen = backStackEntry.toRoute<UserDetailScreen>()
-            UserDetailScreen(
+            UserDetailScreenScaffold(
                 viewModel = userViewModel,
                 position = userDetailScreen.position
             )
