@@ -143,8 +143,8 @@ private fun UserListComposable(
         }
     }
 
-    LaunchedEffect(searchText) {
-        if (!searchText.isEmpty()) {
+    LaunchedEffect(users) {
+        if (searchText.isNotEmpty()) {
             lazyListState.scrollToItem(0)
         }
     }
