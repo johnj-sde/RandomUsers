@@ -117,6 +117,7 @@ private fun UserListScreen(
 
         UserListComposable(
             users = usersState.users,
+            searchText = searchText,
             navigateTo = navigateTo,
             fetchUsers = fetchUsers,
             deleteUser = deleteUser
@@ -129,6 +130,7 @@ private fun UserListScreen(
 @Composable
 private fun UserListComposable(
     users: List<User>,
+    searchText: String,
     navigateTo: (Int) -> Unit,
     fetchUsers: () -> Unit,
     deleteUser: (User) -> Unit
@@ -138,6 +140,12 @@ private fun UserListComposable(
     val isReadyToFetch by remember {
         derivedStateOf {
             lazyListState.isCloseToEnd(offset = 3)
+        }
+    }
+
+    LaunchedEffect(searchText) {
+        if (!searchText.isEmpty()) {
+            lazyListState.scrollToItem(0)
         }
     }
 
@@ -323,6 +331,7 @@ private fun UserListScreenPreview() {
 private fun UserListsComposablePreview() {
     UserListComposable(
         users = previewUserState.users,
+        searchText = "",
         navigateTo = { },
         fetchUsers = { },
         deleteUser = { }
