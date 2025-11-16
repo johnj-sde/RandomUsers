@@ -4,8 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
@@ -21,8 +21,6 @@ android {
 
         testInstrumentationRunner = "com.developer.randomusers.TestAppRunner"
 
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -78,19 +76,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.koin)
-    implementation(libs.koin.compose)
+    implementation(libs.bundles.koin)
 
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.moshi)
-    implementation(libs.retrofit.converter.gson)
-    implementation(libs.retrofit.serialization.converter)
+    implementation(libs.bundles.retrofit)
+
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.coil.compose)
-    implementation(libs.coil.network)
+    implementation(libs.bundles.coil)
 
     implementation(libs.room.runtime)
     ksp(libs.room.ksp)

@@ -1,7 +1,6 @@
 package com.developer.randomusers
 
 import com.developer.randomusers.database.model.toUser
-import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.ui.viewmodel.UserViewModel
@@ -13,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(CoroutineTestExtension::class)
 class UserViewModelTest {
-
-    private val emptyListOfUser = emptyList<User>()
 
     private val testDispatcher = Dispatchers.Unconfined
 

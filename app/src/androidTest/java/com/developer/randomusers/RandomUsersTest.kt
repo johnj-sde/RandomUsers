@@ -50,14 +50,12 @@ class RandomUsersTest {
 
     @Test
     fun should_search_and_match_user() {
-        val queryMatchingFirstUser = fakeUser.name?.first
-        queryMatchingFirstUser?.let { name ->
-            launchUserLists(rule) {
-                typeSearchQuery(name)
-            } verify {
-                userFullNameAndTitleIsDisplayed(fakeUser)
-                userEmailIsDisplayed(fakeUser)
-            }
+        val queryMatchingFirstUser = requireNotNull(fakeUser.name?.first)
+        launchUserLists(rule) {
+            typeSearchQuery(queryMatchingFirstUser)
+        } verify {
+            userFullNameAndTitleIsDisplayed(fakeUser)
+            userEmailIsDisplayed(fakeUser)
         }
     }
 
@@ -71,7 +69,8 @@ class RandomUsersTest {
             name = Name(
                 first = "Unused",
                 last = "Username"
-            )
+            ),
+            email = "unuseduser@example.com"
         )
         val unusedName = "Unused Name"
         launchUserLists(rule) {

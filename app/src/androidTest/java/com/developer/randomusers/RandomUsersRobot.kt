@@ -79,10 +79,9 @@ class RandomUsersVerificationRobot(
 ) {
 
     fun userEmailIsDisplayed(user: User) {
-        user.email?.let { email ->
-            rule.waitUntilAtLeastOneExists(hasText(email, ignoreCase = true, substring = true))
-            rule.onAllNodesWithText(email).assertAll(hasText(email))
-        }
+        val email = requireNotNull(user.email)
+        rule.waitUntilAtLeastOneExists(hasText(email, ignoreCase = true, substring = true))
+        rule.onAllNodesWithText(email).assertAll(hasText(email))
     }
 
     fun userFullNameAndTitleIsDisplayed(user: User) {
@@ -91,10 +90,9 @@ class RandomUsersVerificationRobot(
     }
 
     fun userEmailIsNotDisplayed(user: User) {
-        user.email?.let { email ->
-            rule.waitUntilDoesNotExist(hasText(email, ignoreCase = true, substring = true))
-            rule.onNodeWithText(email).assertDoesNotExist()
-        }
+        val email = requireNotNull(user.email)
+        rule.waitUntilDoesNotExist(hasText(email, ignoreCase = true, substring = true))
+        rule.onNodeWithText(email).assertDoesNotExist()
     }
 
     fun userFullNameAndTitleIsNotDisplayed(user: User) {
@@ -103,10 +101,10 @@ class RandomUsersVerificationRobot(
     }
 
     fun userGenderIsDisplayed(user: User) {
-        user.gender?.let { gender ->
-            rule.waitUntilAtLeastOneExists(hasText(gender, ignoreCase = true, substring = true))
-            rule.onNodeWithText(gender).assertExists()
-        }
+        val gender = requireNotNull(user.gender)
+        rule.waitUntilAtLeastOneExists(hasText(gender, ignoreCase = true, substring = true))
+        rule.onNodeWithText(gender).assertExists()
+
     }
 
     fun deleteIconIsDisplayed() {

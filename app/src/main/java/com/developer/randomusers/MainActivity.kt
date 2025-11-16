@@ -21,17 +21,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RandomUsersTheme {
-
-                Scaffold(
-                    modifier = Modifier.fillMaxSize()
-                ) { padding ->
-                    Column(
-                        modifier = Modifier.padding(padding)
-                    ) {
-                        NavHostContainer()
-                    }
-                }
-
+                NavHostContainer()
             }
         }
     }

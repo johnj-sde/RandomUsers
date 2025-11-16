@@ -1,7 +1,6 @@
 package com.developer.randomusers.network.model
 
 import com.developer.randomusers.database.model.IdEntity
-import com.developer.randomusers.model.Id
 import com.google.gson.annotations.SerializedName
 
 

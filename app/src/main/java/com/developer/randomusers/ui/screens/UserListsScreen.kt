@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -28,11 +29,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -47,7 +48,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -55,24 +56,49 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.developer.randomusers.R
 import com.developer.randomusers.model.User
+import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.model.getFullName
-import com.developer.randomusers.model.matchesName
+import com.developer.randomusers.ui.screens.previewutils.previewUser1
+import com.developer.randomusers.ui.screens.previewutils.previewUserState
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 import kotlin.math.roundToInt
 
 @Composable
-fun UserListScreen(
+fun UserListScreenScaffold(
     viewModel: UserViewModel,
     navigateTo: (Int) -> Unit
-) {
-
+){
     val usersState by viewModel.usersState
         .collectAsStateWithLifecycle()
-
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
 
+    Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
+        UserListScreen(
+            usersState = usersState,
+            searchText = searchText,
+            navigateTo = navigateTo,
+            onSearchInput = viewModel::updateSearchText,
+            fetchUsers = viewModel::fetchUsers,
+            deleteUser = viewModel::deleteUser,
+            paddingValues = paddingValues
+        )
+    }
+}
+
+@Composable
+private fun UserListScreen(
+    usersState: UsersState,
+    searchText: String,
+    navigateTo: (Int) -> Unit,
+    onSearchInput: (String) -> Unit,
+    fetchUsers: () -> Unit,
+    deleteUser: (User) -> Unit,
+    paddingValues: PaddingValues
+) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
     ) {
 
         TextField(
@@ -85,16 +111,15 @@ fun UserListScreen(
                 Text(text = stringResource(R.string.search))
             },
             onValueChange = {
-                    input ->
-                viewModel.updateSearchText(userInput = input)
+                    input -> onSearchInput(input)
             },
         )
 
         UserListComposable(
             users = usersState.users,
             navigateTo = navigateTo,
-            fetchUsers = viewModel::fetchUsers,
-            deleteUser = viewModel::deleteUser
+            fetchUsers = fetchUsers,
+            deleteUser = deleteUser
         )
 
     }
@@ -102,7 +127,7 @@ fun UserListScreen(
 }
 
 @Composable
-fun UserListComposable(
+private fun UserListComposable(
     users: List<User>,
     navigateTo: (Int) -> Unit,
     fetchUsers: () -> Unit,
@@ -148,7 +173,7 @@ fun UserListComposable(
 }
 
 @Composable
-fun UserListRow(
+private fun UserListRow(
     user: User,
     onClickDeleteIcon: () -> Unit,
     onClickListItem: () -> Unit,
@@ -166,7 +191,7 @@ fun UserListRow(
                 .fillMaxHeight()
                 .fillMaxWidth(0.2f)
                 .align(Alignment.CenterEnd)
-                .onSizeChanged{
+                .onSizeChanged {
                     iconContainerSize = it
                 },
             contentAlignment = Alignment.Center
@@ -174,7 +199,10 @@ fun UserListRow(
             if (deleteIconVisibleState.value) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    modifier = Modifier.fillMaxSize(0.5f).clickable(onClick = {onClickDeleteIcon()}).testTag("deleteIcon"),
+                    modifier = Modifier
+                        .fillMaxSize(0.5f)
+                        .clickable(onClick = { onClickDeleteIcon() })
+                        .testTag("deleteIcon"),
                     contentDescription = null,
                     tint = Color.Red
                 )
@@ -225,7 +253,7 @@ fun UserListItem(
                     }
                 }
             )
-            .clickable(onClick = {onClickListItem()})
+            .clickable(onClick = { onClickListItem() })
             .background(Color.White)
             .height(IntrinsicSize.Max),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -248,12 +276,7 @@ fun UserListItem(
                     contentScale = ContentScale.Fit
                 )
             }
-
-
         }
-        /* Spacer(
-             modifier = Modifier.fillMaxHeight().width(5.dp)
-         )*/
 
         Column(
             modifier = Modifier.weight(0.75f),
@@ -278,4 +301,41 @@ private fun LazyListState.isCloseToEnd(offset: Int = 3): Boolean {
     val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
     return lastVisibleItem?.index != 0 &&
             (lastVisibleItem?.index ?: -1) >= layoutInfo.totalItemsCount - offset
+}
+
+
+@Preview(showBackground = true)
+@Composable
+private fun UserListScreenPreview() {
+    UserListScreen(
+        usersState = previewUserState,
+        searchText = "preview",
+        navigateTo = { },
+        onSearchInput = { },
+        fetchUsers = { },
+        deleteUser = { },
+        paddingValues = PaddingValues()
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun UserListsComposablePreview() {
+    UserListComposable(
+        users = previewUserState.users,
+        navigateTo = { },
+        fetchUsers = { },
+        deleteUser = { }
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun UserListItemPreview(){
+    UserListItem(
+        user = previewUser1,
+        deleteIconContainerSize = IntSize.Zero,
+        onClickListItem = { } ,
+        onDeleteIconVisibilityChanged = { }
+    )
 }
