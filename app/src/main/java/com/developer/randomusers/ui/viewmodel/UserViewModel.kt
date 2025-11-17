@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.repository.UserRepositoryInterface
+import com.developer.randomusers.ui.screens.NavResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,6 +32,9 @@ class UserViewModel(
     private val _userInputTextForSearch = MutableStateFlow("")
 
     private val _errorState = MutableStateFlow<Throwable?>(null)
+
+    private val _result = MutableStateFlow<NavResult>(NavResult.Idle)
+    val result: StateFlow<NavResult> = _result
 
     val usersState = combine(_errorState, userRepository.getUsers()) { error, users ->
             when (error) {
@@ -74,7 +78,16 @@ class UserViewModel(
             delay(700L)
             userRepository.filterUsersByUserSearchText(userInput)
         }
+    }
 
+    // Function called by the popping screen
+    fun setNavigationResultToBackPressed() {
+        _result.value = NavResult.BackPressed
+    }
+
+    // Function called by the receiving screen to consume the data
+    fun consumeNavigationResult() {
+        _result.update { NavResult.Idle }
     }
 
 }

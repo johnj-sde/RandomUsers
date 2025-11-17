@@ -29,6 +29,7 @@ fun NavHostContainer(
             val userDetailScreen = backStackEntry.toRoute<UserDetailScreen>()
             UserDetailScreenScaffold(
                 viewModel = userViewModel,
+                navController = navController,
                 position = userDetailScreen.position
             )
         }
@@ -42,4 +43,9 @@ sealed class Routes {
     data object UserListScreen: Routes()
     @Serializable
     data class UserDetailScreen(val position: Int): Routes()
+}
+
+sealed class NavResult {
+    object BackPressed : NavResult()
+    object Idle : NavResult()
 }
