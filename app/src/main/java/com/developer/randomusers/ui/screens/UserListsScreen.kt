@@ -73,7 +73,7 @@ fun UserListScreenScaffold(
         .collectAsStateWithLifecycle()
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
 
-    val navResult by viewModel.result.collectAsState()
+    val navResult by viewModel.result.collectAsStateWithLifecycle()
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
         UserListScreen(

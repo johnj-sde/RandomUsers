@@ -1,5 +1,6 @@
 package com.developer.randomusers.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,9 +28,12 @@ fun NavHostContainer(
         }
         composable<UserDetailScreen> { backStackEntry ->
             val userDetailScreen = backStackEntry.toRoute<UserDetailScreen>()
+            BackHandler(enabled = true) {
+                userViewModel.setNavigationResultToBackPressed()
+                navController.popBackStack()
+            }
             UserDetailScreenScaffold(
                 viewModel = userViewModel,
-                navController = navController,
                 position = userDetailScreen.position
             )
         }

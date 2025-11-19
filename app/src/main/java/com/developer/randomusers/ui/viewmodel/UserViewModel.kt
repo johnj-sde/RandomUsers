@@ -82,7 +82,7 @@ class UserViewModel(
 
     // Function called by the popping screen
     fun setNavigationResultToBackPressed() {
-        _result.value = NavResult.BackPressed
+        _result.update { NavResult.BackPressed }
     }
 
     // Function called by the receiving screen to consume the data
