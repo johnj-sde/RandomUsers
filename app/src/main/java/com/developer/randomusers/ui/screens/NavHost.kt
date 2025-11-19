@@ -28,13 +28,12 @@ fun NavHostContainer(
         }
         composable<UserDetailScreen> { backStackEntry ->
             val userDetailScreen = backStackEntry.toRoute<UserDetailScreen>()
-            BackHandler(enabled = true) {
-                userViewModel.setNavigationResultToBackPressed()
-                navController.popBackStack()
-            }
             UserDetailScreenScaffold(
                 viewModel = userViewModel,
-                position = userDetailScreen.position
+                position = userDetailScreen.position,
+                handleBackPressed = {
+                    navController.popBackStack()
+                }
             )
         }
 

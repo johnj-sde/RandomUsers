@@ -35,9 +35,14 @@ import com.developer.randomusers.ui.viewmodel.UserViewModel
 @Composable
 fun UserDetailScreenScaffold(
     viewModel: UserViewModel,
-    position: Int
-){
+    position: Int,
+    handleBackPressed: () -> Unit){
     val usersState by viewModel.usersState.collectAsStateWithLifecycle()
+
+    BackHandler(enabled = true) {
+        viewModel.setNavigationResultToBackPressed()
+        handleBackPressed()
+    }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
         if (usersState.users.isNotEmpty() && position>=0) {
