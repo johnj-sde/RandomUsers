@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -72,14 +73,18 @@ fun UserListScreenScaffold(
         .collectAsStateWithLifecycle()
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
 
+    val navResult by viewModel.result.collectAsStateWithLifecycle()
+
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
         UserListScreen(
             usersState = usersState,
             searchText = searchText,
+            navResult = navResult,
             navigateTo = navigateTo,
             onSearchInput = viewModel::updateSearchText,
             fetchUsers = viewModel::fetchUsers,
             deleteUser = viewModel::deleteUser,
+            consumeResult = viewModel::consumeNavigationResult,
             paddingValues = paddingValues
         )
     }
@@ -89,10 +94,12 @@ fun UserListScreenScaffold(
 private fun UserListScreen(
     usersState: UsersState,
     searchText: String,
+    navResult: NavResult,
     navigateTo: (Int) -> Unit,
     onSearchInput: (String) -> Unit,
     fetchUsers: () -> Unit,
     deleteUser: (User) -> Unit,
+    consumeResult: () -> Unit,
     paddingValues: PaddingValues
 ) {
     Column(
@@ -117,9 +124,12 @@ private fun UserListScreen(
 
         UserListComposable(
             users = usersState.users,
+            searchText = searchText,
+            navResult = navResult,
             navigateTo = navigateTo,
             fetchUsers = fetchUsers,
-            deleteUser = deleteUser
+            deleteUser = deleteUser,
+            consumeResult = consumeResult
         )
 
     }
@@ -129,15 +139,26 @@ private fun UserListScreen(
 @Composable
 private fun UserListComposable(
     users: List<User>,
+    searchText: String,
+    navResult: NavResult,
     navigateTo: (Int) -> Unit,
     fetchUsers: () -> Unit,
-    deleteUser: (User) -> Unit
+    deleteUser: (User) -> Unit,
+    consumeResult: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
     val isReadyToFetch by remember {
         derivedStateOf {
             lazyListState.isCloseToEnd(offset = 3)
+        }
+    }
+
+    LaunchedEffect(users) {
+        if (searchText.isNotEmpty() && navResult is NavResult.Idle) {
+            lazyListState.scrollToItem(0)
+        } else if (navResult is NavResult.BackPressed) {
+            consumeResult()
         }
     }
 
@@ -310,10 +331,12 @@ private fun UserListScreenPreview() {
     UserListScreen(
         usersState = previewUserState,
         searchText = "preview",
+        navResult = NavResult.Idle,
         navigateTo = { },
         onSearchInput = { },
         fetchUsers = { },
         deleteUser = { },
+        consumeResult = { },
         paddingValues = PaddingValues()
     )
 }
@@ -323,9 +346,12 @@ private fun UserListScreenPreview() {
 private fun UserListsComposablePreview() {
     UserListComposable(
         users = previewUserState.users,
+        searchText = "",
         navigateTo = { },
         fetchUsers = { },
-        deleteUser = { }
+        deleteUser = { },
+        navResult = NavResult.Idle,
+        consumeResult = { }
     )
 }
 

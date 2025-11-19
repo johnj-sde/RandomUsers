@@ -1,5 +1,6 @@
 package com.developer.randomusers.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.developer.randomusers.R
 import com.developer.randomusers.model.User
@@ -36,6 +38,7 @@ fun UserDetailScreenScaffold(
     position: Int
 ){
     val usersState by viewModel.usersState.collectAsStateWithLifecycle()
+
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
         if (usersState.users.isNotEmpty() && position>=0) {
             val user = usersState.users[position]
