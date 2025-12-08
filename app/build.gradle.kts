@@ -92,4 +92,9 @@ dependencies {
     testImplementation(projects.testutils)
     androidTestImplementation(projects.testutils)
     testRuntimeOnly(libs.junit.jupiter.engine)
+
+    implementation(libs.bundles.eclipsePahoMQTT)
+
+    implementation(libs.android.legacy.support)
+
 }

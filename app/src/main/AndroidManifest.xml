@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
         android:name=".RandomUsersApp"
@@ -15,6 +20,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RandomUsers"
         tools:targetApi="31">
+
+        <service android:name=".service.MqttForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

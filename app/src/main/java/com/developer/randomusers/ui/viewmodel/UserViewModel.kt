@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
+import com.developer.randomusers.repository.MqttEventRepository
 import com.developer.randomusers.repository.UserRepositoryInterface
 import com.developer.randomusers.ui.screens.NavResult
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,6 +25,7 @@ import java.io.IOException
 
 class UserViewModel(
     val userRepository: UserRepositoryInterface,
+    val mqttEventRepository: MqttEventRepository,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ): ViewModel() {
 
@@ -48,6 +50,10 @@ class UserViewModel(
             SharingStarted.Lazily,
             UsersState()
         )
+
+    init {
+        mqttEventRepository.connectAndBind()
+    }
 
     fun fetchUsers() {
         viewModelScope.launch {
@@ -88,6 +94,15 @@ class UserViewModel(
     // Function called by the receiving screen to consume the data
     fun consumeNavigationResult() {
         _result.update { NavResult.Idle }
+    }
+
+    fun logMqttEvent() {
+        mqttEventRepository.publishCommand("This is a published payload from RandomUsers app")
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        mqttEventRepository.disconnectFromBroker()
     }
 
 }
