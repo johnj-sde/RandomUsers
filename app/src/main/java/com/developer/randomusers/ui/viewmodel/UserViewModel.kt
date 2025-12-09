@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
-import com.developer.randomusers.repository.MqttEventRepository
+import com.developer.randomusers.repository.MqttEventRepositoryInterface
 import com.developer.randomusers.repository.UserRepositoryInterface
 import com.developer.randomusers.ui.screens.NavResult
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,7 +25,7 @@ import java.io.IOException
 
 class UserViewModel(
     val userRepository: UserRepositoryInterface,
-    val mqttEventRepository: MqttEventRepository,
+    val mqttEventRepository: MqttEventRepositoryInterface,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ): ViewModel() {
 

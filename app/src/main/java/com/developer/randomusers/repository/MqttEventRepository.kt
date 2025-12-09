@@ -40,7 +40,7 @@ class MqttEventRepository(private val context: Context): MqttEventRepositoryInte
         context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
-    fun publishCommand(payload: String, qos: Int = 1) {
+    override fun publishCommand(payload: String, qos: Int) {
         if (isBound && mqttClientManager != null) {
             mqttClientManager?.publish(payload, qos)
         } else {

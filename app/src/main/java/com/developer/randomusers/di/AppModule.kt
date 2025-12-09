@@ -8,6 +8,7 @@ import com.developer.randomusers.network.MqttClientManager
 import com.developer.randomusers.network.RandomUserAPIClient
 import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.repository.MqttEventRepository
+import com.developer.randomusers.repository.MqttEventRepositoryInterface
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.repository.UserRepositoryInterface
 import com.developer.randomusers.ui.viewmodel.UserViewModel
@@ -39,7 +40,7 @@ val appModules = module {
         ).build()
     }
 
-    single<MqttEventRepository> {
+    single<MqttEventRepositoryInterface> {
         MqttEventRepository(context = androidContext())
     }
 
