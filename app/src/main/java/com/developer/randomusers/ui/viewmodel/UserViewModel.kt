@@ -52,7 +52,11 @@ class UserViewModel(
         )
 
     init {
-        mqttEventRepository.connectAndBind()
+        viewModelScope.launch {
+            withContext(dispatcher) {
+                mqttEventRepository.connectMqttClient()
+            }
+        }
     }
 
     fun fetchUsers() {
@@ -102,7 +106,11 @@ class UserViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        mqttEventRepository.disconnectFromBroker()
+        viewModelScope.launch {
+            withContext(dispatcher) {
+                mqttEventRepository.disconnectMqttClient()
+            }
+        }
     }
 
 }

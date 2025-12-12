@@ -95,6 +95,5 @@ dependencies {
 
     implementation(libs.bundles.eclipsePahoMQTT)
 
-    implementation(libs.android.legacy.support)
 
 }

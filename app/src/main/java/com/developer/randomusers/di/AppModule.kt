@@ -33,6 +33,10 @@ val appModules = module {
             .create(RandomUserAPIClient::class.java)
     }
 
+    single<MqttClientManager> {
+        MqttClientManager()
+    }
+
     single<AppDatabaseInterface> {
         Room.databaseBuilder(
             context = androidContext(),
@@ -41,7 +45,7 @@ val appModules = module {
     }
 
     single<MqttEventRepositoryInterface> {
-        MqttEventRepository(context = androidContext())
+        MqttEventRepository(mqttClientManager = get())
     }
 
     single<UserRepositoryInterface> {
