@@ -23,6 +23,7 @@ pahoClientVersion = "1.2.5"
 
 androidLegacySupportVersion = "1.0.0"
 
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
@@ -39,7 +40,6 @@ koin = {group = "io.insert-koin", name="koin-android", version.ref = "koinVersio
 koin-compose = {group = "io.insert-koin", name="koin-androidx-compose", version.ref = "koinVersion"}
 
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-
 
 retrofit = {group = "com.squareup.retrofit2", name="retrofit", version.ref="retrofitVersion"}
 retrofit-converter-moshi = {group = "com.squareup.retrofit2", name="converter-moshi", version.ref="retrofitVersion"}
@@ -61,7 +61,7 @@ androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-te
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
 paho-client = {group = "org.eclipse.paho", name ="org.eclipse.paho.client.mqttv3", version.ref  = "pahoClientVersion"}
-android-legacy-support = {group = "androidx.legacy", name="legacy-support-v4", version.ref = "androidLegacySupportVersion"}
+
 
 [bundles]
 coil = ["coil-compose", "coil-network"]
