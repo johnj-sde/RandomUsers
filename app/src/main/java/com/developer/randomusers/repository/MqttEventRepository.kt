@@ -12,21 +12,6 @@ import com.developer.randomusers.service.MqttForegroundService
 class MqttEventRepository(private val context: Context): MqttEventRepositoryInterface {
 
     private var mqttClientManager: MqttClientManager? = null
-    private var isBound = false
-
-    // Defines callbacks for service binding, passed to bindService()
-    private val connection = object : ServiceConnection {
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            val binder = service as MqttForegroundService.MqttBinder
-            mqttClientManager = binder.getClientManager()
-            isBound = true
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            mqttClientManager = null
-            isBound = false
-        }
-    }
 
     override fun connectAndBind() {
         val intent = Intent(context, MqttForegroundService::class.java)
@@ -49,18 +34,6 @@ class MqttEventRepository(private val context: Context): MqttEventRepositoryInte
         }
     }
 
-    private fun startMqttService() {
-        val serviceIntent = Intent(context, MqttForegroundService::class.java)
-
-        // Android O (API 26) and higher require startForegroundService()
-        // if the service is going to run in the foreground.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(serviceIntent)
-        } else {
-            context.startService(serviceIntent)
-        }
-    }
-
      override fun disconnectFromBroker() {
 
         unbindService()
@@ -68,13 +41,4 @@ class MqttEventRepository(private val context: Context): MqttEventRepositoryInte
         val intent = Intent(context, MqttForegroundService::class.java)
         context.stopService(intent)
      }
-
-    private fun unbindService() {
-        if (isBound) {
-            context.unbindService(connection)
-
-            isBound = false
-            mqttClientManager = null
-        }
-    }
 }
