@@ -15,6 +15,10 @@ const val BROKER_URI = "tcp://broker.emqx.io:1883"
 
 class MqttClientManager() {
 
+    companion object {
+        const val QUIESCE_TIMEOUT = 1000L
+    }
+
     val TAG = MqttClientManager::class.java.toString()
 
     private val clientId = MqttClient.generateClientId()
@@ -53,7 +57,7 @@ class MqttClientManager() {
 
                     override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
                         // 2. CONNECTION FAILED: Handle retry logic here
-                        Log.e(TAG, "MQTT Connection failed", exception)
+                        Log.e(TAG, "MQTT connection failed", exception)
                     }
                 })
             } catch (e: MqttException) {
@@ -73,7 +77,7 @@ class MqttClientManager() {
                 }
 
                 override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
-                    Log.e(TAG, "MQTT Subscription failed", exception)
+                    Log.e(TAG, "MQTT subscription failed", exception)
                 }
             })
         } catch (e: MqttException) {
@@ -96,6 +100,22 @@ class MqttClientManager() {
         } else {
             // Handle the case where you are disconnected (e.g., attempt to reconnect)
         }
+    }
+
+    fun disconnect() {
+        mqttClient.disconnect(QUIESCE_TIMEOUT, null, object: IMqttActionListener {
+            override fun onSuccess(asyncActionToken: IMqttToken?) {
+                Log.d(TAG, "MQTT disconnect Succeeded")
+            }
+
+            override fun onFailure(
+                asyncActionToken: IMqttToken?,
+                exception: Throwable?
+            ) {
+                Log.e(TAG, "MQTT disconnect failed", exception)
+            }
+        })
+
     }
 
 }
