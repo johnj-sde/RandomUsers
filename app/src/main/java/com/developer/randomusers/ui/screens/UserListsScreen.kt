@@ -34,7 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -74,6 +73,7 @@ fun UserListScreenScaffold(
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
 
     val navResult by viewModel.result.collectAsStateWithLifecycle()
+    val mqttMessageState by viewModel.mqttMessageFlow.collectAsStateWithLifecycle()
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
         UserListScreen(
