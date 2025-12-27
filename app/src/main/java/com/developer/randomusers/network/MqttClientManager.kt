@@ -1,6 +1,7 @@
 package com.developer.randomusers.network
 
 import android.util.Log
+import com.developer.randomusers.model.MqttState
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -115,15 +116,23 @@ class MqttClientManager() {
 
     }
 
-    fun connectAndSubscribe(): Flow<String> = callbackFlow {
+    fun connectAndSubscribe(): Flow<MqttState> = callbackFlow {
         val callback = object : MqttCallback {
             override fun messageArrived(t: String?, message: MqttMessage) {
                 val payloadBytes = message.payload
                 Log.d(TAG, "received MQTT message \"${String(payloadBytes)}\" in MqttCallback")
-                trySend(String(payloadBytes))
+                val messageString = String(payloadBytes)
+                trySend(MqttState.NewMessageReceived(messageString))
             }
-            override fun connectionLost(cause: Throwable?) { close(cause) }
-            override fun deliveryComplete(token: IMqttDeliveryToken?) {}
+            override fun connectionLost(cause: Throwable?) {
+                trySend(MqttState.MqttConnectionLost)
+                close(cause)
+            }
+            override fun deliveryComplete(token: IMqttDeliveryToken?) {
+                token?.let {
+                    trySend(MqttState.DeliveryComplete(it))
+                }
+            }
         }
         mqttClient.setCallback(callback)
         connectMqtt()
