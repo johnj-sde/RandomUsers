@@ -21,7 +21,6 @@ kspPluginVersion = "2.0.21-1.0.27"
 
 pahoClientVersion = "1.2.5"
 
-androidLegacySupportVersion = "1.0.0"
 
 
 [libraries]

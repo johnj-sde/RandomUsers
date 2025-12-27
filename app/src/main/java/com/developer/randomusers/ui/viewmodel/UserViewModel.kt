@@ -1,7 +1,9 @@
 package com.developer.randomusers.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.developer.randomusers.model.MqttState
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.repository.MqttEventRepositoryInterface
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -51,13 +54,19 @@ class UserViewModel(
             UsersState()
         )
 
-    init {
-        viewModelScope.launch {
-            withContext(dispatcher) {
-                mqttEventRepository.connectMqttClient()
+    val mqttMessageFlow = mqttEventRepository
+        .connectAndSubscribe()
+        .onEach { mqttConnectionState ->
+            when (mqttConnectionState) {
+                is MqttState.NewMessageReceived -> logMqttMessage(mqttConnectionState.message)
+                else -> {}
             }
         }
-    }
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = MqttState.ConnectionUninitiated
+        )
 
     fun fetchUsers() {
         viewModelScope.launch {
@@ -100,17 +109,12 @@ class UserViewModel(
         _result.update { NavResult.Idle }
     }
 
-    fun logMqttEvent() {
+    fun publishMqttEvent() {
         mqttEventRepository.publishCommand("This is a published payload from RandomUsers app")
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelScope.launch {
-            withContext(dispatcher) {
-                mqttEventRepository.disconnectMqttClient()
-            }
-        }
+    private fun logMqttMessage(message: String) {
+        Log.d("UserViewModel Temporary Tag", "UserViewModel.kt mqtt message received \"$message\"")
     }
 
 }
