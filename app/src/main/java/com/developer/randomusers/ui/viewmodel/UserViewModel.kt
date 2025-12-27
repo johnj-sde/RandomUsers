@@ -1,9 +1,12 @@
 package com.developer.randomusers.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.developer.randomusers.model.MqttState
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
+import com.developer.randomusers.repository.MqttEventRepositoryInterface
 import com.developer.randomusers.repository.UserRepositoryInterface
 import com.developer.randomusers.ui.screens.NavResult
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,6 +18,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -24,6 +28,7 @@ import java.io.IOException
 
 class UserViewModel(
     val userRepository: UserRepositoryInterface,
+    val mqttEventRepository: MqttEventRepositoryInterface,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ): ViewModel() {
 
@@ -47,6 +52,20 @@ class UserViewModel(
             viewModelScope,
             SharingStarted.Lazily,
             UsersState()
+        )
+
+    val mqttMessageFlow = mqttEventRepository
+        .connectAndSubscribe()
+        .onEach { mqttConnectionState ->
+            when (mqttConnectionState) {
+                is MqttState.NewMessageReceived -> logMqttMessage(mqttConnectionState.message)
+                else -> {}
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = MqttState.ConnectionUninitiated
         )
 
     fun fetchUsers() {
@@ -88,6 +107,14 @@ class UserViewModel(
     // Function called by the receiving screen to consume the data
     fun consumeNavigationResult() {
         _result.update { NavResult.Idle }
+    }
+
+    fun publishMqttEvent() {
+        mqttEventRepository.publishCommand("This is a published payload from RandomUsers app")
+    }
+
+    private fun logMqttMessage(message: String) {
+        Log.d("UserViewModel Temporary Tag", "UserViewModel.kt mqtt message received \"$message\"")
     }
 
 }

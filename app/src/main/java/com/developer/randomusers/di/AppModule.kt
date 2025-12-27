@@ -4,15 +4,17 @@ import androidx.room.Room
 import com.developer.randomusers.database.AppDatabase
 import com.developer.randomusers.database.AppDatabaseInterface
 import com.developer.randomusers.network.API_URL
+import com.developer.randomusers.network.MqttClientManager
 import com.developer.randomusers.network.RandomUserAPIClient
 import com.developer.randomusers.network.RandomUserAPIClientInterface
+import com.developer.randomusers.repository.MqttEventRepository
+import com.developer.randomusers.repository.MqttEventRepositoryInterface
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.repository.UserRepositoryInterface
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
-import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -31,6 +33,10 @@ val appModules = module {
             .create(RandomUserAPIClient::class.java)
     }
 
+    single<MqttClientManager> {
+        MqttClientManager()
+    }
+
     single<AppDatabaseInterface> {
         Room.databaseBuilder(
             context = androidContext(),
@@ -38,11 +44,15 @@ val appModules = module {
         ).build()
     }
 
+    single<MqttEventRepositoryInterface> {
+        MqttEventRepository(mqttClientManager = get())
+    }
+
     single<UserRepositoryInterface> {
         UserRepository(restClient = get(), database = get())
     }
 
     viewModel<UserViewModel> {
-        UserViewModel(get())
+        UserViewModel(get(), mqttEventRepository = get())
     }
 }
