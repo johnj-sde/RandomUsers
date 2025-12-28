@@ -5,6 +5,7 @@ import com.developer.randomusers.database.AppDatabase
 import com.developer.randomusers.database.AppDatabaseInterface
 import com.developer.randomusers.network.API_URL
 import com.developer.randomusers.network.MqttClientManager
+import com.developer.randomusers.network.MqttClientManagerInterface
 import com.developer.randomusers.network.RandomUserAPIClient
 import com.developer.randomusers.network.RandomUserAPIClientInterface
 import com.developer.randomusers.repository.MqttEventRepository
@@ -33,7 +34,7 @@ val appModules = module {
             .create(RandomUserAPIClient::class.java)
     }
 
-    single<MqttClientManager> {
+    single<MqttClientManagerInterface> {
         MqttClientManager()
     }
 

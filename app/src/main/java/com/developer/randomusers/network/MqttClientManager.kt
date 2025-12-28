@@ -18,7 +18,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
 
 const val BROKER_URI = "tcp://broker.emqx.io:1883"
 
-class MqttClientManager() {
+class MqttClientManager(): MqttClientManagerInterface {
 
     companion object {
         const val QUIESCE_TIMEOUT = 1000L
@@ -78,7 +78,7 @@ class MqttClientManager() {
         }
     }
 
-    fun publish(payload: String, qos: Int = 1) {
+    override fun publish(payload: String, qos: Int) {
         if (mqttClient.isConnected) {
             try {
                 val topic = topic
@@ -116,7 +116,7 @@ class MqttClientManager() {
 
     }
 
-    fun connectAndSubscribe(): Flow<MqttState> = callbackFlow {
+    override fun connectAndSubscribe(): Flow<MqttState> = callbackFlow {
         val callback = object : MqttCallback {
             override fun messageArrived(t: String?, message: MqttMessage) {
                 val payloadBytes = message.payload
