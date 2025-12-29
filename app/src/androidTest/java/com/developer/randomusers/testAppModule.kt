@@ -1,7 +1,11 @@
 package com.developer.randomusers
 
 import com.developer.randomusers.database.AppDatabaseInterface
+import com.developer.randomusers.network.MqttClientManager
+import com.developer.randomusers.network.MqttClientManagerInterface
 import com.developer.randomusers.network.RandomUserAPIClientInterface
+import com.developer.randomusers.repository.MqttEventRepository
+import com.developer.randomusers.repository.MqttEventRepositoryInterface
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.repository.UserRepositoryInterface
 import com.developer.randomusers.ui.viewmodel.UserViewModel
@@ -15,6 +19,10 @@ val testAppModule = module {
         InMemoryRESTClient()
     }
 
+    single<MqttClientManagerInterface> {
+        fakeEmptyMqttClientManager
+    }
+
     single<AppDatabaseInterface> {
         FakeAppDatabase(FakeUserDao(storedUsers = listOf(fakeUserEntity)))
     }
@@ -23,6 +31,12 @@ val testAppModule = module {
         UserRepository(restClient = get(), database = get())
     }
 
-    viewModel { UserViewModel(get(), Dispatchers.IO) }
+    single<MqttEventRepositoryInterface> {
+        MqttEventRepository(
+            mqttClientManager = get()
+        )
+    }
+
+    viewModel { UserViewModel(get(), get(), Dispatchers.IO) }
 
 }
