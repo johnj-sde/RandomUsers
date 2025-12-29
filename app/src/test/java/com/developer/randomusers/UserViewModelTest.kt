@@ -2,11 +2,9 @@ package com.developer.randomusers
 
 import com.developer.randomusers.database.model.toUser
 import com.developer.randomusers.model.UsersState
-import com.developer.randomusers.repository.MqttEventRepository
 import com.developer.randomusers.repository.UserRepository
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -65,7 +63,7 @@ class UserViewModelTest {
         )
         val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
         val userRepository = UserRepository(restClient = restClient, fakeAppDatabase)
-        val viewModel = UserViewModel(userRepository, dummyMqttEventRepository,testDispatcher)
+        val viewModel = UserViewModel(userRepository, dummyMqttEventRepository, testDispatcher)
 
         val actual = observeFlow(viewModel.usersState, testDispatcher) {
             viewModel.fetchUsers()
@@ -80,7 +78,7 @@ class UserViewModelTest {
         val fakeNonEmptyRESTClient = fakeNonEmptyResponseRESTClient
         val fakeAppDatabase = FakeAppDatabase(FakeUserDao(storedUsers = listOf(fakeUserEntity)))
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
-        val viewModel = UserViewModel(userRepository, dummyMqttEventRepository,testDispatcher)
+        val viewModel = UserViewModel(userRepository, dummyMqttEventRepository, testDispatcher)
 
         val actualStates = observeFlow(viewModel.usersState, testDispatcher) {
             viewModel.deleteUser(fakeUserEntity.toUser())
@@ -100,7 +98,7 @@ class UserViewModelTest {
         val fakeNonEmptyRESTClient = InMemoryRESTClient()
         val fakeAppDatabase = FakeAppDatabase(FakeUserDao())
         val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
-        val viewModel = UserViewModel(userRepository, dummyMqttEventRepository,testDispatcher)
+        val viewModel = UserViewModel(userRepository, dummyMqttEventRepository, testDispatcher)
 
         val expected = "test"
         val actual = observeFlow(viewModel.userInputTextForSearch, testDispatcher) {
