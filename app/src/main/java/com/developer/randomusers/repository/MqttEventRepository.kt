@@ -1,10 +1,10 @@
 package com.developer.randomusers.repository
 
 import com.developer.randomusers.model.MqttState
-import com.developer.randomusers.network.MqttClientManager
+import com.developer.randomusers.network.MqttClientManagerInterface
 import kotlinx.coroutines.flow.Flow
 
-class MqttEventRepository(private val mqttClientManager: MqttClientManager): MqttEventRepositoryInterface {
+class MqttEventRepository(private val mqttClientManager: MqttClientManagerInterface): MqttEventRepositoryInterface {
     override fun connectAndSubscribe(): Flow<MqttState> {
         return mqttClientManager.connectAndSubscribe()
     }

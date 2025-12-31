@@ -6,6 +6,8 @@ import com.developer.randomusers.network.model.NameHttpResponse
 import com.developer.randomusers.network.model.ResultsAndInfoHttpResponse
 import com.developer.randomusers.network.model.UserHttpResponse
 import com.developer.randomusers.network.model.toUserEntity
+import com.developer.randomusers.repository.MqttEventRepository
+import kotlinx.coroutines.flow.emptyFlow
 
 
 val fakeNameHttpResponse = NameHttpResponse(
@@ -66,3 +68,7 @@ val fakeNonEmptyResponseRESTClient = InMemoryRESTClient(
     expectedResults =
         fakeNonEmptyNetworkResults.userHttpResponses
 )
+
+val fakeEmptyMqttClientManager = FakeMqttClientManager(emptyFlow())
+
+val dummyMqttEventRepository = MqttEventRepository(fakeEmptyMqttClientManager)
