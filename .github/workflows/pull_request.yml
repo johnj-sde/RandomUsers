@@ -1,8 +1,6 @@
 name: Run test
 
 on:
-  push:
-    branches: [ master, ci-cd-pipeline-setup ]
   pull_request:
     branches: [master]
 
