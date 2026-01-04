@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [master]
+    branches: [master, ci-cd-pipeline-setup-part2]
 
 jobs:
   test:
@@ -56,7 +56,7 @@ jobs:
           signingKeyBase64: ${{secrets.ANDROID_KEYSTORE}}
           keyStorePassword: ${{secrets.KEYSTORE_PASSWORD}}
           alias: ${{secrets.RANDOM_USERS_KEY1_ALIAS}}
-          keyPassword: {{$secrets.RANDOM_USERS_KEY1_ALIAS_PASSWORD}}
+          keyPassword: ${{$secrets.RANDOM_USERS_KEY1_ALIAS_PASSWORD}}
 
       - name: Setup Authorization with Google Play Store
         run: echo '${{ secrets.PLAY_AUTH_JSON }}' > service_account.json
