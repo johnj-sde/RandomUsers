@@ -67,6 +67,6 @@ jobs:
           serviceAccountJson: service_account.json
           packageName: com.developer.randomusers
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          track: alpha
+          track: 'internal'
           status: 'draft'
           whatsNewDirectory: whatsNew/
