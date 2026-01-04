@@ -27,6 +27,7 @@ jobs:
 
   apk:
     name: Generate APK
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
@@ -93,7 +94,7 @@ jobs:
 
   distribute:
     name: Distribute bundle to Google Play
-    needs: test
+    needs: firebase
     runs-on: ubuntu-latest
 
     steps:

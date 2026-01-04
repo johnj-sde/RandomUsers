@@ -4,6 +4,9 @@ minSdkVersion = "24"
 javaVersion = "17"
 agp = "8.9.1"
 kotlin = "2.0.21"
+kspPluginVersion = "2.0.21-1.0.27"
+googleServicesVersion = "4.4.4"
+
 coreKtx = "1.16.0"
 espressoCore = "3.5.0"
 lifecycleRuntimeKtx = "2.9.0"
@@ -17,7 +20,6 @@ coil = "3.0.4"
 roomVerison = "2.7.1"
 kotlinxCoroutinesTestVersion = "1.10.2"
 junitJupiterVersion = "5.11.0"
-kspPluginVersion = "2.0.21-1.0.27"
 
 pahoClientVersion = "1.2.5"
 
@@ -76,4 +78,5 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 jetbrains-kotlin-serialization = {id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 android-library = { id = "com.android.library", version.ref = "agp" }
 ksp = {id = "com.google.devtools.ksp", version.ref = "kspPluginVersion"}
+gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleServicesVersion"}
 
