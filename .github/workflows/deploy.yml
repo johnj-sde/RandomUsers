@@ -79,8 +79,8 @@ jobs:
       - id: Auth
         uses: google-github-actions/auth@v2
         with:
-          project_id: ${{ secrets.FRIENDS_PROJECT_ID }}
-          credentials_json: ${{ secrets.FRIENDS_FIREBASE_TEST_LAB_AUTH }}
+          project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
+          credentials_json: ${{ secrets.FIREBASE_TEST_LAB_AUTH }}
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
