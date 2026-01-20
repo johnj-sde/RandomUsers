@@ -36,6 +36,8 @@ import com.developer.randomusers.ui.viewmodel.UserViewModel
 fun UserDetailScreenScaffold(
     viewModel: UserViewModel,
     position: Int,
+    idName: String,
+    idValue: String,
     handleBackPressed: () -> Unit){
     val usersState by viewModel.usersState.collectAsStateWithLifecycle()
 
@@ -49,9 +51,16 @@ fun UserDetailScreenScaffold(
     }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
-        if (usersState.users.isNotEmpty() && position>=0) {
-            val user = usersState.users[position]
-            UserDetailScreen(user, paddingValues)
+        if (usersState.users.isNotEmpty()) {
+            if (position >= 0) {
+                val user = usersState.users[position]
+                UserDetailScreen(user, paddingValues)
+            } else if (idName.isEmpty().not() && idValue.isEmpty().not()) {
+                val user = usersState.users.firstOrNull { user -> user.id.name == idName && user.id.value == idValue }
+                user?.let {
+                    UserDetailScreen(user, paddingValues)
+                }
+            }
         }
     }
 }
