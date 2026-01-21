@@ -31,9 +31,9 @@ fun NavHostContainer(
         ){
             backStackEntry ->
             val userListScreen = backStackEntry.toRoute<UserListScreen>()
+            userViewModel.updateSearchText(userListScreen.searchForName ?: "")
             UserListScreenScaffold(
                 viewModel = userViewModel,
-                searchForName = userListScreen.searchForName,
                 navigateTo = { position ->
                     navController.navigate(UserDetailScreen(position = position))
                 },
