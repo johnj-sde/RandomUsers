@@ -175,3 +175,9 @@ private fun UserDetailNotFoundScreen(
 private fun UserDetailScreenPreview() {
     UserDetailScreen(user = previewUser1, PaddingValues())
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun UserDetailNotFoundScreenPreview() {
+    UserDetailNotFoundScreen(PaddingValues())
+}
