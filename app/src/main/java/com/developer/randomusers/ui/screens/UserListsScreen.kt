@@ -76,8 +76,8 @@ fun UserListScreenScaffold(
     val navResult by viewModel.result.collectAsStateWithLifecycle()
     val mqttMessageState by viewModel.mqttMessageFlow.collectAsStateWithLifecycle()
 
-    if (searchForName.isNullOrEmpty().not()) {
-        viewModel.updateSearchText(searchForName)
+    LaunchedEffect(searchForName) {
+        viewModel.updateSearchText(searchForName ?: "")
     }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
