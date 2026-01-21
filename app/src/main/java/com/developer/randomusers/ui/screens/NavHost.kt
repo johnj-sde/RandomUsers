@@ -23,10 +23,17 @@ fun NavHostContainer(
     userViewModel: UserViewModel = koinViewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-    NavHost(navController, startDestination= UserListScreen) {
-        composable<UserListScreen>{
+    NavHost(navController, startDestination= UserListScreen()) {
+        composable<UserListScreen>(
+            deepLinks = listOf(
+                navDeepLink<UserListScreen>(basePath = "$DEEPLINK_SCHEME://$DEEPLINK_HOST"),
+            )
+        ){
+            backStackEntry ->
+            val userListScreen = backStackEntry.toRoute<UserListScreen>()
             UserListScreenScaffold(
                 viewModel = userViewModel,
+                searchForName = userListScreen.searchForName,
                 navigateTo = { position ->
                     navController.navigate(UserDetailScreen(position = position))
                 },
@@ -55,7 +62,7 @@ fun NavHostContainer(
 @Serializable
 sealed class Routes {
     @Serializable
-    data object UserListScreen: Routes()
+    data class UserListScreen(val searchForName: String? = null): Routes()
     @Serializable
     data class UserDetailScreen(val position: Int = -1, val idName: String = "", val idValue: String = ""): Routes()
 }

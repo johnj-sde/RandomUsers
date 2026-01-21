@@ -66,6 +66,7 @@ import kotlin.math.roundToInt
 @Composable
 fun UserListScreenScaffold(
     viewModel: UserViewModel,
+    searchForName: String?,
     navigateTo: (Int) -> Unit
 ){
     val usersState by viewModel.usersState
@@ -74,6 +75,10 @@ fun UserListScreenScaffold(
 
     val navResult by viewModel.result.collectAsStateWithLifecycle()
     val mqttMessageState by viewModel.mqttMessageFlow.collectAsStateWithLifecycle()
+
+    if (searchForName.isNullOrEmpty().not()) {
+        viewModel.updateSearchText(searchForName)
+    }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
         UserListScreen(
