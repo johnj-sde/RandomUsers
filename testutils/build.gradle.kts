@@ -13,6 +13,13 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    packaging {
+        resources {
+            excludes.add("/META-INF/LICENSE.md")
+            excludes.add("/META-INF/LICENSE-notice.md")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
