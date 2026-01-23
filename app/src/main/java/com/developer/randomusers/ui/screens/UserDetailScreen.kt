@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.developer.randomusers.R
@@ -36,6 +37,8 @@ import com.developer.randomusers.ui.viewmodel.UserViewModel
 fun UserDetailScreenScaffold(
     viewModel: UserViewModel,
     position: Int,
+    idName: String,
+    idValue: String,
     handleBackPressed: () -> Unit){
     val usersState by viewModel.usersState.collectAsStateWithLifecycle()
 
@@ -49,9 +52,20 @@ fun UserDetailScreenScaffold(
     }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
-        if (usersState.users.isNotEmpty() && position>=0) {
-            val user = usersState.users[position]
-            UserDetailScreen(user, paddingValues)
+        if (usersState.users.isNotEmpty()) {
+            if (position >= 0) {
+                val user = usersState.users[position]
+                UserDetailScreen(user, paddingValues)
+            } else if (idName.isEmpty().not() && idValue.isEmpty().not()) {
+                val user = usersState.users.firstOrNull { user -> user.id.name == idName && user.id.value == idValue }
+                user?.let {
+                    UserDetailScreen(user, paddingValues)
+                } ?: UserDetailNotFoundScreen(paddingValues)
+            } else {
+                UserDetailNotFoundScreen(paddingValues)
+            }
+        } else {
+            UserDetailNotFoundScreen(paddingValues)
         }
     }
 }
@@ -120,8 +134,50 @@ private fun UserDetailScreen(
     }
 }
 
+@Composable
+private fun UserDetailNotFoundScreen(
+    paddingValues: PaddingValues
+) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(paddingValues),
+        verticalArrangement = Arrangement.Center
+    ){
+        Box (
+            modifier = Modifier.fillMaxWidth().weight(0.5f).padding(10.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+
+                Image(
+                    painter = painterResource(R.drawable.anonymous_avatar),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
+                )
+
+        }
+        Spacer(modifier = Modifier.height(40.dp))
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth().weight(0.3f).padding(bottom=10.dp)
+        ){
+            Text(
+                text = "User not found",
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                fontSize = 30.sp
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun UserDetailScreenPreview() {
     UserDetailScreen(user = previewUser1, PaddingValues())
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun UserDetailNotFoundScreenPreview() {
+    UserDetailNotFoundScreen(PaddingValues())
 }

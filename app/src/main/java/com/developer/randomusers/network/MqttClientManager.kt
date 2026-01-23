@@ -100,6 +100,7 @@ class MqttClientManager(): MqttClientManagerInterface {
     }
 
     private fun disconnect() {
+        if (!mqttClient.isConnected) return
         unsubscribeFromTopic()
         mqttClient.disconnect(QUIESCE_TIMEOUT, null, object: IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken?) {
