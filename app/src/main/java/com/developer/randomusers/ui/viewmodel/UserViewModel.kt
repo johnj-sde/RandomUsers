@@ -8,7 +8,7 @@ import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.repository.MqttEventRepositoryInterface
 import com.developer.randomusers.repository.UserRepositoryInterface
-import com.developer.randomusers.ui.screens.NavResult
+import com.developer.randomusers.ui.navigation.NavResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

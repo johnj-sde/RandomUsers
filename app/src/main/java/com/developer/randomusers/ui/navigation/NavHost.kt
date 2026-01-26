@@ -1,22 +1,21 @@
-package com.developer.randomusers.ui.screens
+package com.developer.randomusers.ui.navigation
 
-import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
-import com.developer.randomusers.ui.screens.Routes.UserDetailScreen
-import com.developer.randomusers.ui.screens.Routes.UserListScreen
+import com.developer.randomusers.ui.navigation.Routes.UserDetailScreen
+import com.developer.randomusers.ui.navigation.Routes.UserListScreen
+import com.developer.randomusers.ui.screens.UserDetailScreenScaffold
+import com.developer.randomusers.ui.screens.UserListScreenScaffold
 import com.developer.randomusers.ui.viewmodel.UserViewModel
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
-const val DEEPLINK_SCHEME = "app"
-const val DEEPLINK_HOST = "randomusers"
+
 
 @Composable
 fun NavHostContainer(

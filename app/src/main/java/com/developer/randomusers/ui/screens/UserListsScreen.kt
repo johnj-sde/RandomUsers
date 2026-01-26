@@ -58,6 +58,7 @@ import com.developer.randomusers.R
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.model.getFullName
+import com.developer.randomusers.ui.navigation.NavResult
 import com.developer.randomusers.ui.screens.previewutils.previewUser1
 import com.developer.randomusers.ui.screens.previewutils.previewUserState
 import com.developer.randomusers.ui.viewmodel.UserViewModel

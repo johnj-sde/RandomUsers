@@ -7,7 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.developer.randomusers.ui.screens.NavHostContainer
+import com.developer.randomusers.ui.navigation.NavHostContainer
 import com.developer.randomusers.ui.theme.RandomUsersTheme
 
 class MainActivity : ComponentActivity() {
