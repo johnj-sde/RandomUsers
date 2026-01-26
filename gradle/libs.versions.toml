@@ -12,7 +12,7 @@ composeBom = "2024.09.00"
 
 koinVersion = "3.5.3"
 retrofitVersion = "2.9.0"
-navigationCompose = "2.8.0"
+navigation3Version = "1.0.0"
 coil = "3.0.4"
 roomVerison = "2.7.1"
 kotlinxCoroutinesTestVersion = "1.10.2"
@@ -38,7 +38,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 koin = {group = "io.insert-koin", name="koin-android", version.ref = "koinVersion"}
 koin-compose = {group = "io.insert-koin", name="koin-androidx-compose", version.ref = "koinVersion"}
 
-androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3Version"}
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3Version"}
 
 retrofit = {group = "com.squareup.retrofit2", name="retrofit", version.ref="retrofitVersion"}
 retrofit-converter-moshi = {group = "com.squareup.retrofit2", name="converter-moshi", version.ref="retrofitVersion"}
