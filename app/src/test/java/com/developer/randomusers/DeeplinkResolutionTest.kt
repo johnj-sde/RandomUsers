@@ -39,4 +39,18 @@ class DeeplinkResolutionTest {
 
         assert(isEquals)
     }
+
+    @Test
+    fun returnsUserListAsFallbackForIncompleteUserDetailsLink() {
+        val component1 = "SC2X"
+
+        val userDetailsDeeplink = "$DEEPLINK_SCHEME://$DEEPLINK_HOST/$component1"
+        val deeplinkResolver = DeeplinkResolver(fallbackDestination = UserList)
+
+        val result = deeplinkResolver.resolve(userDetailsDeeplink)
+        val expected = UserList
+        val isEquals = expected == result
+
+        assert(isEquals)
+    }
 }
