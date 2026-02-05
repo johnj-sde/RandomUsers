@@ -5,7 +5,7 @@ import androidx.navigation3.runtime.NavKey
 class DeeplinkResolver(
     private val fallbackDestination: NavKey,
     private val matchers: List<DeeplinkMatcher> = listOf(
-        UserDetailsMatcher
+        UserListMatcher, UserDetailsMatcher
     )
 ) {
 

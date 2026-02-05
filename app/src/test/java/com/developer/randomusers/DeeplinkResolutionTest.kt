@@ -11,11 +11,11 @@ class DeeplinkResolutionTest {
 
     @Test
     fun returnsDefaultDestination() {
-        val defaultDestination = UserList
+        val defaultDestination = UserList("")
         val deepLinkResolver = DeeplinkResolver(defaultDestination)
 
         val result = deepLinkResolver.resolve(":irrelevant:")
-        val expected = UserList
+        val expected = UserList("")
         val isEquals = expected == result
 
         assert(isEquals)
@@ -28,7 +28,7 @@ class DeeplinkResolutionTest {
         val component2 = "293FAL"
 
         val userDetailsDeeplink = "$DEEPLINK_SCHEME://$DEEPLINK_HOST/$component1/$component2"
-        val deeplinkResolver = DeeplinkResolver(fallbackDestination = UserList)
+        val deeplinkResolver = DeeplinkResolver(fallbackDestination = UserList(""))
 
         val result = deeplinkResolver.resolve(userDetailsDeeplink)
         val expected = UserDetails(
@@ -45,12 +45,28 @@ class DeeplinkResolutionTest {
         val component1 = "SC2X"
 
         val userDetailsDeeplink = "$DEEPLINK_SCHEME://$DEEPLINK_HOST/$component1"
-        val deeplinkResolver = DeeplinkResolver(fallbackDestination = UserList)
+        val deeplinkResolver = DeeplinkResolver(fallbackDestination = UserList(""))
 
         val result = deeplinkResolver.resolve(userDetailsDeeplink)
-        val expected = UserList
+        val expected = UserList("")
         val isEquals = expected == result
 
         assert(isEquals)
     }
+
+    @Test
+    fun returnsFilteredUserListDestination(){
+        val searchQueryParameterValue = "James"
+
+        val filterUsersDeepLink = "$DEEPLINK_SCHEME://$DEEPLINK_HOST?searchForName=$searchQueryParameterValue"
+        val deeplinkResolver = DeeplinkResolver(fallbackDestination = UserList(""))
+
+        val result = deeplinkResolver.resolve((filterUsersDeepLink))
+        val expected = UserList(searchQueryParameterValue)
+        val isEquals = expected == result
+
+        assert(isEquals)
+
+    }
+
 }

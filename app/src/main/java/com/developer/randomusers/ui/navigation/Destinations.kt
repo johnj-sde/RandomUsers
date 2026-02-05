@@ -6,4 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserDetails(val idComponent1: String, val idComponent2: String): NavKey
 
-data object UserList: NavKey
+@Serializable
+data class UserList(val searchFilter: String): NavKey

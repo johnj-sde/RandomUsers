@@ -6,6 +6,6 @@ interface DeeplinkMatcher {
     fun match(deeplink: String): NavKey?
 
     fun getDeepLinkRegexString(scheme: String, host: String, pathPattern: String) : String {
-        return "$scheme://$host/$pathPattern"
+        return "$scheme://$host$pathPattern"
     }
 }

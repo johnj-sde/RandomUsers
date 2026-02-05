@@ -6,7 +6,7 @@ import androidx.navigation3.runtime.NavKey
 
 object UserDetailsMatcher: DeeplinkMatcher {
 
-    val regexString = getDeepLinkRegexString(DEEPLINK_SCHEME, DEEPLINK_HOST, "([a-zA-Z0-9]+)/([a-zA-Z0-9]+)")
+    val regexString = getDeepLinkRegexString(DEEPLINK_SCHEME, DEEPLINK_HOST, "/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)")
 
     override fun match(deeplink: String): NavKey? {
         val regex = regexString.toRegex()
