@@ -33,7 +33,7 @@ class DeeplinkResolutionTest {
         val result = deeplinkResolver.resolve(userDetailsDeeplink)
         val expected = UserDetails(
             component1,
-            idComponent2 = component2
+            idValue = component2
         )
         val isEquals = expected == result
 

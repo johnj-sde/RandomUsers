@@ -4,7 +4,7 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserDetails(val idComponent1: String, val idComponent2: String): NavKey
+data class UserDetails(val idName: String = "", val idValue: String = "", val position: Int = -1): NavKey
 
 @Serializable
 data class UserList(val searchFilter: String): NavKey
