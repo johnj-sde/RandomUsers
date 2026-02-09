@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RandomUsersTheme {
-                NavRoot(deeplink = intent.data.toString())
+                NavRoot(deeplink = intent.data)
             }
         }
     }

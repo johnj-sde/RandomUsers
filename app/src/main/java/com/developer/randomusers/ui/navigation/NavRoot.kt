@@ -1,5 +1,6 @@
 package com.developer.randomusers.ui.navigation
 
+import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,7 +18,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun NavRoot(
     userViewModel: UserViewModel = koinViewModel(),
-    deeplink: String?
+    deeplink: Uri?
 ) {
 
     val backStack = rememberNavBackStack(UserList(""))
@@ -25,7 +26,7 @@ fun NavRoot(
 
     LaunchedEffect(deeplink) {
         deeplink?.let {
-            val destination = deeplinkResolver.resolve(it)
+            val destination = deeplinkResolver.resolve(it.toString())
             backStack.add(destination)
         }
     }
