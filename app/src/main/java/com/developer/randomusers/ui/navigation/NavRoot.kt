@@ -18,7 +18,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun NavRoot(
     userViewModel: UserViewModel = koinViewModel(),
-    deeplink: Uri?
+    deeplink: Uri?,
+    consumeIntent: () -> Unit
 ) {
 
     val backStack = rememberNavBackStack(UserList(""))
@@ -27,7 +28,18 @@ fun NavRoot(
     LaunchedEffect(deeplink) {
         deeplink?.let {
             val destination = deeplinkResolver.resolve(it.toString())
+            when (destination) {
+                is UserList -> {
+                    backStack.clear()
+                }
+                is UserDetails -> {
+                    while (backStack.isNotEmpty() && (backStack.last() is UserDetails)) {
+                        backStack.removeLastOrNull()
+                    }
+                }
+            }
             backStack.add(destination)
+            consumeIntent()
         }
     }
     NavDisplay(

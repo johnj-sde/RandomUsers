@@ -20,7 +20,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RandomUsersTheme {
-                NavRoot(deeplink = intentUri.value)
+                NavRoot(deeplink = intentUri.value) {
+                    intentUri.value = null
+                }
             }
         }
     }
