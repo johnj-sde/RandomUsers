@@ -28,17 +28,11 @@ fun NavRoot(
     LaunchedEffect(deeplink) {
         deeplink?.let {
             val destination = deeplinkResolver.resolve(it.toString())
-            when (destination) {
-                is UserList -> {
-                    backStack.clear()
-                }
-                is UserDetails -> {
-                    while (backStack.isNotEmpty() && (backStack.last() is UserDetails)) {
-                        backStack.removeLastOrNull()
-                    }
-                }
-            }
+            backStack.clear()
             backStack.add(destination)
+            if (destination is UserDetails) {
+                backStack.add(0, UserList(""))
+            }
             consumeIntent()
         }
     }
