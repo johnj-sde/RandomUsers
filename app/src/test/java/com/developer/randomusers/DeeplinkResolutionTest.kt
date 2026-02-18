@@ -1,0 +1,72 @@
+package com.developer.randomusers
+
+import com.developer.randomusers.ui.navigation.DEEPLINK_HOST
+import com.developer.randomusers.ui.navigation.DEEPLINK_SCHEME
+import com.developer.randomusers.ui.navigation.DeeplinkResolver
+import com.developer.randomusers.ui.navigation.UserDetails
+import com.developer.randomusers.ui.navigation.UserList
+import org.junit.jupiter.api.Test
+
+class DeeplinkResolutionTest {
+
+    @Test
+    fun returnsDefaultDestination() {
+        val defaultDestination = UserList("")
+        val deepLinkResolver = DeeplinkResolver(defaultDestination)
+
+        val result = deepLinkResolver.resolve(":irrelevant:")
+        val expected = UserList("")
+        val isEquals = expected == result
+
+        assert(isEquals)
+
+    }
+
+    @Test
+    fun returnsUserDetailsDestination() {
+        val component1 = "SC2X"
+        val component2 = "293FAL"
+
+        val userDetailsDeeplink = "$DEEPLINK_SCHEME://$DEEPLINK_HOST/$component1/$component2"
+        val deeplinkResolver = DeeplinkResolver(fallbackDestination = UserList(""))
+
+        val result = deeplinkResolver.resolve(userDetailsDeeplink)
+        val expected = UserDetails(
+            component1,
+            idValue = component2
+        )
+        val isEquals = expected == result
+
+        assert(isEquals)
+    }
+
+    @Test
+    fun returnsUserListAsFallbackForIncompleteUserDetailsLink() {
+        val component1 = "SC2X"
+
+        val userDetailsDeeplink = "$DEEPLINK_SCHEME://$DEEPLINK_HOST/$component1"
+        val deeplinkResolver = DeeplinkResolver(fallbackDestination = UserList(""))
+
+        val result = deeplinkResolver.resolve(userDetailsDeeplink)
+        val expected = UserList("")
+        val isEquals = expected == result
+
+        assert(isEquals)
+    }
+
+    @Test
+    fun returnsFilteredUserListDestination(){
+        val searchQueryParameterValue = "James"
+
+        val filterUsersDeepLink = "$DEEPLINK_SCHEME://$DEEPLINK_HOST?searchForName=$searchQueryParameterValue"
+        val deeplinkResolver = DeeplinkResolver(fallbackDestination = UserList(""))
+
+        val result = deeplinkResolver.resolve((filterUsersDeepLink))
+        val expected = UserList(searchQueryParameterValue)
+        val isEquals = expected == result
+
+        assert(isEquals)
+
+    }
+
+}

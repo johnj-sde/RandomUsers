@@ -1,34 +1,35 @@
 package com.developer.randomusers
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.developer.randomusers.ui.screens.NavHostContainer
+import androidx.compose.runtime.mutableStateOf
+import com.developer.randomusers.ui.navigation.NavRoot
 import com.developer.randomusers.ui.theme.RandomUsersTheme
 
 class MainActivity : ComponentActivity() {
 
-    private var navController : NavHostController? = null
+    private var intentUri = mutableStateOf<Uri?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        intentUri.value = intent.data
         enableEdgeToEdge()
         setContent {
-            val controller = rememberNavController()
-            navController = controller
             RandomUsersTheme {
-                NavHostContainer(navController = controller)
+                NavRoot(deeplink = intentUri.value) {
+                    intentUri.value = null
+                }
             }
         }
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        navController?.handleDeepLink(intent)
+        intentUri.value = intent.data
     }
 
 }
