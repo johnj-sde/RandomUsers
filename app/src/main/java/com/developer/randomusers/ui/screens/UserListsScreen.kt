@@ -28,11 +28,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -49,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -74,6 +77,7 @@ fun UserListScreenScaffold(
     viewModel: UserViewModel,
     navigateTo: (Int) -> Unit
 ){
+    val context = LocalContext.current
     val usersState by viewModel.usersState
         .collectAsStateWithLifecycle()
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
@@ -81,7 +85,33 @@ fun UserListScreenScaffold(
     val navResult by viewModel.result.collectAsStateWithLifecycle()
     val mqttMessageState by viewModel.mqttMessageFlow.collectAsStateWithLifecycle()
 
-    Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(true) {
+       viewModel.eventsSharedFlow.collect() { event ->
+           when (event) {
+               is UserViewModel.Event.DeletedUserEvent -> {
+                   val result = snackbarHostState.showSnackbar(
+                       event.message,
+                       actionLabel = context.getString(R.string.undo),
+                       withDismissAction = true
+                   )
+                   when (result) {
+                       SnackbarResult.ActionPerformed -> {
+                           viewModel.restoreUser(event.user)
+                       }
+                       else -> {}
+                   }
+               }
+           }
+       }
+    }
+
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
         UserListScreen(
             usersState = usersState,
             searchText = searchText,

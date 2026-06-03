@@ -14,5 +14,7 @@ interface UserRepositoryInterface {
 
     fun deleteUser(user: User)
 
+    fun restoreUser(user: User)
+
     fun toggleFavorite(id: Id)
 }

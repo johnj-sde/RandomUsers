@@ -74,7 +74,12 @@ class UserRepository(
 
     override fun deleteUser(user: User) {
         val dao = database.userDao()
-        dao.markUserWithIdAsDeleted(user.id.name, user.id.value)
+        dao.markUserWithIdAsDeleted(user.id.name, user.id.value, true)
+    }
+
+    override fun restoreUser(user: User) {
+        val dao = database.userDao()
+        dao.markUserWithIdAsDeleted(user.id.name, user.id.value, false)
     }
 
     override fun toggleFavorite(id: Id) {
