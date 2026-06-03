@@ -42,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -260,7 +261,10 @@ fun UserListItem(
     onDeleteIconVisibilityChanged: (Boolean) -> Unit,
     toggleFavorite: (Id) -> Unit
 ) {
-    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetX by rememberSaveable { mutableFloatStateOf(0f) }
+    LaunchedEffect(offsetX) {
+        onDeleteIconVisibilityChanged(offsetX != 0f)
+    }
 
     val animatedOffset by animateFloatAsState(
         targetValue = offsetX,
@@ -278,12 +282,10 @@ fun UserListItem(
             .draggable(
                 orientation = Orientation.Horizontal,
                 state = rememberDraggableState { delta ->
-                    if (offsetX == 0f && delta < 0) {
+                    if (delta < 0) {
                         offsetX = offsetLimit
-                        onDeleteIconVisibilityChanged(true)
-                    } else if (offsetX == offsetLimit && delta > 0) {
+                    } else if (delta > 0) {
                         offsetX = 0f
-                        onDeleteIconVisibilityChanged(false)
                     }
                 }
             )
