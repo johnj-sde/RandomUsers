@@ -2,6 +2,7 @@ package com.developer.randomusers.repository
 
 import com.developer.randomusers.database.AppDatabaseInterface
 import com.developer.randomusers.database.model.toUser
+import com.developer.randomusers.model.Id
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.matchesName
 import com.developer.randomusers.network.RandomUserAPIClientInterface
@@ -74,5 +75,10 @@ class UserRepository(
     override fun deleteUser(user: User) {
         val dao = database.userDao()
         dao.markUserWithIdAsDeleted(user.id.name, user.id.value)
+    }
+
+    override fun toggleFavorite(id: Id) {
+        val dao = database.userDao()
+        dao.toggleUserWithIdAsFavorite(id.name, id.value)
     }
 }

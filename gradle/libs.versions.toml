@@ -19,6 +19,7 @@ roomVerison = "2.7.1"
 kotlinxCoroutinesTestVersion = "1.10.2"
 junitJupiterVersion = "5.11.0"
 kspPluginVersion = "2.0.21-1.0.27"
+materialIconsExtendedVersion = "1.7.0"
 
 pahoClientVersion = "1.2.5"
 
@@ -61,7 +62,11 @@ junit-jupiter-engine = {module = "org.junit.jupiter:junit-jupiter-engine", versi
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtendedVersion"}
+
+
 paho-client = {group = "org.eclipse.paho", name ="org.eclipse.paho.client.mqttv3", version.ref  = "pahoClientVersion"}
+
 
 
 [bundles]

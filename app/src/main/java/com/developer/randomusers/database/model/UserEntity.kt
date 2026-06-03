@@ -25,7 +25,8 @@ data class UserEntity(
     @ColumnInfo(name = "cell") val cell: String? = null,
     @Embedded val pictureHttpResponse: PictureHttpResponse? = PictureHttpResponse(),
     @ColumnInfo(name = "nationality") val nationality: String? = null,
-    val wasDeleted: Boolean = false
+    val wasDeleted: Boolean = false,
+    val isFavorite: Boolean = false
 )
 
 fun UserEntity.toUser(): User {
@@ -35,6 +36,7 @@ fun UserEntity.toUser(): User {
         email = this.email,
         picture = this.pictureHttpResponse?.toPicture(),
         name = this.nameHttpResponse?.toName(),
-        gender = this.gender
+        gender = this.gender,
+        isFavorite = this.isFavorite
     )
 }

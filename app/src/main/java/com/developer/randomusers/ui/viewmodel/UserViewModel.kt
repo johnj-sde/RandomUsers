@@ -3,6 +3,7 @@ package com.developer.randomusers.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.developer.randomusers.model.Id
 import com.developer.randomusers.model.MqttState
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
@@ -107,6 +108,14 @@ class UserViewModel(
     // Function called by the receiving screen to consume the data
     fun consumeNavigationResult() {
         _result.update { NavResult.Idle }
+    }
+
+    fun toggleFavorite(id: Id) {
+        viewModelScope.launch {
+            withContext(dispatcher) {
+                userRepository.toggleFavorite(id)
+            }
+        }
     }
 
     fun publishMqttEvent() {
