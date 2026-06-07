@@ -33,9 +33,3 @@ class MainActivity : ComponentActivity() {
     }
 
 }
-/*TODO:
-
-•Scenario B: Filtering the list.•Challenge: Add a TextField at the top to filter users by country or age.•What they are testing: Use of derivedStateOf in Compose or combine in Kotlin Flows to filter data in the ViewModel.
-•Scenario C: Image Loading & Performance.•Challenge: Handling large lists of images (like hotel rooms or user avatars).•What they are testing: Coil/Glide integration and memory management.
-
- */
