@@ -108,4 +108,48 @@ class UserViewModelTest {
         assertEquals(expected, actual.first())
     }
 
+    @Test
+    fun toggleUserAsFavoriteSuccessfully() = runTest {
+        val fakeNonEmptyRESTClient = fakeNonEmptyResponseRESTClient
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao(storedUsers = listOf(fakeUserEntity)))
+        val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, dummyMqttEventRepository, testDispatcher)
+
+        val actualStates = observeFlow(viewModel.usersState, testDispatcher) {
+            viewModel.toggleFavorite(fakeUserEntity.toUser().id)
+        }
+        val expected = listOf(
+            listOf(fakeUser),
+            listOf(fakeUser.copy(isFavorite = !fakeUser.isFavorite))
+        )
+
+        val actualUsers = actualStates.map { it.users }
+
+        assertEquals(actualUsers, expected)
+    }
+
+    @Test
+    fun restoreUserSuccessfully() = runTest {
+        val fakeNonEmptyRESTClient = fakeNonEmptyResponseRESTClient
+        val fakeAppDatabase = FakeAppDatabase(FakeUserDao(storedUsers = listOf(fakeUserEntity)))
+        val userRepository = UserRepository(fakeNonEmptyRESTClient, fakeAppDatabase)
+        val viewModel = UserViewModel(userRepository, dummyMqttEventRepository, testDispatcher)
+
+        val actualStates = observeFlow(viewModel.usersState, testDispatcher) {
+            viewModel.deleteUser(fakeUserEntity.toUser())
+            viewModel.restoreUser(fakeUserEntity.toUser())
+
+        }
+
+        val expected = listOf(
+            listOf(fakeUser),
+            emptyList(),
+            listOf(fakeUser)
+        )
+
+        val actualUsers = actualStates.map { it.users }
+
+        assertEquals(actualUsers, expected)
+    }
+
 }
