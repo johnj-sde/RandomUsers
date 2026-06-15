@@ -146,7 +146,7 @@ class UserViewModelTest {
             emptyList(),
             listOf(fakeUser)
         )
-
+//test comment
         val actualUsers = actualStates.map { it.users }
 
         assertEquals(actualUsers, expected)
