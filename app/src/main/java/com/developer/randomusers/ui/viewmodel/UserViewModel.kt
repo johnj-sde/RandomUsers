@@ -3,6 +3,7 @@ package com.developer.randomusers.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.developer.randomusers.model.Id
 import com.developer.randomusers.model.MqttState
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
@@ -13,9 +14,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
@@ -31,6 +35,13 @@ class UserViewModel(
     val mqttEventRepository: MqttEventRepositoryInterface,
     val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ): ViewModel() {
+
+    sealed class Event {
+        data class DeletedUserEvent(val message: String, val user: User): Event()
+    }
+
+    private val _eventsSharedFlow = MutableSharedFlow<Event>()
+    val eventsSharedFlow: SharedFlow<Event> = _eventsSharedFlow.asSharedFlow()
 
     val userInputTextForSearch: StateFlow<String>
         get() = _userInputTextForSearch.asStateFlow()
@@ -84,6 +95,7 @@ class UserViewModel(
         viewModelScope.launch {
             withContext(dispatcher) {
                 userRepository.deleteUser(user)
+                _eventsSharedFlow.emit(Event.DeletedUserEvent("User was deleted", user))
             }
         }
     }
@@ -107,6 +119,22 @@ class UserViewModel(
     // Function called by the receiving screen to consume the data
     fun consumeNavigationResult() {
         _result.update { NavResult.Idle }
+    }
+
+    fun toggleFavorite(id: Id) {
+        viewModelScope.launch {
+            withContext(dispatcher) {
+                userRepository.toggleFavorite(id)
+            }
+        }
+    }
+
+    fun restoreUser(user: User) {
+        viewModelScope.launch {
+            withContext(dispatcher) {
+                userRepository.restoreUser(user)
+            }
+        }
     }
 
     fun publishMqttEvent() {

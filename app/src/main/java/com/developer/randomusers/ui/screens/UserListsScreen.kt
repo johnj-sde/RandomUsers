@@ -27,9 +27,14 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -39,12 +44,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.developer.randomusers.R
+import com.developer.randomusers.model.Id
 import com.developer.randomusers.model.User
 import com.developer.randomusers.model.UsersState
 import com.developer.randomusers.model.getFullName
@@ -69,6 +77,7 @@ fun UserListScreenScaffold(
     viewModel: UserViewModel,
     navigateTo: (Int) -> Unit
 ){
+    val context = LocalContext.current
     val usersState by viewModel.usersState
         .collectAsStateWithLifecycle()
     val searchText by viewModel.userInputTextForSearch.collectAsStateWithLifecycle()
@@ -76,7 +85,33 @@ fun UserListScreenScaffold(
     val navResult by viewModel.result.collectAsStateWithLifecycle()
     val mqttMessageState by viewModel.mqttMessageFlow.collectAsStateWithLifecycle()
 
-    Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(true) {
+       viewModel.eventsSharedFlow.collect() { event ->
+           when (event) {
+               is UserViewModel.Event.DeletedUserEvent -> {
+                   val result = snackbarHostState.showSnackbar(
+                       event.message,
+                       actionLabel = context.getString(R.string.undo),
+                       withDismissAction = true
+                   )
+                   when (result) {
+                       SnackbarResult.ActionPerformed -> {
+                           viewModel.restoreUser(event.user)
+                       }
+                       else -> {}
+                   }
+               }
+           }
+       }
+    }
+
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
         UserListScreen(
             usersState = usersState,
             searchText = searchText,
@@ -86,6 +121,7 @@ fun UserListScreenScaffold(
             fetchUsers = viewModel::fetchUsers,
             deleteUser = viewModel::deleteUser,
             consumeResult = viewModel::consumeNavigationResult,
+            toggleFavorite = viewModel::toggleFavorite,
             paddingValues = paddingValues
         )
     }
@@ -101,6 +137,7 @@ private fun UserListScreen(
     fetchUsers: () -> Unit,
     deleteUser: (User) -> Unit,
     consumeResult: () -> Unit,
+    toggleFavorite: (Id) -> Unit,
     paddingValues: PaddingValues
 ) {
     Column(
@@ -130,6 +167,7 @@ private fun UserListScreen(
             navigateTo = navigateTo,
             fetchUsers = fetchUsers,
             deleteUser = deleteUser,
+            toggleFavorite = toggleFavorite,
             consumeResult = consumeResult
         )
 
@@ -145,7 +183,8 @@ private fun UserListComposable(
     navigateTo: (Int) -> Unit,
     fetchUsers: () -> Unit,
     deleteUser: (User) -> Unit,
-    consumeResult: () -> Unit
+    consumeResult: () -> Unit,
+    toggleFavorite: (Id) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -184,7 +223,8 @@ private fun UserListComposable(
                 },
                 onClickListItem = {
                     navigateTo(index)
-                }
+                },
+                toggleFavorite = toggleFavorite
             )
             if (index < users.lastIndex) {
                 Spacer(modifier = Modifier.height(5.dp))
@@ -199,6 +239,7 @@ private fun UserListRow(
     user: User,
     onClickDeleteIcon: () -> Unit,
     onClickListItem: () -> Unit,
+    toggleFavorite: (Id) -> Unit
 ) {
     var iconContainerSize by remember { mutableStateOf(IntSize.Zero) }
     val deleteIconVisibleState = remember { mutableStateOf(false) }
@@ -236,7 +277,8 @@ private fun UserListRow(
             onClickListItem,
             onDeleteIconVisibilityChanged = { isVisible ->
                 deleteIconVisibleState.value = isVisible
-            }
+            },
+            toggleFavorite = toggleFavorite
         )
     }
 }
@@ -246,9 +288,13 @@ fun UserListItem(
     user: User,
     deleteIconContainerSize: IntSize,
     onClickListItem: () -> Unit,
-    onDeleteIconVisibilityChanged: (Boolean) -> Unit
+    onDeleteIconVisibilityChanged: (Boolean) -> Unit,
+    toggleFavorite: (Id) -> Unit
 ) {
-    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetX by rememberSaveable { mutableFloatStateOf(0f) }
+    LaunchedEffect(offsetX) {
+        onDeleteIconVisibilityChanged(offsetX != 0f)
+    }
 
     val animatedOffset by animateFloatAsState(
         targetValue = offsetX,
@@ -266,12 +312,10 @@ fun UserListItem(
             .draggable(
                 orientation = Orientation.Horizontal,
                 state = rememberDraggableState { delta ->
-                    if (offsetX == 0f && delta < 0) {
+                    if (delta < 0) {
                         offsetX = offsetLimit
-                        onDeleteIconVisibilityChanged(true)
-                    } else if (offsetX == offsetLimit && delta > 0) {
+                    } else if (delta > 0) {
                         offsetX = 0f
-                        onDeleteIconVisibilityChanged(false)
                     }
                 }
             )
@@ -299,22 +343,60 @@ fun UserListItem(
                 )
             }
         }
-
-        Column(
-            modifier = Modifier.weight(0.75f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+        Row(
+            modifier = Modifier
+                .weight(0.75f)
+                .fillMaxSize(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = user.getFullName())
+            Column(
+                modifier = Modifier.weight(0.8f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
 
-            if (user.email != null) {
-                Text(user.email)
+                Text(text = user.getFullName())
+
+                if (user.email != null) {
+                    Text(user.email)
+                }
+
+                if (user.phone != null) {
+                    Text(user.phone)
+                }
             }
 
-            if (user.phone != null) {
-                Text(user.phone)
+            Column(
+                modifier = Modifier.weight(0.2f),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier.clickable(onClick = {toggleFavorite(user.id)}),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (user.isFavorite) {
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "A Favorite User",
+                            tint = Color(0xFFFFC107),
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Outlined.StarBorder,
+                            contentDescription = "Not a Favorite User",
+                            tint = Color.Black,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                }
+
             }
         }
+
+
     }
 }
 
@@ -338,6 +420,7 @@ private fun UserListScreenPreview() {
         fetchUsers = { },
         deleteUser = { },
         consumeResult = { },
+        toggleFavorite = { },
         paddingValues = PaddingValues()
     )
 }
@@ -352,7 +435,8 @@ private fun UserListsComposablePreview() {
         fetchUsers = { },
         deleteUser = { },
         navResult = NavResult.Idle,
-        consumeResult = { }
+        consumeResult = { },
+        toggleFavorite = {  }
     )
 }
 
@@ -363,6 +447,7 @@ private fun UserListItemPreview(){
         user = previewUser1,
         deleteIconContainerSize = IntSize.Zero,
         onClickListItem = { } ,
-        onDeleteIconVisibilityChanged = { }
+        onDeleteIconVisibilityChanged = { },
+        toggleFavorite = { }
     )
 }

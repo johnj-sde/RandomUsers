@@ -6,7 +6,8 @@ data class User(
     val email: String? = null,
     val picture: Picture? = null,
     val name: Name? = null,
-    val gender: String? = null
+    val gender: String? = null,
+    val isFavorite: Boolean = false
 )
 
 fun User.getFullName(): String {

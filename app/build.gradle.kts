@@ -91,6 +91,8 @@ dependencies {
     implementation(libs.room.runtime)
     ksp(libs.room.ksp)
 
+    implementation(libs.androidx.material.icons.extended)
+
     testImplementation(projects.testutils)
     androidTestImplementation(projects.testutils)
     testRuntimeOnly(libs.junit.jupiter.engine)

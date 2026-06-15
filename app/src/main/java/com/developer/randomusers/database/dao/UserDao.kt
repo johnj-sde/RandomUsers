@@ -16,7 +16,10 @@ interface UserDao {
     @Insert(onConflict = IGNORE)
     fun insertAll(users: List<UserEntity>)
 
-    @Query("UPDATE userentity SET wasDeleted=1 WHERE identity_name =:name AND identity_value =:value")
-    fun markUserWithIdAsDeleted(name: String, value: String)
+    @Query("UPDATE userentity SET wasDeleted=:toDelete WHERE identity_name =:name AND identity_value =:value")
+    fun markUserWithIdAsDeleted(name: String, value: String, toDelete: Boolean)
 
+    @Query("UPDATE userentity SET isFavorite=NOT isFavorite WHERE identity_name =:name AND identity_value =:value")
+    fun toggleUserWithIdAsFavorite(name: String, value: String)
 }
+
