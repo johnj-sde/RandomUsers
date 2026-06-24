@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [master, ci-cd-pipeline-setup-part2]
+    branches: [master, ci-cd-trigger-test]
 
 jobs:
   test:
